@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 const {Schema, model} = mongoose;
+const {format} = require('date-fns');
 
 mongoose.Promise = global.Promise;
 
 const DaySchema = new mongoose.Schema({
 	userId: {type: Number, required: true},
-	dateTime: {type: Date, default: new Date()},
+	date: {type: String, default: format(new Date(), 'yyyy.MM.dd')},
 	totalSum: {type: Number},
 	items: [
 		{
