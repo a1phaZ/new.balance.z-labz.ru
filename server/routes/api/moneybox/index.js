@@ -1,13 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const logger = require('../../../handlers/logger');
 const MoneyBox = require('../../../models/moneybox');
+const toJson = require("../../../handlers/toJson");
 const {createError} = require('../../../handlers/error');
 
-router.get('/', (req, res) => {
-	logger.info('moneybox get');
-	res.json({ok: true});
+const findByUserId = async (userId) => {
+	return await MoneyBox.find({userId: userId});
+}
+
+router.get('/', (req, res, next) => {
+	const {
+		query: {vk_user_id}
+	} = req;
+	findByUserId(vk_user_id)
+		.then(response => toJson.dataToJson(response))
+		.then(data => res.status(200).json(data))
+		.catch(err => next(createError(err.statusCode, err.message)));
 });
+
+router.get('/:id', async (req, res, next) => {
+	const {
+		query: {vk_user_id},
+		params: {id}
+	} = req;
+	await MoneyBox.findOne({userId: vk_user_id, _id: id})
+		.then(response => toJson.dataToJson(response))
+		.then(data => res.status(200).json(data))
+		.catch(err => next(createError(err.statusCode, err.message)));
+})
 
 router.post('/', async (req, res, next) => {
 	const {
@@ -29,12 +49,12 @@ router.post('/', async (req, res, next) => {
 
 	await moneyBox
 		.save()
-		.then((response) => {
-			res.status(200).json(response);
-		})
+		.then(async () => await findByUserId(vk_user_id))
+		.then(response => toJson.dataToJson(response))
+		.then(data => res.status(200).json(data))
 		.catch(err => next(createError(err.statusCode, err.message)));
 });
-//
+
 // router.patch('/:id', (req, res, next) => {
 //
 // })
