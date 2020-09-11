@@ -6,7 +6,12 @@ const MoneyBoxSchema = new Schema({
 	userId: {type: Number, required: true},
 	title: {type: String, required: true},
 	sum: {type: Number, default: 0},
-	operations: {type: Array, default: []}
+	operations: [{type: Schema.Types.ObjectId, ref: 'Item'}]
+});
+
+MoneyBoxSchema.pre('save', function (next) {
+	this.sum = this.$income ? this.sum + this.$sum : this.sum - this.$sum;
+	next();
 });
 
 const MoneyBox = model('MoneyBox', MoneyBoxSchema);

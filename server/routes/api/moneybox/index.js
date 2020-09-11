@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const {format} = require('date-fns');
 const MoneyBox = require('../../../models/moneybox');
+const Item = require('../../../models/item');
 const toJson = require("../../../handlers/toJson");
 const {createError} = require('../../../handlers/error');
 
 const findByUserId = async (userId) => {
-	return await MoneyBox.find({userId: userId});
+	return await MoneyBox.find({userId: userId})
+		.populate('operations');
 }
 
 router.get('/', (req, res, next) => {
@@ -31,25 +34,33 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
 	const {
-		body: {title, sum},
+		body: {title, sum, income = true},
 		query: {vk_user_id}
 	} = req;
 
-	const operation = {
-		title: `Приход: ${sum}`,
-		income: true,
-		date: new Date()
-	}
+	const item = sum && await new Item({
+		date: format(new Date(), 'yyyy.MM.dd'),
+		userId: vk_user_id,
+		title,
+		price: sum,
+		quantity: 1,
+		sum: sum,
+		income,
+	}).save();
+
 	const moneyBox = new MoneyBox({
 		userId: vk_user_id,
 		title,
-		sum: sum || 0,
-		operations: !!sum ? [operation] : []
+		sum: 0,
+		operations: !!sum ? [item._id] : []
 	});
+
+	moneyBox.$sum= sum || 0;
+	moneyBox.$income = income;
 
 	await moneyBox
 		.save()
-		.then(async () => await findByUserId(vk_user_id))
+		// .then(async () => await findByUserId(vk_user_id))
 		.then(response => toJson.dataToJson(response))
 		.then(data => res.status(200).json(data))
 		.catch(err => next(createError(err.statusCode, err.message)));
