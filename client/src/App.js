@@ -5,18 +5,7 @@ import Home from './panels/Home';
 import useApi from "./handlers/useApi";
 import {State} from './state';
 import {SET_ACCOUNTS, SET_MODAL} from "./state/actions";
-import {
-	ANDROID,
-	Button,
-	FormLayout,
-	FormLayoutGroup,
-	IOS,
-	ModalPage,
-	ModalPageHeader,
-	ModalRoot,
-	PanelHeaderButton,
-	platform, Root
-} from "@vkontakte/vkui";
+import {ANDROID, IOS, ModalPage, ModalPageHeader, ModalRoot, PanelHeaderButton, platform, Root} from "@vkontakte/vkui";
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
 import AddAccount from "./components/modals/AddAccount";
@@ -51,39 +40,12 @@ const App = () => {
 			activeModal={state.modal}
 			onClose={modalBack}
 		>
-			<ModalPage id={'add'} header={
-				<ModalPageHeader
-					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
-					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Готово' : <Icon24Done/>}</PanelHeaderButton>}
-				>
-					Добавить
-				</ModalPageHeader>
-			}>
-				<FormLayout>
-					<FormLayoutGroup>
-						<Button onClick={() => {
-							dispatch({type: SET_MODAL, payload: {modal: 'add-account'}});
-						}} size={'xl'}>Добавить карту(наличные)</Button>
-						{state.accounts.length !== 0 &&
-						<Button
-							onClick={() => {
-								dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
-							}}
-							size={'xl'}
-						>
-							Добавить расход(доход)
-						</Button>
-						}
-					</FormLayoutGroup>
-				</FormLayout>
-			</ModalPage>
-
 			<ModalPage id={'add-account'} header={
 				<ModalPageHeader
 					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
 					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Готово' : <Icon24Done/>}</PanelHeaderButton>}
 				>
-					Добавить
+					Добавить счет
 				</ModalPageHeader>
 			}>
 				<AddAccount close={modalBack}/>
@@ -94,7 +56,7 @@ const App = () => {
 					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
 					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Готово' : <Icon24Done/>}</PanelHeaderButton>}
 				>
-					Добавить
+					Добавить запись
 				</ModalPageHeader>
 			}>
 				<AddMoney accounts={state.accounts}/>
@@ -109,7 +71,7 @@ const App = () => {
 					<Home id='home' data={state.accounts} dispatch={dispatch} isLoading={isLoading}/>
 				</View>
 				<View id={'info'} activePanel={state.activePanel}>
-					<AccountInfo id={'account'} account={state.account} dispatch={dispatch} />
+					<AccountInfo id={'account'} account={state.account} dispatch={dispatch}/>
 				</View>
 			</Root>
 		</InfoSnackbar>

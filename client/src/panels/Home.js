@@ -7,8 +7,9 @@ import Div from '@vkontakte/vkui/dist/components/Div/Div';
 import {Header, PanelHeaderButton, PanelSpinner, Title} from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import ListOfAccount from "../components/ListOfAccount";
-import Icon28AddOutline from '@vkontakte/icons/dist/28/add_outline';
 import {SET_MODAL} from "../state/actions";
+import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
+import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 
 const Home = ({id, data, dispatch, isLoading}) => {
 	const sumOfAll = data.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
@@ -16,19 +17,24 @@ const Home = ({id, data, dispatch, isLoading}) => {
 		<Panel id={id}>
 			<PanelHeader
 				left={
-					<PanelHeaderButton
-						onClick={() => {
-							if (data.length !== 0){
-								dispatch({type: SET_MODAL, payload: {modal: 'add'}});
-							} else {
+					<>
+						<PanelHeaderButton
+							onClick={() => {
 								dispatch({type: SET_MODAL, payload: {modal: 'add-account'}});
-							}
-						}}
-					>
-						<Icon28AddOutline/>
-					</PanelHeaderButton>
+							}}
+						>
+							<Icon28ListAddOutline/>
+						</PanelHeaderButton>
+						{data.length !== 0 && <PanelHeaderButton
+							onClick={() => {
+								dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
+							}}
+						>
+							<Icon28MarketAddBadgeOutline/>
+						</PanelHeaderButton>}
+					</>
 				}
-			>Example</PanelHeader>
+			>Balance</PanelHeader>
 			<Group
 				header={<Header mode="secondary">Ваши счета</Header>}
 				separator="show"
