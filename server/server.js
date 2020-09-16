@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const logger = require('./handlers/logger');
 const {handleError, createError} = require("./handlers/error");
 
@@ -8,6 +9,7 @@ dotenv.config();
 const app = express();
 require('./config/db');
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 

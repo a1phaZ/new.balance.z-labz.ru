@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {format} = require('date-fns');
+const ruLocale = require('date-fns/locale/ru');
 const MoneyBox = require('../../../models/moneybox');
 const Item = require('../../../models/item');
 const toJson = require("../../../handlers/toJson");
@@ -27,6 +28,7 @@ router.get('/:id', async (req, res, next) => {
 		params: {id}
 	} = req;
 	await MoneyBox.findOne({userId: vk_user_id, _id: id})
+		.populate('operations')
 		.then(response => toJson.dataToJson(response))
 		.then(data => res.status(200).json(data))
 		.catch(err => next(createError(err.statusCode, err.message)));
@@ -41,7 +43,7 @@ router.post('/', async (req, res, next) => {
 	const item = sum && await new Item({
 		date: format(new Date(), 'yyyy.MM.dd'),
 		userId: vk_user_id,
-		title,
+		title: `Остаток на ${format(new Date(), 'dd MMMM yyyy', {locale: ruLocale})}`,
 		price: sum,
 		quantity: 1,
 		sum: sum,
@@ -62,7 +64,10 @@ router.post('/', async (req, res, next) => {
 		.save()
 		// .then(async () => await findByUserId(vk_user_id))
 		.then(response => toJson.dataToJson(response))
-		.then(data => res.status(200).json(data))
+		.then(data => {
+			data.message = 'Сохранено'
+			res.status(200).json(data)
+		})
 		.catch(err => next(createError(err.statusCode, err.message)));
 });
 

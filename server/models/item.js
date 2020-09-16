@@ -11,7 +11,7 @@ const ItemSchema = new Schema({
 	price: {type: Number, required: true},
 	quantity: {type: Number, required: true},
 	sum: {type: Number, required: true},
-	income: {type: Number, default: false},
+	income: {type: Boolean, default: false},
 	tags: {type: Array, default: []},
 	itemFrom: {type: Schema.Types.ObjectId, ref: 'MoneyBox'}
 });
