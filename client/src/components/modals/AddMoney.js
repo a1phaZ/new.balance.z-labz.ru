@@ -32,7 +32,7 @@ export default ({accounts}) => {
 	const [, doApiFetch] = useApi('/item');
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const accountList = accounts.map(item => {
-		return (<option key={item._id} value={item._id}>{item.title}</option>)
+		return (<option key={item._id} value={item._id}>{item.title} ({currency(item.sum)})</option>)
 	});
 	return (
 		<FormLayout
