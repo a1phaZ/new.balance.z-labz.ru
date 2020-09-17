@@ -14,7 +14,7 @@ import {
 } from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import Group from "@vkontakte/vkui/dist/components/Group/Group";
-import {SET_ACTIVE_VIEW, SET_MODAL} from "../state/actions";
+import {SET_ACCOUNT, SET_ACTIVE_VIEW, SET_MODAL} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 
 export default ({id, account, dispatch}) => {
@@ -34,7 +34,10 @@ export default ({id, account, dispatch}) => {
 		<Panel id={id}>
 			<PanelHeader left={
 				<>
-					<PanelHeaderBack onClick={() => dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}})} />
+					<PanelHeaderBack onClick={() => {
+						dispatch({type: SET_ACCOUNT, payload: {id: null}});
+						dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
+					}} />
 					<PanelHeaderButton
 						onClick={() => {
 							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
