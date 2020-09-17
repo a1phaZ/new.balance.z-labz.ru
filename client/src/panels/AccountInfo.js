@@ -1,14 +1,24 @@
 import React from 'react';
 import {format} from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
-import {Div, Footer, Header, Panel, PanelHeader, PanelHeaderBack, RichCell, Title} from "@vkontakte/vkui";
+import {
+	Div,
+	Footer,
+	Header,
+	Panel,
+	PanelHeader,
+	PanelHeaderBack,
+	PanelHeaderButton,
+	RichCell,
+	Title
+} from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import Group from "@vkontakte/vkui/dist/components/Group/Group";
-import {SET_ACTIVE_VIEW} from "../state/actions";
+import {SET_ACTIVE_VIEW, SET_MODAL} from "../state/actions";
+import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 
 export default ({id, account, dispatch}) => {
-	console.log(account);
-	const accountItemsList = account.operations.map((item, index) => {
+	const accountItemsList = account?.operations.map((item, index) => {
 		return (
 			<RichCell
 				key={index}
@@ -22,7 +32,19 @@ export default ({id, account, dispatch}) => {
 	});
 	return (
 		<Panel id={id}>
-			<PanelHeader left={<PanelHeaderBack onClick={() => dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}})} />}>
+			<PanelHeader left={
+				<>
+					<PanelHeaderBack onClick={() => dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}})} />
+					<PanelHeaderButton
+						onClick={() => {
+							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
+						}}
+					>
+						<Icon28MarketAddBadgeOutline/>
+					</PanelHeaderButton>
+				</>
+					}
+			>
 				{account?.title}
 			</PanelHeader>
 			<Group
