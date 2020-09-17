@@ -5,7 +5,7 @@ import {
 	SET_ACTIVE_PANEL,
 	SET_ACTIVE_VIEW,
 	SET_ERROR,
-	SET_MODAL,
+	SET_MODAL, SET_POPOUT,
 	SET_SUCCESS_MESSAGE
 } from './actions';
 
@@ -16,7 +16,8 @@ const initialState = {
 	successMessage: null,
 	error: null,
 	activeView: 'home',
-	activePanel: 'home'
+	activePanel: 'home',
+	popout: null
 }
 
 const reducer = (state, action) => {
@@ -47,6 +48,12 @@ const reducer = (state, action) => {
 				account: state.accounts.find(item => {
 					return item._id === id;
 				})
+			}
+		}
+		case SET_POPOUT: {
+			return {
+				...state,
+				popout: action.payload.popout
 			}
 		}
 		case SET_MODAL: {
