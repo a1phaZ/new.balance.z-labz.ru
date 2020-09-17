@@ -69,6 +69,51 @@ router.post('/', async (req, res, next) => {
 		.catch(err => next(createError(err.statusCode, err.message)));
 });
 
+router.patch('/:id', async (req, res, next) => {
+	const {
+		params: {id},
+		body: {
+			date,
+			title,
+			description,
+			price,
+			quantity,
+			income = false,
+			tags,
+			itemFrom
+		},
+		query: {vk_user_id}
+	} = req;
+
+	await Item.findOneAndUpdate({_id: id}, {
+		$set: {
+			date,
+			title,
+			description,
+			price,
+			quantity,
+			income,
+			sum: price * quantity,
+			tags,
+			itemFrom
+		}
+	}, {new: true})
+		.then(async () => await MoneyBox.findOne({userId: vk_user_id, _id: itemFrom}).populate('operations'))
+		.then(box => {
+			const operation = [...box.operations];
+			return operation.map(el => el.income ? el.sum : (-1)*el.sum).reduce((acc, cur) => acc + cur, 0);
+		})
+		.then(async (sum) => {
+			return MoneyBox.findOneAndUpdate({
+				userId: vk_user_id,
+				_id: itemFrom
+			}, {$set: {sum: sum}}, {new: true}).populate('operations');
+		})
+		.then(response => toJson.dataToJson(response))
+		.then(data => res.status(200).json(data))
+		.catch(err => next(createError(err.statusCode, err.message)));
+});
+
 // {
 // 	title: {type: String, required: true},
 // 	description: {type: String, default: ''},

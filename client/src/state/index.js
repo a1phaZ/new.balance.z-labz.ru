@@ -3,7 +3,7 @@ import {
 	SET_ACCOUNT,
 	SET_ACCOUNTS,
 	SET_ACTIVE_PANEL,
-	SET_ACTIVE_VIEW,
+	SET_ACTIVE_VIEW, SET_EDITED_ITEM,
 	SET_ERROR,
 	SET_MODAL, SET_POPOUT,
 	SET_SUCCESS_MESSAGE
@@ -17,7 +17,8 @@ const initialState = {
 	error: null,
 	activeView: 'home',
 	activePanel: 'home',
-	popout: null
+	popout: null,
+	editedItem: null
 }
 
 const reducer = (state, action) => {
@@ -26,7 +27,7 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				activeView: action.payload.view,
-				activePanel: action.payload.panel
+				activePanel: action.payload.panel,
 			}
 		}
 		case SET_ACTIVE_PANEL: {
@@ -48,6 +49,12 @@ const reducer = (state, action) => {
 				account: state.accounts.find(item => {
 					return item._id === id;
 				})
+			}
+		}
+		case SET_EDITED_ITEM: {
+			return {
+				...state,
+				editedItem: action.payload.item
 			}
 		}
 		case SET_POPOUT: {

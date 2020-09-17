@@ -14,7 +14,7 @@ import {
 } from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import Group from "@vkontakte/vkui/dist/components/Group/Group";
-import {SET_ACCOUNT, SET_ACTIVE_VIEW, SET_MODAL} from "../state/actions";
+import {SET_ACTIVE_VIEW, SET_EDITED_ITEM, SET_MODAL} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 
 export default ({id, account, dispatch}) => {
@@ -24,7 +24,12 @@ export default ({id, account, dispatch}) => {
 				key={index}
 				multiline
 				caption={format(new Date(item?.date), 'dd MMMM yyyy', {locale: ruLocale})}
-				after={item?.income ? currency(item?.sum) : currency(-1*item?.sum)}
+				after={item?.income ? currency(item?.sum) : currency(-1 * item?.sum)}
+				data-id={item?._id}
+				onClick={() => {
+					dispatch({type: SET_EDITED_ITEM, payload: {item: item}});
+					dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
+				}}
 			>
 				{item?.title}
 			</RichCell>
@@ -35,9 +40,9 @@ export default ({id, account, dispatch}) => {
 			<PanelHeader left={
 				<>
 					<PanelHeaderBack onClick={() => {
-						dispatch({type: SET_ACCOUNT, payload: {id: null}});
 						dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
-					}} />
+						dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
+					}}/>
 					<PanelHeaderButton
 						onClick={() => {
 							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
@@ -46,7 +51,7 @@ export default ({id, account, dispatch}) => {
 						<Icon28MarketAddBadgeOutline/>
 					</PanelHeaderButton>
 				</>
-					}
+			}
 			>
 				{account?.title}
 			</PanelHeader>

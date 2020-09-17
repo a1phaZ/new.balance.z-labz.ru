@@ -7,7 +7,7 @@ import Div from '@vkontakte/vkui/dist/components/Div/Div';
 import {Header, PanelHeaderButton, Title} from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import ListOfAccount from "../components/ListOfAccount";
-import {SET_MODAL} from "../state/actions";
+import {SET_ACCOUNT, SET_MODAL} from "../state/actions";
 import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
 import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 
@@ -27,6 +27,7 @@ const Home = ({id, data, dispatch}) => {
 						</PanelHeaderButton>
 						{data.length !== 0 && <PanelHeaderButton
 							onClick={() => {
+								dispatch({type: SET_ACCOUNT, payload: {id: null}});
 								dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
 							}}
 						>

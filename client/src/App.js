@@ -91,12 +91,12 @@ const App = () => {
 					Добавить запись
 				</ModalPageHeader>
 			}>
-				<AddMoney accounts={state.accounts} id={state.account?._id} setAccount={setAccount}/>
+				<AddMoney accounts={state.accounts} id={state.account?._id} setAccount={setAccount}
+									editedItem={state.editedItem}/>
 			</ModalPage>
 		</ModalRoot>
 	)
 
-	console.log(state);
 	return (
 		<InfoSnackbar>
 			<PopoutWrapper alignY="center" alignX="center">
