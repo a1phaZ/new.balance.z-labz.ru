@@ -1,4 +1,4 @@
-import React, {useReducer, useEffect} from 'react';
+import React, {useEffect, useReducer} from 'react';
 import {Button, FormLayout, Input} from "@vkontakte/vkui";
 import currency from "../../handlers/currency";
 import useApi from "../../handlers/useApi";
@@ -41,7 +41,8 @@ export default ({setAccount}) => {
 				});
 			}}
 		>
-			<Input type={'text'} placeholder={'Карта, наличные, счет в банке'} top={'Название'} value={stateForm.title} required={true}
+			<Input type={'text'} placeholder={'Карта, наличные, счет в банке'} top={'Название'} value={stateForm.title}
+						 required={true}
 						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {title: e.currentTarget.value}})}/>
 			<Input type={'number'} placeholder={currency(0)} top={'Остаток в рублях'} value={stateForm.sum}
 						 bottom={'Денежные средства, находящиеся на счете в данный момент'}

@@ -79,9 +79,10 @@ export default ({accounts, id = null, setAccount}) => {
 								defaultValue={state.description} onChange={(e) => {
 				dispatch({type: 'CHANGE_STATE', payload: {description: e.currentTarget.value}})
 			}}/>
-			<Input type={'number'} placeholder={currency(0)} top={'Цена'} value={state.price} required={true} onChange={(e) => {
-				dispatch({type: 'CHANGE_STATE', payload: {price: e.currentTarget.value}})
-			}}/>
+			<Input type={'number'} placeholder={currency(0)} top={'Цена'} value={state.price} required={true}
+						 onChange={(e) => {
+							 dispatch({type: 'CHANGE_STATE', payload: {price: e.currentTarget.value}})
+						 }}/>
 			<Input type={'number'} placeholder={'0'} top={'Кол-во'} value={state.quantity} required={true} onChange={(e) => {
 				dispatch({type: 'CHANGE_STATE', payload: {quantity: e.currentTarget.value}})
 			}}/>
