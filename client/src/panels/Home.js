@@ -4,14 +4,14 @@ import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 import Div from '@vkontakte/vkui/dist/components/Div/Div';
-import {Header, PanelHeaderButton, PanelSpinner, Title} from "@vkontakte/vkui";
+import {Header, PanelHeaderButton, Title} from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import ListOfAccount from "../components/ListOfAccount";
 import {SET_MODAL} from "../state/actions";
 import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
 import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 
-const Home = ({id, data, dispatch, isLoading}) => {
+const Home = ({id, data, dispatch}) => {
 	const sumOfAll = data.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
 	return (
 		<Panel id={id}>
@@ -40,7 +40,7 @@ const Home = ({id, data, dispatch, isLoading}) => {
 				separator="show"
 			>
 				<Div>
-					<Title level="1" weight="semibold" style={{marginBottom: 16}}>{!isLoading ? currency(sumOfAll) : <PanelSpinner />}</Title>
+					<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(sumOfAll)}</Title>
 					<ListOfAccount data={data} dispatch={dispatch} showAll={false}/>
 				</Div>
 			</Group>
