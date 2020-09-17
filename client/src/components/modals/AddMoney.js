@@ -75,7 +75,7 @@ export default ({accounts, id = null, setAccount}) => {
 			<Radio name={'income'} value={true} defaultChecked={state.income} onChange={(e) => {
 				dispatch({type: 'CHANGE_STATE', payload: {income: e.currentTarget.value}})
 			}}>Доход</Radio>
-			<Textarea top={'Описание'} placeholder={'Почему вы потратили деньги на этот товар(продукт, услугу)'}
+			<Textarea top={'Описание'} placeholder={'Описание товара(продукта, услуги)'}
 								defaultValue={state.description} onChange={(e) => {
 				dispatch({type: 'CHANGE_STATE', payload: {description: e.currentTarget.value}})
 			}}/>
