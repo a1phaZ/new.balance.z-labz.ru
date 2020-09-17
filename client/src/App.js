@@ -4,8 +4,18 @@ import '@vkontakte/vkui/dist/vkui.css';
 import Home from './panels/Home';
 import useApi from "./handlers/useApi";
 import {State} from './state';
-import {SET_ACCOUNTS, SET_MODAL} from "./state/actions";
-import {ANDROID, IOS, ModalPage, ModalPageHeader, ModalRoot, PanelHeaderButton, platform, Root} from "@vkontakte/vkui";
+import {SET_ACCOUNT, SET_ACCOUNTS, SET_MODAL} from "./state/actions";
+import {
+	ANDROID,
+	IOS,
+	ModalPage,
+	ModalPageHeader,
+	ModalRoot,
+	PanelHeaderButton,
+	platform,
+	PopoutWrapper,
+	Root
+} from "@vkontakte/vkui";
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
 import AddAccount from "./components/modals/AddAccount";
@@ -19,6 +29,7 @@ const App = () => {
 	const [{response, isLoading}, doApiFetch] = useApi('/money-box');
 	const [needFetch, setNeedFetch] = useState(true);
 	const [state, dispatch] = useContext(State);
+	const [account, setAccount] = useState(null);
 
 	useEffect(() => {
 		if (!needFetch) return;
@@ -31,8 +42,29 @@ const App = () => {
 		dispatch({type: SET_ACCOUNTS, payload: {accounts: response}});
 	}, [response, dispatch]);
 
+	useEffect(() => {
+		if (!account) return;
+		const isAccountExist = state.accounts.findIndex(item => {
+			return item._id === account._id
+		});
+
+		if (isAccountExist === -1) {
+			const accounts = [...state.accounts, account];
+			dispatch({type: SET_ACCOUNTS, payload: {accounts: accounts}});
+		} else {
+			const accounts = [...state.accounts];
+			accounts.splice(isAccountExist, 1, account);
+			dispatch({type: SET_ACCOUNTS, payload: {accounts: accounts}});
+			if (state.activeView === 'info' && state.activePanel === 'account') {
+				dispatch({type: SET_ACCOUNT, payload: {id: account._id}});
+			}
+		}
+
+		setAccount(null);
+	}, [account, dispatch, state.accounts, setAccount, state.activePanel, state.activeView]);
+
 	const modalBack = () => {
-		dispatch({type: SET_MODAL, payload: {modal: null}})
+		dispatch({type: SET_MODAL, payload: {modal: null}});
 	}
 
 	const modal = (
@@ -48,7 +80,7 @@ const App = () => {
 					Добавить счет
 				</ModalPageHeader>
 			}>
-				<AddAccount close={modalBack}/>
+				<AddAccount setAccount={setAccount}/>
 			</ModalPage>
 
 			<ModalPage id={'add-money'} header={
@@ -59,21 +91,24 @@ const App = () => {
 					Добавить запись
 				</ModalPageHeader>
 			}>
-				<AddMoney accounts={state.accounts}/>
+				<AddMoney accounts={state.accounts} id={state.account?._id} setAccount={setAccount}/>
 			</ModalPage>
 		</ModalRoot>
 	)
 
+	console.log(state);
 	return (
 		<InfoSnackbar>
-			<Root activeView={state.activeView}>
-				<View id={'home'} activePanel={state.activePanel} popout={popout} modal={modal}>
-					<Home id='home' data={state.accounts} dispatch={dispatch} isLoading={isLoading}/>
-				</View>
-				<View id={'info'} activePanel={state.activePanel}>
-					<AccountInfo id={'account'} account={state.account} dispatch={dispatch}/>
-				</View>
-			</Root>
+			<PopoutWrapper alignY="center" alignX="center">
+				<Root activeView={state.activeView} modal={modal} popout={state.popout}>
+					<View id={'home'} activePanel={state.activePanel} popout={popout}>
+						<Home id='home' data={state.accounts} dispatch={dispatch} isLoading={isLoading}/>
+					</View>
+					<View id={'info'} activePanel={state.activePanel}>
+						<AccountInfo id={'account'} account={state.account} dispatch={dispatch}/>
+					</View>
+				</Root>
+			</PopoutWrapper>
 		</InfoSnackbar>
 	);
 }
