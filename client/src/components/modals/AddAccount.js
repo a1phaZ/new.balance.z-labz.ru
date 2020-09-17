@@ -1,4 +1,4 @@
-import React, {useReducer} from 'react';
+import React, {useReducer, useEffect} from 'react';
 import {Button, FormLayout, Input} from "@vkontakte/vkui";
 import currency from "../../handlers/currency";
 import useApi from "../../handlers/useApi";
@@ -21,26 +21,31 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({close}) => {
-	const [state, dispatch] = useReducer(reducer, initialState);
-	const [, doApiFetch] = useApi('/money-box');
+export default ({setAccount}) => {
+	const [stateForm, dispatchForm] = useReducer(reducer, initialState);
+	const [{response}, doApiFetch] = useApi('/money-box');
+
+	useEffect(() => {
+		if (!response) return;
+		setAccount(response);
+	}, [response, setAccount]);
+
 	return (
 		<FormLayout
-			onSubmit={e => {
+			onSubmit={async e => {
 				e.preventDefault();
-				doApiFetch({
+				await doApiFetch({
 					method: 'POST',
-					title: state.title,
-					sum: state.sum
+					title: stateForm.title,
+					sum: stateForm.sum
 				});
-				close();
 			}}
 		>
-			<Input type={'text'} placeholder={'Карта, наличные, счет в банке'} top={'Название'} value={state.title}
-						 onChange={e => dispatch({type: 'CHANGE_STATE', payload: {title: e.currentTarget.value}})}/>
-			<Input type={'number'} placeholder={currency(0)} top={'Остаток в рублях'} value={state.sum}
+			<Input type={'text'} placeholder={'Карта, наличные, счет в банке'} top={'Название'} value={stateForm.title}
+						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {title: e.currentTarget.value}})}/>
+			<Input type={'number'} placeholder={currency(0)} top={'Остаток в рублях'} value={stateForm.sum}
 						 bottom={'Денежные средства, находящиеся на счете в данный момент'}
-						 onChange={e => dispatch({type: 'CHANGE_STATE', payload: {sum: e.currentTarget.value}})}/>
+						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {sum: e.currentTarget.value}})}/>
 			<Button size={'xl'}>Сохранить</Button>
 		</FormLayout>
 	)

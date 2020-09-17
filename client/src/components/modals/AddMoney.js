@@ -1,4 +1,4 @@
-import React, {useReducer} from 'react';
+import React, {useEffect, useReducer} from 'react';
 import {format} from 'date-fns';
 import {Button, FormLayout, Input, Radio, Select, Textarea} from "@vkontakte/vkui";
 import currency from "../../handlers/currency";
@@ -28,12 +28,18 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({accounts}) => {
-	const [, doApiFetch] = useApi('/item');
+export default ({accounts, id = null, setAccount}) => {
+	const [{response}, doApiFetch] = useApi('/item');
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const accountList = accounts.map(item => {
 		return (<option key={item._id} value={item._id}>{item.title} ({currency(item.sum)})</option>)
 	});
+
+	useEffect(() => {
+		if (!response) return;
+		setAccount(response);
+	}, [response, setAccount]);
+
 	return (
 		<FormLayout
 			onSubmit={e => {
@@ -47,14 +53,13 @@ export default ({accounts}) => {
 					quantity: state.quantity,
 					income: state.income,
 					tags: state.tags,
-					itemFrom: state.account
+					itemFrom: state.account || id
 				});
 			}}
-
 		>
 			<Select top={'Счет'} placeholder={'Выберите счет'} onChange={(e) => {
 				dispatch({type: 'CHANGE_STATE', payload: {account: e.currentTarget.value}})
-			}} defaultValue={state.account}>
+			}} defaultValue={id || state.account} required={true}>
 				{accountList}
 			</Select>
 			<Input type={'date'} top={'Дата'} value={state.date} onChange={(e) => {
