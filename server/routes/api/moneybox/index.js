@@ -63,6 +63,7 @@ router.post('/', async (req, res, next) => {
 	await moneyBox
 		.save()
 		// .then(async () => await findByUserId(vk_user_id))
+		.then(async response => await MoneyBox.findById({_id: response._id}).populate('operations'))
 		.then(response => toJson.dataToJson(response))
 		.then(data => {
 			data.message = 'Сохранено'
