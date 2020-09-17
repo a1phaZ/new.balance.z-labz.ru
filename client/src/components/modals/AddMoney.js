@@ -62,10 +62,10 @@ export default ({accounts, id = null, setAccount}) => {
 			}} defaultValue={id || state.account} required={true}>
 				{accountList}
 			</Select>
-			<Input type={'date'} top={'Дата'} value={state.date} onChange={(e) => {
+			<Input type={'date'} top={'Дата'} value={state.date} required={true} onChange={(e) => {
 				dispatch({type: 'CHANGE_STATE', payload: {date: e.currentTarget.value}})
 			}}/>
-			<Input type={'text'} placeholder={'Продукт, услуга, товар'} value={state.title} top={'Название'}
+			<Input type={'text'} placeholder={'Продукт, услуга, товар'} value={state.title} top={'Название'} required={true}
 						 onChange={(e) => {
 							 dispatch({type: 'CHANGE_STATE', payload: {title: e.currentTarget.value}})
 						 }}/>
@@ -79,10 +79,10 @@ export default ({accounts, id = null, setAccount}) => {
 								defaultValue={state.description} onChange={(e) => {
 				dispatch({type: 'CHANGE_STATE', payload: {description: e.currentTarget.value}})
 			}}/>
-			<Input type={'number'} placeholder={currency(0)} top={'Цена'} value={state.price} onChange={(e) => {
+			<Input type={'number'} placeholder={currency(0)} top={'Цена'} value={state.price} required={true} onChange={(e) => {
 				dispatch({type: 'CHANGE_STATE', payload: {price: e.currentTarget.value}})
 			}}/>
-			<Input type={'number'} placeholder={'0'} top={'Кол-во'} value={state.quantity} onChange={(e) => {
+			<Input type={'number'} placeholder={'0'} top={'Кол-во'} value={state.quantity} required={true} onChange={(e) => {
 				dispatch({type: 'CHANGE_STATE', payload: {quantity: e.currentTarget.value}})
 			}}/>
 			<Button size={'xl'} onClick={() => {
