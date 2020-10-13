@@ -3,15 +3,11 @@ const { model, Schema } = mongoose;
 mongoose.Promise = global.Promise;
 
 const BudgetSchema = new Schema({
-	userId: {type: String, required: true},
-	title: {type: String, required: true},
-	monthlyBudget : [
-		{
-			month: {type: Number},
-			year: {type: Number},
-			sum: {type: Number, required: true},
-		}
-	],
+	userId: {type: String, required: [true, 'Отсутствует идентификатор пользователя']},
+	title: {type: String, required: [true, 'Отсутствует название']},
+	month: {type: Number},
+	year: {type: Number},
+	sum: {type: Number, required: true},
 });
 
 const Budget = model('Budget', BudgetSchema);
