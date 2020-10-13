@@ -23,6 +23,8 @@
     "nodemon": "^2.0.4"
   },
   "nodemonConfig": {
-    "ignore": ["client/*"]
+    "ignore": [
+      "client/*"
+    ]
   }
 }
