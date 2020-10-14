@@ -91,7 +91,7 @@ export default ({accounts, id = null, setAccount, editedItem = null}) => {
 				dispatch({type: 'CHANGE_STATE', payload: {description: e.currentTarget.value}})
 			}}/>}
 			<Input type={'text'} top={'Тэги'} value={state.tags.join(' ')} placeholder={'Тэги через пробел'} onChange={(e) => {
-				dispatch({type: 'CHANGE_STATE', payload: {tags: e.currentTarget.value.split(' ')}})
+				dispatch({type: 'CHANGE_STATE', payload: {tags: e.currentTarget.value.toLowerCase().split(' ')}})
 			}}/>
 			{state.tags.length !== 0 && <Div style={{display: 'flex'}}>
 				{tags}
