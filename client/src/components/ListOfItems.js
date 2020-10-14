@@ -1,13 +1,22 @@
 import React, {useState} from 'react';
 import Cell from "@vkontakte/vkui/dist/components/Cell/Cell";
-import {Text} from "@vkontakte/vkui";
+import {Footer, Text} from "@vkontakte/vkui";
 import currency from "../handlers/currency";
-import {SET_ACCOUNT, SET_ACTIVE_VIEW} from "../state/actions";
+import {SET_ACCOUNT, SET_ACTIVE_VIEW, SET_BUDGET} from "../state/actions";
 
-export default ({data, showAll = false, dispatch}) => {
+export default ({data, showAll = false, dispatch, itemsName}) => {
 	const [isShow, setIsShow] = useState(() => {
 		return showAll;
 	});
+
+	if (data.length === 0) {
+		if (itemsName === 'accounts') {
+			return <Footer>Нет счетов для отображения</Footer>
+		}
+		if (itemsName === 'budgets') {
+			return <Footer>Нет бюджетов для отображения</Footer>
+		}
+	}
 
 	let list = data
 		.sort((a, b) => {
@@ -36,8 +45,14 @@ export default ({data, showAll = false, dispatch}) => {
 				expandable
 				data-id={account._id}
 				onClick={async (e) => {
-					await dispatch({type: SET_ACCOUNT, payload: {id: e.currentTarget.dataset.id}});
-					await dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'info', panel: 'account'}});
+					if (itemsName === 'accounts') {
+						await dispatch({type: SET_ACCOUNT, payload: {id: e.currentTarget.dataset.id}});
+						await dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'info', panel: 'account'}});
+					}
+					if (itemsName === 'budgets') {
+						await dispatch({type: SET_BUDGET, payload: {id: e.currentTarget.dataset.id}});
+						await dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'info', panel: 'budget'}});
+					}
 				}}
 			>
 				{account.title}
