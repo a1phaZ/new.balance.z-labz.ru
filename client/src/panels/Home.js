@@ -6,13 +6,13 @@ import Group from '@vkontakte/vkui/dist/components/Group/Group';
 import Div from '@vkontakte/vkui/dist/components/Div/Div';
 import {Header, PanelHeaderButton, Title} from "@vkontakte/vkui";
 import currency from "../handlers/currency";
-import ListOfAccount from "../components/ListOfAccount";
+import ListOfItems from "../components/ListOfItems";
 import {SET_ACCOUNT, SET_MODAL} from "../state/actions";
 import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
 import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 
-const Home = ({id, data, dispatch}) => {
-	const sumOfAll = data.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
+const Home = ({id, accounts, budgets, dispatch}) => {
+	const sumOfAll = accounts.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
 	return (
 		<Panel id={id}>
 			<PanelHeader
@@ -25,7 +25,7 @@ const Home = ({id, data, dispatch}) => {
 						>
 							<Icon28ListAddOutline/>
 						</PanelHeaderButton>
-						{data.length !== 0 && <PanelHeaderButton
+						{accounts.length !== 0 && <PanelHeaderButton
 							onClick={() => {
 								dispatch({type: SET_ACCOUNT, payload: {id: null}});
 								dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
@@ -42,7 +42,15 @@ const Home = ({id, data, dispatch}) => {
 			>
 				<Div>
 					<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(sumOfAll)}</Title>
-					<ListOfAccount data={data} dispatch={dispatch} showAll={false}/>
+					<ListOfItems data={accounts} dispatch={dispatch} showAll={false} itemsName={'accounts'}/>
+				</Div>
+			</Group>
+			<Group
+				header={<Header mode={'secondary'}>Ваши бюджеты</Header>}
+				separator={'show'}
+			>
+				<Div>
+					<ListOfItems data={budgets} dispatch={dispatch} showAll={false} itemsName={'budgets'}/>
 				</Div>
 			</Group>
 		</Panel>
