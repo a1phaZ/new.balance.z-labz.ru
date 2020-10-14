@@ -4,9 +4,9 @@ import '@vkontakte/vkui/dist/vkui.css';
 import Home from './panels/Home';
 import useApi from "./handlers/useApi";
 import {State} from './state';
-import {SET_ACCOUNT, SET_ACCOUNTS, SET_MODAL} from "./state/actions";
+import {SET_ACCOUNT, SET_ACCOUNTS, SET_ACTIVE_VIEW, SET_BUDGETS, SET_MODAL} from "./state/actions";
 import {
-	ANDROID,
+	ANDROID, Epic,
 	IOS,
 	ModalPage,
 	ModalPageHeader,
@@ -14,19 +14,21 @@ import {
 	PanelHeaderButton,
 	platform,
 	PopoutWrapper,
-	Root
+	Tabbar, TabbarItem
 } from "@vkontakte/vkui";
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
+import Icon28HomeOutline from '@vkontakte/icons/dist/28/home_outline';
+import Icon28CoinsOutline from '@vkontakte/icons/dist/28/coins_outline';
 import AddAccount from "./components/modals/AddAccount";
 import AddMoney from "./components/modals/AddMoney";
 import InfoSnackbar from "./components/InfoSnackbar";
 import AccountInfo from "./panels/AccountInfo";
+import Budgets from "./panels/Budgets";
 
 const App = () => {
 	const os = platform();
-	const [popout] = useState(null);
-	const [{response, isLoading}, doApiFetch] = useApi('/money-box');
+	const [{response, isLoading}, doApiFetch] = useApi('/state');
 	const [needFetch, setNeedFetch] = useState(true);
 	const [state, dispatch] = useContext(State);
 	const [account, setAccount] = useState(null);
@@ -39,7 +41,8 @@ const App = () => {
 
 	useEffect(() => {
 		if (!response) return;
-		dispatch({type: SET_ACCOUNTS, payload: {accounts: response}});
+		dispatch({type: SET_ACCOUNTS, payload: {accounts: response?.accounts ? response?.accounts : []}});
+		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
 	}, [response, dispatch]);
 
 	useEffect(() => {
@@ -97,17 +100,45 @@ const App = () => {
 		</ModalRoot>
 	)
 
+	const onStoryChange = (e) => {
+		dispatch({type: SET_ACTIVE_VIEW, payload: { view: e.currentTarget.dataset.story, panel: e.currentTarget.dataset.panel}})
+	}
+
+	const tabBar = (
+		<Tabbar>
+			<TabbarItem
+				onClick={onStoryChange}
+				selected={state.activeView === 'home'}
+				data-story={'home'}
+				data-panel={'home'}
+				text={'Баланс'}
+			>
+				<Icon28HomeOutline />
+			</TabbarItem>
+			<TabbarItem
+				onClick={onStoryChange}
+				selected={state.activeView === 'info' && state.activePanel === 'budget'}
+				data-story={'info'}
+				data-panel={'budget'}
+				text={'Бюджеты'}
+			>
+				<Icon28CoinsOutline />
+			</TabbarItem>
+		</Tabbar>
+	)
+
 	return (
 		<InfoSnackbar>
 			<PopoutWrapper alignY="center" alignX="center">
-				<Root activeView={state.activeView} modal={modal} popout={state.popout}>
-					<View id={'home'} activePanel={state.activePanel} popout={popout}>
-						<Home id='home' data={state.accounts} dispatch={dispatch} isLoading={isLoading}/>
+				<Epic activeStory={state.activeView} tabbar={tabBar}>
+					<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
+						<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}/>
 					</View>
-					<View id={'info'} activePanel={state.activePanel}>
+					<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 						<AccountInfo id={'account'} account={state.account} dispatch={dispatch}/>
+						<Budgets id={'budget'} budgets={state.budgets} dispatch={dispatch} />
 					</View>
-				</Root>
+				</Epic>
 			</PopoutWrapper>
 		</InfoSnackbar>
 	);
