@@ -1,4 +1,6 @@
 export const SET_ACCOUNTS = 'SET_ACCOUNTS';
+export const SET_BUDGETS = 'SET_BUDGETS';
+export const SET_BUDGET = 'SET_BUDGET';
 export const SET_MODAL = 'SET_MODAL';
 export const SET_ERROR = 'SET_ERROR';
 export const SET_SUCCESS_MESSAGE = 'SET_SUCCESS_MESSAGE';
