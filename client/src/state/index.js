@@ -3,7 +3,7 @@ import {
 	SET_ACCOUNT,
 	SET_ACCOUNTS,
 	SET_ACTIVE_PANEL,
-	SET_ACTIVE_VIEW, SET_EDITED_ITEM,
+	SET_ACTIVE_VIEW, SET_BUDGETS, SET_EDITED_ITEM,
 	SET_ERROR,
 	SET_MODAL, SET_POPOUT,
 	SET_SUCCESS_MESSAGE
@@ -11,6 +11,7 @@ import {
 
 const initialState = {
 	accounts: [],
+	budgets: [],
 	account: null,
 	modal: null,
 	successMessage: null,
@@ -40,6 +41,12 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				accounts: action.payload.accounts
+			}
+		}
+		case SET_BUDGETS: {
+			return {
+				...state,
+				budgets: action.payload.budgets
 			}
 		}
 		case SET_ACCOUNT: {
