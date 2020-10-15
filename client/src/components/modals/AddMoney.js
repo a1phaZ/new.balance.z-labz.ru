@@ -1,8 +1,9 @@
-import React, {useState, useEffect, useReducer} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import {format} from 'date-fns';
 import {Button, Counter, Div, FormLayout, Input, Radio, Select, Textarea} from "@vkontakte/vkui";
 import currency from "../../handlers/currency";
 import useApi from "../../handlers/useApi";
+import validate from "../../handlers/validate";
 
 const initialState = {
 	account: '',
@@ -12,16 +13,25 @@ const initialState = {
 	description: '',
 	price: '',
 	quantity: '',
-	tags: []
+	tags: [],
+	validate: {
+		account: {},
+		title: {},
+		description: {},
+		price: {},
+		quantity: {},
+		tags: {},
+	}
 }
 
 const reducer = (state, action) => {
 	switch (action.type) {
 		case 'CHANGE_STATE':
-			const {payload} = action;
+			const {payload: {validateForm, ...payload}} = action;
 			return {
 				...state,
-				...payload
+				...payload,
+				validate: {...state.validate, ...validateForm}
 			}
 		default:
 			return state;
@@ -68,43 +78,125 @@ export default ({accounts, id = null, setAccount, editedItem = null}) => {
 				});
 			}}
 		>
-			<Select top={'Счет'} placeholder={'Выберите счет'} onChange={(e) => {
-				dispatch({type: 'CHANGE_STATE', payload: {account: e.currentTarget.value}})
-			}} defaultValue={id || state.account || editedItem?.itemFrom} required={true}>
+			<Select top={'Счет'}
+							placeholder={'Выберите счет'}
+							onChange={(e) => {
+								dispatch({
+									type: 'CHANGE_STATE',
+									payload: {account: e.currentTarget.value, validateForm: {account: validate(e)}}
+								})
+							}}
+							defaultValue={id || state.account || editedItem?.itemFrom} required={true}
+							status={state.validate?.account?.status}
+							bottom={state.validate?.account?.message}
+			>
 				{accountList}
 			</Select>
-			<Input type={'date'} top={'Дата'} value={state.date} required={true} onChange={(e) => {
-				dispatch({type: 'CHANGE_STATE', payload: {date: e.currentTarget.value}})
-			}}/>
-			<Input type={'text'} placeholder={'Продукт, услуга, товар'} value={state.title} top={'Название'} required={true}
-				onChange={(e) => {
-					dispatch({type: 'CHANGE_STATE', payload: {title: e.currentTarget.value}})
-				}}/>
-			<Radio name={'income'} value={false} defaultChecked={state.income ? null : true} onClick={() => {
-				dispatch({type: 'CHANGE_STATE', payload: {income: false}})
-			}}>Расход</Radio>
-			<Radio name={'income'} value={true} defaultChecked={state.income ? true : null} onClick={() => {
-				dispatch({type: 'CHANGE_STATE', payload: {income: true}})
-			}}>Доход</Radio>
-			{!state.income && <Textarea top={'Описание'} placeholder={'Описание товара(продукта, услуги)'}
-								 defaultValue={state.description} onChange={(e) => {
-				dispatch({type: 'CHANGE_STATE', payload: {description: e.currentTarget.value}})
-			}}/>}
-			<Input type={'text'} top={'Тэги'} value={state.tags.join(' ')} placeholder={'Тэги через пробел'} onChange={(e) => {
-				dispatch({type: 'CHANGE_STATE', payload: {tags: e.currentTarget.value.toLowerCase().split(' ')}})
-			}}/>
-			{state.tags.length !== 0 && <Div style={{display: 'flex'}}>
-				{tags}
-			</Div>}
-			<Input type={'number'} placeholder={currency(0)} top={'Цена'} value={state.price} required={true}
+			<Input type={'date'}
+						 top={'Дата'}
+						 value={state.date}
+						 required={true}
 						 onChange={(e) => {
-							 dispatch({type: 'CHANGE_STATE', payload: {price: e.currentTarget.value}})
+							 dispatch({type: 'CHANGE_STATE', payload: {date: e.currentTarget.value}})
+						 }}
+			/>
+			<Input type={'text'}
+						 placeholder={'Продукт, услуга, товар'}
+						 value={state.title}
+						 top={'Название'}
+						 required={true}
+						 maxLength={20}
+						 status={state.validate?.title?.status}
+						 bottom={state.validate?.title?.message ? state.validate?.title?.message : `${state.title.length} из 20`}
+						 onChange={(e) => {
+							 dispatch({type: 'CHANGE_STATE', payload: {title: e.currentTarget.value, validateForm: {title: validate(e)}}})
 						 }}/>
-			<Input type={'number'} placeholder={'0'} top={'Кол-во'} value={state.quantity} required={true} onChange={(e) => {
-				dispatch({type: 'CHANGE_STATE', payload: {quantity: e.currentTarget.value}})
-			}}/>
-			<Button size={'xl'} onClick={() => {
-			}}>Сохранить</Button>
+			<Radio name={'income'}
+						 value={false}
+						 defaultChecked={state.income ? null : true}
+						 onClick={() => {
+							 dispatch({type: 'CHANGE_STATE', payload: {income: false}})
+						 }}
+			>
+				Расход
+			</Radio>
+			<Radio name={'income'}
+						 value={true}
+						 defaultChecked={state.income ? true : null}
+						 onClick={() => {
+							 dispatch({type: 'CHANGE_STATE', payload: {income: true}})
+						 }}
+			>
+				Доход
+			</Radio>
+			{
+				!state.income
+				&&
+				<Textarea top={'Описание'}
+									placeholder={'Описание товара(продукта, услуги)'}
+									defaultValue={state.description}
+									maxLength={70}
+									status={state.validate?.description?.status}
+									bottom={state.validate?.description?.message ? state.validate?.description?.message : `${state.description.length} из 70`}
+									onChange={(e) => {
+										dispatch({
+											type: 'CHANGE_STATE',
+											payload: {
+												description: e.currentTarget.value,
+												validateForm: {description: validate(e)}
+											}
+										})
+									}}
+				/>
+			}
+			<Input type={'text'}
+						 top={'Тэги'}
+						 value={state.tags.join(' ')}
+						 placeholder={'Тэги через пробел'}
+						 status={state.validate?.tags?.status}
+						 maxLength={100}
+						 bottom={state.validate?.tags?.message ? state.validate?.tags?.message : `${state.tags.length} из 100`}
+						 onChange={(e) => {
+							 dispatch({
+								 type: 'CHANGE_STATE',
+								 payload: {tags: e.currentTarget.value.toLowerCase().split(' '), validateForm: {tags: validate(e)}}
+							 })
+						 }}
+			/>
+			{
+				state.tags.length !== 0
+				&&
+				<Div style={{display: 'flex'}}>
+					{tags}
+				</Div>
+			}
+			<Input type={'number'}
+						 placeholder={currency(0)}
+						 top={'Цена'}
+						 max={99999999}
+						 status={state.validate?.price?.status}
+						 bottom={state.validate?.price?.message}
+						 value={state.price}
+						 required={true}
+						 onChange={(e) => {
+							 dispatch({type: 'CHANGE_STATE', payload: {price: e.currentTarget.value, validateForm: {price: validate(e)}}})
+						 }}
+			/>
+			<Input type={'number'}
+						 placeholder={'0'}
+						 top={'Кол-во'}
+						 max={9999999}
+						 status={state.validate?.quantity?.status}
+						 bottom={state.validate?.quantity?.message}
+						 value={state.quantity}
+						 required={true}
+						 onChange={(e) => {
+							 dispatch({type: 'CHANGE_STATE', payload: {quantity: e.currentTarget.value, validateForm: {quantity: validate(e)}}})
+						 }}
+			/>
+			<Button size={'xl'}>
+				Сохранить
+			</Button>
 		</FormLayout>
 	)
 }
