@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState, useCallback} from 'react';
 import View from '@vkontakte/vkui/dist/components/View/View';
 import '@vkontakte/vkui/dist/vkui.css';
 import Home from './panels/Home';
@@ -25,6 +25,7 @@ import AddMoney from "./components/modals/AddMoney";
 import InfoSnackbar from "./components/InfoSnackbar";
 import AccountInfo from "./panels/AccountInfo";
 import Budgets from "./panels/Budgets";
+import AddBudget from "./components/modals/AddBudget";
 
 const App = () => {
 	const os = platform();
@@ -66,6 +67,10 @@ const App = () => {
 		setAccount(null);
 	}, [account, dispatch, state.accounts, setAccount, state.activePanel, state.activeView]);
 
+	const onRefresh = useCallback(() => {
+		setNeedFetch(true);
+	}, []);
+
 	const modalBack = () => {
 		dispatch({type: SET_MODAL, payload: {modal: null}});
 	}
@@ -91,11 +96,23 @@ const App = () => {
 					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
 					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Готово' : <Icon24Done/>}</PanelHeaderButton>}
 				>
-					Добавить запись
+					{state.editedItem ? 'Редактировать' : 'Добавить запись'}
 				</ModalPageHeader>
 			}>
 				<AddMoney accounts={state.accounts} id={state.account?._id} setAccount={setAccount}
 									editedItem={state.editedItem}/>
+			</ModalPage>
+
+			<ModalPage id={'add-budget'} header={
+				<ModalPageHeader
+					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
+					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Готово' : <Icon24Done/>}</PanelHeaderButton>}
+				>
+					Добавить бюджет
+				</ModalPageHeader>
+			}>
+				<AddBudget accounts={state.accounts} id={state.account?._id} setAccount={setAccount}
+									editedItem={state.editedItem} onRefresh={onRefresh}/>
 			</ModalPage>
 		</ModalRoot>
 	)
@@ -132,11 +149,11 @@ const App = () => {
 			<PopoutWrapper alignY="center" alignX="center">
 				<Epic activeStory={state.activeView} tabbar={tabBar}>
 					<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-						<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}/>
+						<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading} onRefresh={onRefresh} isFetching={isLoading}/>
 					</View>
 					<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 						<AccountInfo id={'account'} account={state.account} dispatch={dispatch}/>
-						<Budgets id={'budget'} budgets={state.budgets} dispatch={dispatch} />
+						<Budgets id={'budget'} budgets={state.budgets} dispatch={dispatch}/>
 					</View>
 				</Epic>
 			</PopoutWrapper>
