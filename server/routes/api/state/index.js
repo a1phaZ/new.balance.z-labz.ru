@@ -22,13 +22,22 @@ async function budgetWithOutcomeF(array) {
 	let budgetWithOutcome = [];
 
 	for (const item of array) {
-		await findItems(item.userId, item.title, item.year, item.month)
+		const changedItem = {
+			_id: item._id,
+			userId: item.userId,
+			title: item.title,
+			startSum: item.sum,
+			sum: item.sum,
+			month: item.month,
+			year: item.year
+		};
+		await findItems(changedItem.userId, changedItem.title, changedItem.year, changedItem.month)
 			.then(data => {
 				return data.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
 			})
 			.then(sum => {
-				item.sum = item.sum - sum;
-				return item;
+				changedItem.sum = changedItem.sum - sum;
+				return changedItem;
 			})
 			.then(item => {
 				budgetWithOutcome = [...budgetWithOutcome, item];
