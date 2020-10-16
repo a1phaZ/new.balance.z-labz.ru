@@ -4,14 +4,14 @@ import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 import Div from '@vkontakte/vkui/dist/components/Div/Div';
-import {Header, PanelHeaderButton, Title} from "@vkontakte/vkui";
+import {Header, PanelHeaderButton, PullToRefresh, Title} from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import ListOfItems from "../components/ListOfItems";
 import {SET_ACCOUNT, SET_MODAL} from "../state/actions";
 import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
 import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 
-const Home = ({id, accounts, budgets, dispatch}) => {
+const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching}) => {
 	const sumOfAll = accounts.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
 	return (
 		<Panel id={id}>
@@ -36,23 +36,25 @@ const Home = ({id, accounts, budgets, dispatch}) => {
 					</>
 				}
 			>Balance</PanelHeader>
-			<Group
-				header={<Header mode="secondary">Ваши счета</Header>}
-				separator="show"
-			>
-				<Div>
-					<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(sumOfAll)}</Title>
-					<ListOfItems data={accounts} dispatch={dispatch} showAll={false} itemsName={'accounts'}/>
-				</Div>
-			</Group>
-			<Group
-				header={<Header mode={'secondary'}>Ваши бюджеты</Header>}
-				separator={'show'}
-			>
-				<Div>
-					<ListOfItems data={budgets} dispatch={dispatch} showAll={false} itemsName={'budgets'}/>
-				</Div>
-			</Group>
+			<PullToRefresh onRefresh={onRefresh} isFetching={isFetching}>
+				<Group
+					header={<Header mode="secondary">Ваши счета</Header>}
+					separator="show"
+				>
+					<Div>
+						<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(sumOfAll)}</Title>
+						<ListOfItems data={accounts} dispatch={dispatch} showAll={false} itemsName={'accounts'}/>
+					</Div>
+				</Group>
+				<Group
+					header={<Header mode={'secondary'}>Ваши бюджеты</Header>}
+					separator={'show'}
+				>
+					<Div>
+						<ListOfItems data={budgets} dispatch={dispatch} showAll={false} itemsName={'budgets'}/>
+					</Div>
+				</Group>
+			</PullToRefresh>
 		</Panel>
 	)
 };
