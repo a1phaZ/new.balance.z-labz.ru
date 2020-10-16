@@ -4,7 +4,7 @@ import {Footer, Text} from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import {SET_ACCOUNT, SET_ACTIVE_VIEW, SET_BUDGET} from "../state/actions";
 
-export default ({data, showAll = false, dispatch, itemsName}) => {
+export default ({data, showAll = false, dispatch, itemsName, needHide = true}) => {
 	const [isShow, setIsShow] = useState(() => {
 		return showAll;
 	});
@@ -58,17 +58,20 @@ export default ({data, showAll = false, dispatch, itemsName}) => {
 				{account.title}
 			</Cell>
 		});
-	if (isShow) list.push(<Cell
-		key={data.length}
-		expandable
-		onClick={() => {
-			setIsShow(false);
-		}}
-	>
-		<Text weight="semibold" style={{marginBottom: 16}}>
-			Скрыть счета
-		</Text>
-	</Cell>);
+	if (needHide) {
+		if (isShow) list.push(<Cell
+			key={data.length}
+			expandable
+			onClick={() => {
+				setIsShow(false);
+			}}
+		>
+			<Text weight="semibold" style={{marginBottom: 16}}>
+				{itemsName === 'accounts' ? 'Скрыть счета' : 'Скрыть бюджеты'}
+			</Text>
+		</Cell>);
+	}
+
 
 	return list;
 }
