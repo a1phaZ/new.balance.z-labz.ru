@@ -45,6 +45,7 @@ export default ({id, account, dispatch}) => {
 					}}/>
 					<PanelHeaderButton
 						onClick={() => {
+							dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
 						}}
 					>
