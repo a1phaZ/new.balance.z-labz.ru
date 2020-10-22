@@ -76,9 +76,23 @@ router.post('/', async (req, res, next) => {
 //
 // })
 //
-// router.delete('/:id', (req, res, next) => {
-//
-// });
+router.delete('/:id', async (req, res, next) => {
+	const {
+		query: {vk_user_id},
+		params: { id }
+	} = req;
+
+	await MoneyBox.findOne({userId: vk_user_id, _id: id})
+		.then(box => box.operations)
+		.then(operations => Item.deleteMany({_id: {$in: operations}}))
+		.then(() => MoneyBox.deleteOne({_id: id}))
+		.then(response => toJson.dataToJson(response))
+		.then(data => {
+			data.message = 'Удалено'
+			res.status(200).json(data)
+		})
+		.catch(err => next(createError(err.statusCode, err.message)));
+});
 
 
 module.exports = router;
