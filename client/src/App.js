@@ -152,7 +152,7 @@ const App = () => {
 						<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading} onRefresh={onRefresh} isFetching={isLoading}/>
 					</View>
 					<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-						<AccountInfo id={'account'} account={state.account} dispatch={dispatch}/>
+						<AccountInfo id={'account'} account={state.account} dispatch={dispatch} onRefresh={onRefresh}/>
 						<Budgets id={'budget'} budgets={state.budgets} dispatch={dispatch}/>
 					</View>
 				</Epic>
