@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState, useCallback} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import View from '@vkontakte/vkui/dist/components/View/View';
 import '@vkontakte/vkui/dist/vkui.css';
 import Home from './panels/Home';
@@ -6,7 +6,8 @@ import useApi from "./handlers/useApi";
 import {State} from './state';
 import {SET_ACCOUNT, SET_ACCOUNTS, SET_ACTIVE_VIEW, SET_BUDGETS, SET_MODAL} from "./state/actions";
 import {
-	ANDROID, Epic,
+	ANDROID,
+	Epic,
 	IOS,
 	ModalPage,
 	ModalPageHeader,
@@ -14,7 +15,8 @@ import {
 	PanelHeaderButton,
 	platform,
 	PopoutWrapper,
-	Tabbar, TabbarItem
+	Tabbar,
+	TabbarItem
 } from "@vkontakte/vkui";
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
@@ -26,6 +28,7 @@ import InfoSnackbar from "./components/InfoSnackbar";
 import AccountInfo from "./panels/AccountInfo";
 import Budgets from "./panels/Budgets";
 import AddBudget from "./components/modals/AddBudget";
+import BudgetInfo from "./panels/BudgetInfo";
 
 const App = () => {
 	const os = platform();
@@ -112,13 +115,16 @@ const App = () => {
 				</ModalPageHeader>
 			}>
 				<AddBudget accounts={state.accounts} id={state.account?._id} setAccount={setAccount}
-									editedItem={state.editedItem} onRefresh={onRefresh}/>
+									 editedItem={state.editedItem} onRefresh={onRefresh}/>
 			</ModalPage>
 		</ModalRoot>
 	)
 
 	const onStoryChange = (e) => {
-		dispatch({type: SET_ACTIVE_VIEW, payload: { view: e.currentTarget.dataset.story, panel: e.currentTarget.dataset.panel}})
+		dispatch({
+			type: SET_ACTIVE_VIEW,
+			payload: {view: e.currentTarget.dataset.story, panel: e.currentTarget.dataset.panel}
+		})
 	}
 
 	const tabBar = (
@@ -130,16 +136,16 @@ const App = () => {
 				data-panel={'home'}
 				text={'Баланс'}
 			>
-				<Icon28HomeOutline />
+				<Icon28HomeOutline/>
 			</TabbarItem>
 			<TabbarItem
 				onClick={onStoryChange}
-				selected={state.activeView === 'info' && state.activePanel === 'budget'}
+				selected={state.activeView === 'info' && state.activePanel === 'budgets'}
 				data-story={'info'}
-				data-panel={'budget'}
+				data-panel={'budgets'}
 				text={'Бюджеты'}
 			>
-				<Icon28CoinsOutline />
+				<Icon28CoinsOutline/>
 			</TabbarItem>
 		</Tabbar>
 	)
@@ -149,11 +155,13 @@ const App = () => {
 			<PopoutWrapper alignY="center" alignX="center">
 				<Epic activeStory={state.activeView} tabbar={tabBar}>
 					<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-						<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading} onRefresh={onRefresh} isFetching={isLoading}/>
+						<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}
+									onRefresh={onRefresh} isFetching={isLoading}/>
 					</View>
 					<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 						<AccountInfo id={'account'} account={state.account} dispatch={dispatch} onRefresh={onRefresh}/>
-						<Budgets id={'budget'} budgets={state.budgets} dispatch={dispatch}/>
+						<BudgetInfo id={'budget'} budget={state.budget} dispatch={dispatch}/>
+						<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch}/>
 					</View>
 				</Epic>
 			</PopoutWrapper>
