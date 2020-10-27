@@ -60,6 +60,7 @@ export default ({onRefresh}) => {
 						 required={true}
 						 status={stateForm.validate?.sum?.status}
 						 max={999999999}
+						 step={0.01}
 						 bottom={stateForm.validate?.sum?.message ? stateForm.validate?.sum?.message : 'Сколько вы готовы на это потратить?'}
 						 onChange={e => dispatchForm({
 							 type: 'CHANGE_STATE',

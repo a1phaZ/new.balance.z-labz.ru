@@ -54,6 +54,7 @@ export default ({setAccount}) => {
 						 required={true}
 						 status={stateForm.sumValidation.status}
 						 max={999999999}
+						 step={0.01}
 						 bottom={stateForm.sumValidation.message ? stateForm.sumValidation.message : 'Денежные средства, находящиеся на счете в данный момент'}
 						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {sum: e.currentTarget.value, sumValidation: validate(e)}})}/>
 			<Button size={'xl'}>Сохранить</Button>
