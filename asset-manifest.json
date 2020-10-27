@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.js": "/new.balance.z-labz.ru/static/js/main.03b7210c.chunk.js",
-    "main.js.map": "/new.balance.z-labz.ru/static/js/main.03b7210c.chunk.js.map",
+    "main.js": "/new.balance.z-labz.ru/static/js/main.1fb78492.chunk.js",
+    "main.js.map": "/new.balance.z-labz.ru/static/js/main.1fb78492.chunk.js.map",
     "runtime-main.js": "/new.balance.z-labz.ru/static/js/runtime-main.05ed3b3f.js",
     "runtime-main.js.map": "/new.balance.z-labz.ru/static/js/runtime-main.05ed3b3f.js.map",
     "static/css/2.09e62520.chunk.css": "/new.balance.z-labz.ru/static/css/2.09e62520.chunk.css",
     "static/js/2.84ed08ec.chunk.js": "/new.balance.z-labz.ru/static/js/2.84ed08ec.chunk.js",
     "static/js/2.84ed08ec.chunk.js.map": "/new.balance.z-labz.ru/static/js/2.84ed08ec.chunk.js.map",
     "index.html": "/new.balance.z-labz.ru/index.html",
-    "precache-manifest.01507656ca77a76856a9fafce42c62dd.js": "/new.balance.z-labz.ru/precache-manifest.01507656ca77a76856a9fafce42c62dd.js",
+    "precache-manifest.a0f59faa03de696c57a836d91682f887.js": "/new.balance.z-labz.ru/precache-manifest.a0f59faa03de696c57a836d91682f887.js",
     "service-worker.js": "/new.balance.z-labz.ru/service-worker.js",
     "static/css/2.09e62520.chunk.css.map": "/new.balance.z-labz.ru/static/css/2.09e62520.chunk.css.map",
     "static/js/2.84ed08ec.chunk.js.LICENSE.txt": "/new.balance.z-labz.ru/static/js/2.84ed08ec.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.05ed3b3f.js",
     "static/css/2.09e62520.chunk.css",
     "static/js/2.84ed08ec.chunk.js",
-    "static/js/main.03b7210c.chunk.js"
+    "static/js/main.1fb78492.chunk.js"
   ]
 }
