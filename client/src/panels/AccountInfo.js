@@ -20,7 +20,8 @@ import Group from "@vkontakte/vkui/dist/components/Group/Group";
 import {SET_ACTIVE_VIEW, SET_EDITED_ITEM, SET_MODAL, SET_POPOUT} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
-import Icon28Delete from '@vkontakte/icons/dist/28/delete';
+
+import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
 import mapRichCell from "../handlers/mapRichCell";
 import InfoSnackbar from "../components/InfoSnackbar";
 
@@ -97,7 +98,7 @@ export default ({id, account, dispatch, onRefresh}) => {
 			<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
 				<List>
 					<Cell
-						before={<Icon28Delete/>}
+						before={<Icon28DeleteOutline/>}
 						onClick={() => {
 							dispatch({type: SET_POPOUT, payload: {popout: alert}})
 						}}
