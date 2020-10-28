@@ -3,7 +3,6 @@ import {Button, FormLayout, Input} from "@vkontakte/vkui";
 import useApi from "../../handlers/useApi";
 import validate from "../../handlers/validate";
 import currency from "../../handlers/currency";
-import {SET_BUDGET} from "../../state/actions";
 
 const initialState = {
 	title: '',
@@ -28,8 +27,7 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({onRefresh, editedItem = null, dispatch}) => {
-
+export default ({onRefresh, editedItem = null}) => {
 	const [stateForm, dispatchForm] = useReducer(reducer, initialState);
 	const [apiStr] = useState(() => {
 		return !editedItem ? '/budget' : `/budget/${editedItem._id}`;
@@ -38,15 +36,13 @@ export default ({onRefresh, editedItem = null, dispatch}) => {
 
 	useEffect(() => {
 		if (!editedItem) return;
-		dispatchForm({type: 'CHANGE_STATE', payload: {...editedItem}});
-	}, [editedItem, dispatchForm]);
+		if (!response) dispatchForm({type: 'CHANGE_STATE', payload: {...editedItem}});
+	}, [editedItem, dispatchForm, response]);
 
 	useEffect(() => {
 		if (!response) return;
 		onRefresh();
-		dispatch({type: SET_BUDGET, payload: {id: response._id}});
-		dispatchForm({type: 'CHANGE_STATE', payload: {...response}});
-	}, [onRefresh, response, dispatch, editedItem]);
+	}, [onRefresh, response]);
 
 	return (
 		<FormLayout

@@ -23,23 +23,14 @@ import InfoSnackbar from "../components/InfoSnackbar";
 export default ({id, budget, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
 	const [{response}, doApiFetch] = useApi(`/budget/${budget._id}`);
-	const [needFetch, setNeedFetch] = useState(true);
-	const [filteredItems, setFilteredItems] = useState([]);
+	const [filteredItems, setFilteredItems] = useState(() => budget.items);
 
 	useEffect(() => {
-		if (!needFetch) return;
-		doApiFetch({
-			method: 'GET'
-		});
-		setNeedFetch(false);
-	}, [doApiFetch, needFetch])
+		setFilteredItems(budget.items);
+	}, [budget])
 
 	useEffect(() => {
 		if (!response) return;
-		if (!response?.deletedCount) {
-			onRefresh();
-			setFilteredItems(response);
-		}
 		if (response?.deletedCount) {
 			dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
 			dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
@@ -120,6 +111,7 @@ export default ({id, budget, dispatch, onRefresh}) => {
 						before={<Icon28EditOutline/>}
 						onClick={() => {
 							dispatch({type: SET_MODAL, payload: {modal: 'add-budget'}})
+							toggleContext();
 						}}
 					>
 						Изменить бюджет {budget?.title}

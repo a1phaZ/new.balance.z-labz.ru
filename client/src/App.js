@@ -69,6 +69,7 @@ const App = () => {
 	}, [account, dispatch, state.accounts, setAccount, state.activePanel, state.activeView]);
 
 	const onRefresh = useCallback(() => {
+		console.log('refresh');
 		setNeedFetch(true);
 	}, []);
 
@@ -155,7 +156,7 @@ const App = () => {
 			</View>
 			<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 				<AccountInfo id={'account'} account={state.account} dispatch={dispatch} onRefresh={onRefresh}/>
-				<BudgetInfo id={'budget'} budget={state.budget} dispatch={dispatch} onRefresh={onRefresh}/>
+				<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)} dispatch={dispatch} onRefresh={onRefresh}/>
 				<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch}/>
 			</View>
 		</Epic>
