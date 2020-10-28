@@ -6,7 +6,7 @@ const Item = require('../../../models/item');
 const toJson = require("../../../handlers/toJson");
 
 const findAccountsByUserId = async (userId) => {
-	return await MoneyBox.find({userId: userId})
+	return MoneyBox.find({userId: userId})
 		.populate('operations');
 }
 
@@ -47,6 +47,31 @@ async function budgetWithOutcomeF(array) {
 	return budgetWithOutcome;
 }
 
+async function budgetWithDetails(array) {
+	let budgetWithDetails = [];
+
+	for (const item of array) {
+		const changedItem = {
+			_id: item._id,
+			userId: item.userId,
+			title: item.title,
+			startSum: item.startSum,
+			sum: item.sum,
+			month: item.month,
+			year: item.year,
+			items: []
+		};
+		await findItems(changedItem.userId, changedItem.title, changedItem.year, changedItem.month)
+			.then(data => {
+				changedItem.items = [...data];
+				return changedItem;
+			})
+			.then(item => budgetWithDetails = [...budgetWithDetails, item]);
+	}
+
+	return budgetWithDetails;
+}
+
 router.get('/', async (req, res) => {
 	const {
 		query: { vk_user_id },
@@ -56,6 +81,7 @@ router.get('/', async (req, res) => {
 	req.accounts = await findAccountsByUserId(vk_user_id).then(data => data);
 	req.budgets = await findBudgets(vk_user_id, date).then(data => data);
 	req.budgets = await budgetWithOutcomeF(req.budgets);
+	req.budgets = await budgetWithDetails(req.budgets);
 	await res.status(200).json(await toJson.dataToJson( {accounts: req.accounts, budgets: req.budgets}));
 	// await next();
 });
