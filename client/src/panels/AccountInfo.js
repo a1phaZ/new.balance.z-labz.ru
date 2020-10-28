@@ -113,7 +113,9 @@ export default ({id, account, dispatch, onRefresh}) => {
 					<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(account?.sum)}</Title>
 				</Div>
 				{account?.operations.length === 0 && <Footer>Операций по счету еще не было</Footer>}
-				{accountItemsList}
+				<List>
+					{accountItemsList}
+				</List>
 			</Group>
 		</Panel>
 	)
