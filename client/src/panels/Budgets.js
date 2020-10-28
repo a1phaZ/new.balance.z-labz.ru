@@ -6,6 +6,7 @@ import ListOfItems from "../components/ListOfItems";
 import {SET_MODAL} from "../state/actions";
 import Icon28ListAddOutline from "@vkontakte/icons/dist/28/list_add_outline";
 import currency from "../handlers/currency";
+import InfoSnackbar from "../components/InfoSnackbar";
 
 export default ({id, budgets, dispatch, date = new Date()}) => {
 	const budgetsStartSum = budgets.map(el => el.startSum).reduce((acc, cur) => acc + cur, 0);
@@ -29,6 +30,7 @@ export default ({id, budgets, dispatch, date = new Date()}) => {
 				<ListOfItems data={budgets} dispatch={dispatch} showAll={true} itemsName={'budgets'} needHide={false}/>
 				<Footer>Осталось {currency(budgetsSum)} из {currency(budgetsStartSum)}</Footer>
 			</Group>
+			<InfoSnackbar/>
 		</Panel>
 	)
 }

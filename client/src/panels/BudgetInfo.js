@@ -17,6 +17,7 @@ import useApi from "../handlers/useApi";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
 import Icon28Delete from "@vkontakte/icons/dist/28/delete";
 import mapRichCell from "../handlers/mapRichCell";
+import InfoSnackbar from "../components/InfoSnackbar";
 
 export default ({id, budget, dispatch}) => {
 	const [isOpened, setIsOpened] = useState(false);
@@ -96,7 +97,7 @@ export default ({id, budget, dispatch}) => {
 			}
 			>
 				<PanelHeaderContent
-					aside={<Icon16Dropdown style={{ transform: `rotate(${isOpened ? '180deg' : '0'})` }} />}
+					aside={<Icon16Dropdown style={{transform: `rotate(${isOpened ? '180deg' : '0'})`}}/>}
 					onClick={toggleContext}
 				>
 					{budget?.title}
@@ -105,15 +106,22 @@ export default ({id, budget, dispatch}) => {
 			<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
 				<List>
 					<Cell
-						before={<Icon28Delete />}
-						onClick={() => {dispatch({type: SET_POPOUT, payload: {popout: alert}})}}
+						before={<Icon28Delete/>}
+						onClick={() => {
+							dispatch({type: SET_POPOUT, payload: {popout: alert}})
+						}}
 					>
 						Удалить бюджет {budget?.title}
 					</Cell>
 				</List>
 			</PanelHeaderContext>
-			<Search onChange={(e) => {onSearch(e.currentTarget.value)}}/>
-			{itemsList}
+			<Search onChange={(e) => {
+				onSearch(e.currentTarget.value)
+			}}/>
+			<List>
+				{itemsList}
+			</List>
+			<InfoSnackbar/>
 		</Panel>
 	)
 }

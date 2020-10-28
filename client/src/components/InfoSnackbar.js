@@ -5,7 +5,7 @@ import {SET_ERROR, SET_SUCCESS_MESSAGE} from "../state/actions";
 import Icon24ErrorCircle from '@vkontakte/icons/dist/24/error_circle';
 import Icon24CheckCircleOn from '@vkontakte/icons/dist/24/check_circle_on';
 
-const InfoSnackbar = ({children}) => {
+const InfoSnackbar = () => {
 	const [state, dispatch] = useContext(State);
 	const [snackbar, setSnackbar] = useState(null);
 	useEffect(() => {
@@ -37,7 +37,6 @@ const InfoSnackbar = ({children}) => {
 	}, [setSnackbar, dispatch, state.successMessage]);
 	return (
 		<>
-			{children}
 			{snackbar}
 		</>
 	)

@@ -22,6 +22,7 @@ import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_bad
 import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
 import Icon28Delete from '@vkontakte/icons/dist/28/delete';
 import mapRichCell from "../handlers/mapRichCell";
+import InfoSnackbar from "../components/InfoSnackbar";
 
 export default ({id, account, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
@@ -112,11 +113,13 @@ export default ({id, account, dispatch, onRefresh}) => {
 				<Div>
 					<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(account?.sum)}</Title>
 				</Div>
+
 				{account?.operations.length === 0 && <Footer>Операций по счету еще не было</Footer>}
 				<List>
 					{accountItemsList}
 				</List>
 			</Group>
+			<InfoSnackbar/>
 		</Panel>
 	)
 }

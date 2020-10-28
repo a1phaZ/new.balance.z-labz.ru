@@ -14,7 +14,6 @@ import {
 	ModalRoot,
 	PanelHeaderButton,
 	platform,
-	PopoutWrapper,
 	Tabbar,
 	TabbarItem
 } from "@vkontakte/vkui";
@@ -24,7 +23,6 @@ import Icon28HomeOutline from '@vkontakte/icons/dist/28/home_outline';
 import Icon28CoinsOutline from '@vkontakte/icons/dist/28/coins_outline';
 import AddAccount from "./components/modals/AddAccount";
 import AddMoney from "./components/modals/AddMoney";
-import InfoSnackbar from "./components/InfoSnackbar";
 import AccountInfo from "./panels/AccountInfo";
 import Budgets from "./panels/Budgets";
 import AddBudget from "./components/modals/AddBudget";
@@ -151,21 +149,17 @@ const App = () => {
 	)
 
 	return (
-		<InfoSnackbar>
-			<PopoutWrapper alignY="center" alignX="center">
-				<Epic activeStory={state.activeView} tabbar={tabBar}>
-					<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-						<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}
-									onRefresh={onRefresh} isFetching={isLoading}/>
-					</View>
-					<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-						<AccountInfo id={'account'} account={state.account} dispatch={dispatch} onRefresh={onRefresh}/>
-						<BudgetInfo id={'budget'} budget={state.budget} dispatch={dispatch}/>
-						<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch}/>
-					</View>
-				</Epic>
-			</PopoutWrapper>
-		</InfoSnackbar>
+		<Epic activeStory={state.activeView} tabbar={tabBar}>
+			<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
+				<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}
+							onRefresh={onRefresh} isFetching={isLoading}/>
+			</View>
+			<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
+				<AccountInfo id={'account'} account={state.account} dispatch={dispatch} onRefresh={onRefresh}/>
+				<BudgetInfo id={'budget'} budget={state.budget} dispatch={dispatch}/>
+				<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch}/>
+			</View>
+		</Epic>
 	);
 }
 
