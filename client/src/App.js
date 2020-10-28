@@ -112,8 +112,7 @@ const App = () => {
 					Добавить бюджет
 				</ModalPageHeader>
 			}>
-				<AddBudget accounts={state.accounts} id={state.account?._id} setAccount={setAccount}
-									 editedItem={state.editedItem} onRefresh={onRefresh}/>
+				<AddBudget editedItem={state.budget} onRefresh={onRefresh} dispatch={dispatch}/>
 			</ModalPage>
 		</ModalRoot>
 	)
@@ -156,7 +155,7 @@ const App = () => {
 			</View>
 			<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 				<AccountInfo id={'account'} account={state.account} dispatch={dispatch} onRefresh={onRefresh}/>
-				<BudgetInfo id={'budget'} budget={state.budget} dispatch={dispatch}/>
+				<BudgetInfo id={'budget'} budget={state.budget} dispatch={dispatch} onRefresh={onRefresh}/>
 				<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch}/>
 			</View>
 		</Epic>

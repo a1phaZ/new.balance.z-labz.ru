@@ -3,9 +3,13 @@ import {
 	SET_ACCOUNT,
 	SET_ACCOUNTS,
 	SET_ACTIVE_PANEL,
-	SET_ACTIVE_VIEW, SET_BUDGET, SET_BUDGETS, SET_EDITED_ITEM,
+	SET_ACTIVE_VIEW,
+	SET_BUDGET,
+	SET_BUDGETS,
+	SET_EDITED_ITEM,
 	SET_ERROR,
-	SET_MODAL, SET_POPOUT,
+	SET_MODAL,
+	SET_POPOUT,
 	SET_SUCCESS_MESSAGE
 } from './actions';
 
@@ -63,7 +67,7 @@ const reducer = (state, action) => {
 			const {payload: {id}} = action;
 			return {
 				...state,
-				budget: state.budgets.find(item => item._id === id)
+				budget: !id ? id : state.budgets.find(item => item._id === id)
 			}
 		}
 		case SET_EDITED_ITEM: {

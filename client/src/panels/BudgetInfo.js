@@ -11,15 +11,16 @@ import {
 	PanelHeaderContext,
 	Search
 } from "@vkontakte/vkui";
-import {SET_ACTIVE_VIEW, SET_EDITED_ITEM, SET_MODAL, SET_POPOUT} from "../state/actions";
+import {SET_ACTIVE_VIEW, SET_BUDGET, SET_EDITED_ITEM, SET_MODAL, SET_POPOUT} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import useApi from "../handlers/useApi";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
-import Icon28Delete from "@vkontakte/icons/dist/28/delete";
+import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
+import Icon28EditOutline from '@vkontakte/icons/dist/28/edit_outline';
 import mapRichCell from "../handlers/mapRichCell";
 import InfoSnackbar from "../components/InfoSnackbar";
 
-export default ({id, budget, dispatch}) => {
+export default ({id, budget, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
 	const [{response}, doApiFetch] = useApi(`/budget/${budget._id}`);
 	const [needFetch, setNeedFetch] = useState(true);
@@ -35,14 +36,22 @@ export default ({id, budget, dispatch}) => {
 
 	useEffect(() => {
 		if (!response) return;
-		setFilteredItems(response);
-	}, [response]);
+		if (!response?.deletedCount) {
+			onRefresh();
+			setFilteredItems(response);
+		}
+		if (response?.deletedCount) {
+			dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
+			dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
+			onRefresh();
+		}
+	}, [response, dispatch, onRefresh]);
 
 	const toggleContext = () => {
 		setIsOpened(!isOpened);
 	}
 
-	const alert = (
+	const alertDelete = (
 		<Alert
 			actions={[
 				{
@@ -58,6 +67,7 @@ export default ({id, budget, dispatch}) => {
 						await doApiFetch({
 							method: 'DELETE'
 						});
+
 					}
 				}
 			]}
@@ -84,6 +94,7 @@ export default ({id, budget, dispatch}) => {
 					<PanelHeaderBack onClick={() => {
 						dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
 						dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
+						dispatch({type: SET_BUDGET, payload: {id: null}});
 					}}/>
 					<PanelHeaderButton
 						onClick={() => {
@@ -106,9 +117,17 @@ export default ({id, budget, dispatch}) => {
 			<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
 				<List>
 					<Cell
-						before={<Icon28Delete/>}
+						before={<Icon28EditOutline/>}
 						onClick={() => {
-							dispatch({type: SET_POPOUT, payload: {popout: alert}})
+							dispatch({type: SET_MODAL, payload: {modal: 'add-budget'}})
+						}}
+					>
+						Изменить бюджет {budget?.title}
+					</Cell>
+					<Cell
+						before={<Icon28DeleteOutline/>}
+						onClick={() => {
+							dispatch({type: SET_POPOUT, payload: {popout: alertDelete}})
 						}}
 					>
 						Удалить бюджет {budget?.title}
