@@ -134,7 +134,7 @@ export default ({accounts, id = null, setAccount, editedItem = null}) => {
 				&&
 				<Textarea top={'Описание'}
 									placeholder={'Описание товара(продукта, услуги)'}
-									defaultValue={state.description}
+									value={state.description}
 									maxLength={70}
 									status={state.validate?.description?.status}
 									bottom={state.validate?.description?.message ? state.validate?.description?.message : `${state.description.length} из 70`}
