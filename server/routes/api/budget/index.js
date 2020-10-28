@@ -15,8 +15,8 @@ function getMonth(date) {
 
 router.get('/', async (req, res, next) => {
 	const {
-		query: { vk_user_id },
-		body: { date }
+		query: {vk_user_id},
+		body: {date}
 	} = req;
 
 	const year = getYear(date);
@@ -32,9 +32,9 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
 	const {
-		query: { vk_user_id },
-		body: { date },
-		params: { id }
+		query: {vk_user_id},
+		body: {date},
+		params: {id}
 	} = req;
 
 	const year = getYear(date);
@@ -52,12 +52,12 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
 	const {
-		query: { vk_user_id },
-		body: { title, sum, date }
+		query: {vk_user_id},
+		body: {title, sum, date}
 	} = req;
 	const year = getYear(date);
 	const month = getMonth(date);
-	Budget.findOne({userId: vk_user_id, title: title, month: month, year: year})
+	await Budget.findOne({userId: vk_user_id, title: title, month: month, year: year})
 		.then((budget) => {
 			if (budget) {
 				return Promise.reject(createError(309, `${title} уже добавален, укажите другое название или дату`));
@@ -79,8 +79,40 @@ router.post('/', async (req, res, next) => {
 		.catch(err => next(createError(err.statusCode, err.message)));
 });
 
-// router.delete('/:id', (req, res, next) => {
-//
-// });
+router.patch('/:id', async (req, res, next) => {
+	const {
+		params: {id},
+		query: {vk_user_id},
+		body: {title, sum}
+	} = req;
+
+	await Budget.findOneAndUpdate({_id: id, userId: vk_user_id}, {
+		$set: {
+			title,
+			sum
+		}
+	}, {new: true})
+		.then(response => toJson.dataToJson(response))
+		.then(data => {
+			data.message = 'Сохранено'
+			res.status(200).json(data)
+		})
+		.catch(err => next(createError(err.statusCode, err.message)));
+})
+
+router.delete('/:id', async (req, res, next) => {
+	const {
+		params: {id},
+		query: {vk_user_id}
+	} = req;
+
+	await Budget.deleteOne({_id: id, userId: vk_user_id})
+		.then(response => toJson.dataToJson(response))
+		.then(data => {
+			data.message = 'Удалено'
+			res.status(200).json(data)
+		})
+		.catch(err => next(createError(err.statusCode, err.message)));
+});
 
 module.exports = router;
