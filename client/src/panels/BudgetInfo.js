@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
 	Alert,
-	Cell,
+	Cell, Div,
 	List,
 	Panel,
 	PanelHeader,
@@ -19,6 +19,8 @@ import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
 import Icon28EditOutline from '@vkontakte/icons/dist/28/edit_outline';
 import mapRichCell from "../handlers/mapRichCell";
 import InfoSnackbar from "../components/InfoSnackbar";
+import sort from "../handlers/sort";
+import reduce from "../handlers/reduce";
 
 export default ({id, budget, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
@@ -72,7 +74,7 @@ export default ({id, budget, dispatch, onRefresh}) => {
 		</Alert>
 	)
 
-	const itemsList = filteredItems.map(mapRichCell(dispatch));
+	const itemsList = filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
 
 	const onSearch = (str) => {
 		setFilteredItems(response.filter(({title}) => title.toLowerCase().indexOf(str) > -1));
@@ -129,9 +131,9 @@ export default ({id, budget, dispatch, onRefresh}) => {
 			<Search onChange={(e) => {
 				onSearch(e.currentTarget.value)
 			}}/>
-			<List>
+			<Div>
 				{itemsList}
-			</List>
+			</Div>
 			<InfoSnackbar/>
 		</Panel>
 	)

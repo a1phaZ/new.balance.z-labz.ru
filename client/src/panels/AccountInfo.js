@@ -24,11 +24,16 @@ import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
 import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
 import mapRichCell from "../handlers/mapRichCell";
 import InfoSnackbar from "../components/InfoSnackbar";
+import sort from "../handlers/sort";
+import reduce from "../handlers/reduce";
 
 export default ({id, account, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
 	const [{response}, doApiFetch] = useApi(`/money-box/${account?._id}`);
-	const accountItemsList = account?.operations.map(mapRichCell(dispatch));
+
+
+	const accountItemsList = account?.operations.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
+
 	const toggleContext = () => {
 		setIsOpened(!isOpened);
 	}
@@ -116,9 +121,9 @@ export default ({id, account, dispatch, onRefresh}) => {
 				</Div>
 
 				{account?.operations.length === 0 && <Footer>Операций по счету еще не было</Footer>}
-				<List>
+				<Div>
 					{accountItemsList}
-				</List>
+				</Div>
 			</Group>
 			<InfoSnackbar/>
 		</Panel>
