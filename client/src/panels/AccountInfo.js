@@ -27,6 +27,7 @@ import mapRichCell from "../handlers/mapRichCell";
 import InfoSnackbar from "../components/InfoSnackbar";
 import sort from "../handlers/sort";
 import reduce from "../handlers/reduce";
+import MonthSwitch from "../components/MonthSwitch";
 
 export default ({id, account, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
@@ -127,7 +128,7 @@ export default ({id, account, dispatch, onRefresh}) => {
 					</Cell>
 				</List>
 			</PanelHeaderContext>
-
+			<MonthSwitch onRefresh={onRefresh} />
 			<Search onChange={(e) => {
 				onSearch(e.currentTarget.value)
 			}}/>

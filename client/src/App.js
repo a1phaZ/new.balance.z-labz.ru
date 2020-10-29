@@ -150,7 +150,7 @@ const App = () => {
 										 dispatch={dispatch} onRefresh={onRefresh}/>
 				<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
 										dispatch={dispatch} onRefresh={onRefresh}/>
-				<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch}/>
+				<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh} date={state.currentDate}/>
 			</View>
 		</Epic>
 	);
