@@ -4,7 +4,7 @@ import '@vkontakte/vkui/dist/vkui.css';
 import Home from './panels/Home';
 import useApi from "./handlers/useApi";
 import {State} from './state';
-import {SET_ACCOUNT, SET_ACCOUNTS, SET_ACTIVE_VIEW, SET_BUDGETS, SET_MODAL} from "./state/actions";
+import {SET_ACCOUNTS, SET_ACTIVE_VIEW, SET_BUDGETS, SET_MODAL} from "./state/actions";
 import {
 	ANDROID,
 	Epic,
@@ -33,7 +33,6 @@ const App = () => {
 	const [{response, isLoading}, doApiFetch] = useApi('/state');
 	const [needFetch, setNeedFetch] = useState(true);
 	const [state, dispatch] = useContext(State);
-	const [account, setAccount] = useState(null);
 
 	useEffect(() => {
 		if (!needFetch) return;
@@ -47,29 +46,7 @@ const App = () => {
 		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
 	}, [response, dispatch]);
 
-	useEffect(() => {
-		if (!account) return;
-		const isAccountExist = state.accounts.findIndex(item => {
-			return item._id === account._id
-		});
-
-		if (isAccountExist === -1) {
-			const accounts = [...state.accounts, account];
-			dispatch({type: SET_ACCOUNTS, payload: {accounts: accounts}});
-		} else {
-			const accounts = [...state.accounts];
-			accounts.splice(isAccountExist, 1, account);
-			dispatch({type: SET_ACCOUNTS, payload: {accounts: accounts}});
-			if (state.activeView === 'info' && state.activePanel === 'account') {
-				dispatch({type: SET_ACCOUNT, payload: {id: account._id}});
-			}
-		}
-
-		setAccount(null);
-	}, [account, dispatch, state.accounts, setAccount, state.activePanel, state.activeView]);
-
 	const onRefresh = useCallback(() => {
-		console.log('refresh');
 		setNeedFetch(true);
 	}, []);
 
@@ -90,7 +67,7 @@ const App = () => {
 					Добавить счет
 				</ModalPageHeader>
 			}>
-				<AddAccount setAccount={setAccount}/>
+				<AddAccount onRefresh={onRefresh}/>
 			</ModalPage>
 
 			<ModalPage id={'add-money'} header={
@@ -101,8 +78,8 @@ const App = () => {
 					{state.editedItem ? 'Редактировать' : 'Добавить запись'}
 				</ModalPageHeader>
 			}>
-				<AddMoney accounts={state.accounts} id={state.account?._id} setAccount={setAccount}
-									editedItem={state.editedItem}/>
+				<AddMoney accounts={state.accounts} id={state.account?._id}
+									editedItem={state.editedItem} onRefresh={onRefresh}/>
 			</ModalPage>
 
 			<ModalPage id={'add-budget'} header={
@@ -155,8 +132,10 @@ const App = () => {
 							onRefresh={onRefresh} isFetching={isLoading}/>
 			</View>
 			<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-				<AccountInfo id={'account'} account={state.account} dispatch={dispatch} onRefresh={onRefresh}/>
-				<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)} dispatch={dispatch} onRefresh={onRefresh}/>
+				<AccountInfo id={'account'} account={state.accounts.find(item => item._id === state.account?._id)}
+										 dispatch={dispatch} onRefresh={onRefresh}/>
+				<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
+										dispatch={dispatch} onRefresh={onRefresh}/>
 				<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch}/>
 			</View>
 		</Epic>

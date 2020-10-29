@@ -38,7 +38,7 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({accounts, id = null, setAccount, editedItem = null}) => {
+export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 	const [apiStr] = useState(() => {
 		return !editedItem ? '/item' : `/item/${editedItem._id}`;
 	})
@@ -56,8 +56,8 @@ export default ({accounts, id = null, setAccount, editedItem = null}) => {
 
 	useEffect(() => {
 		if (!response) return;
-		setAccount(response);
-	}, [response, setAccount]);
+		onRefresh();
+	}, [response, onRefresh]);
 
 	const tags = state.tags.map((tag, index) => <Counter style={{marginRight: '5px'}} key={index}>{tag}</Counter>);
 
@@ -86,7 +86,7 @@ export default ({accounts, id = null, setAccount, editedItem = null}) => {
 									payload: {account: e.currentTarget.value, validateForm: {account: validate(e)}}
 								})
 							}}
-							defaultValue={id || state.account || editedItem?.itemFrom} required={true}
+							defaultValue={editedItem?.itemFrom || id || state.account} required={true}
 							status={state.validate?.account?.status}
 							bottom={state.validate?.account?.message}
 			>
@@ -109,7 +109,10 @@ export default ({accounts, id = null, setAccount, editedItem = null}) => {
 						 status={state.validate?.title?.status}
 						 bottom={state.validate?.title?.message ? state.validate?.title?.message : `${state.title.length} из 20`}
 						 onChange={(e) => {
-							 dispatch({type: 'CHANGE_STATE', payload: {title: e.currentTarget.value, validateForm: {title: validate(e)}}})
+							 dispatch({
+								 type: 'CHANGE_STATE',
+								 payload: {title: e.currentTarget.value, validateForm: {title: validate(e)}}
+							 })
 						 }}/>
 			<Radio name={'income'}
 						 value={false}
@@ -180,7 +183,10 @@ export default ({accounts, id = null, setAccount, editedItem = null}) => {
 						 value={state.price}
 						 required={true}
 						 onChange={(e) => {
-							 dispatch({type: 'CHANGE_STATE', payload: {price: e.currentTarget.value, validateForm: {price: validate(e)}}})
+							 dispatch({
+								 type: 'CHANGE_STATE',
+								 payload: {price: e.currentTarget.value, validateForm: {price: validate(e)}}
+							 })
 						 }}
 			/>
 			<Input type={'number'}
@@ -193,7 +199,10 @@ export default ({accounts, id = null, setAccount, editedItem = null}) => {
 						 value={state.quantity}
 						 required={true}
 						 onChange={(e) => {
-							 dispatch({type: 'CHANGE_STATE', payload: {quantity: e.currentTarget.value, validateForm: {quantity: validate(e)}}})
+							 dispatch({
+								 type: 'CHANGE_STATE',
+								 payload: {quantity: e.currentTarget.value, validateForm: {quantity: validate(e)}}
+							 })
 						 }}
 			/>
 			<Button size={'xl'}>

@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {
 	Alert,
-	Cell, Div,
+	Cell,
+	Div,
 	List,
 	Panel,
 	PanelHeader,
@@ -25,9 +26,11 @@ import reduce from "../handlers/reduce";
 export default ({id, budget, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
 	const [{response}, doApiFetch] = useApi(`/budget/${budget._id}`);
-	const [filteredItems, setFilteredItems] = useState(() => budget.items);
+	const [items, setItems] = useState(() => budget.items);
+	const [filteredItems, setFilteredItems] = useState(() => items);
 
 	useEffect(() => {
+		setItems(budget.items);
 		setFilteredItems(budget.items);
 	}, [budget])
 
@@ -77,7 +80,11 @@ export default ({id, budget, dispatch, onRefresh}) => {
 	const itemsList = filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
 
 	const onSearch = (str) => {
-		setFilteredItems(response.filter(({title}) => title.toLowerCase().indexOf(str) > -1));
+		if (str === '') {
+			setFilteredItems(items);
+		} else {
+			setFilteredItems(filteredItems.filter(({title}) => title.toLowerCase().indexOf(str) > -1));
+		}
 	}
 
 	return (

@@ -43,17 +43,23 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_ACCOUNTS: {
+			const accountId = state.account?._id;
+			const account = !accountId ? accountId : action.payload.accounts.find(item => {
+				return item._id === accountId;
+			})
 			return {
 				...state,
-				accounts: action.payload.accounts
+				accounts: action.payload.accounts,
+				account: account
 			}
 		}
 		case SET_BUDGETS: {
 			const budgetId = state.budget?._id;
+			const budget = !budgetId ? budgetId : action.payload.budgets.find(item => item._id === budgetId)
 			return {
 				...state,
 				budgets: action.payload.budgets,
-				budget: !budgetId ? budgetId : action.payload.budgets.find(item => item._id === budgetId)
+				budget: budget
 			}
 		}
 		case SET_ACCOUNT: {

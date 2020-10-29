@@ -13,6 +13,7 @@ import {
 	PanelHeaderButton,
 	PanelHeaderContent,
 	PanelHeaderContext,
+	Search,
 	Title
 } from "@vkontakte/vkui";
 import currency from "../handlers/currency";
@@ -30,9 +31,10 @@ import reduce from "../handlers/reduce";
 export default ({id, account, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
 	const [{response}, doApiFetch] = useApi(`/money-box/${account?._id}`);
+	const [items, setItems] = useState(() => account?.operations);
+	const [filteredItems, setFilteredItems] = useState(() => items);
 
-
-	const accountItemsList = account?.operations.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
+	const accountItemsList = filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
 
 	const toggleContext = () => {
 		setIsOpened(!isOpened);
@@ -68,11 +70,24 @@ export default ({id, account, dispatch, onRefresh}) => {
 	)
 
 	useEffect(() => {
+		setItems(account?.operations);
+		setFilteredItems(account?.operations);
+	}, [account]);
+
+	useEffect(() => {
 		if (!response) return;
 		dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
 		dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 		onRefresh();
 	}, [dispatch, response, onRefresh]);
+
+	const onSearch = (str) => {
+		if (str === '') {
+			setFilteredItems(items);
+		} else {
+			setFilteredItems(filteredItems.filter(({title}) => title.toLowerCase().indexOf(str) > -1));
+		}
+	}
 
 	return (
 		<Panel id={id}>
@@ -112,6 +127,10 @@ export default ({id, account, dispatch, onRefresh}) => {
 					</Cell>
 				</List>
 			</PanelHeaderContext>
+
+			<Search onChange={(e) => {
+				onSearch(e.currentTarget.value)
+			}}/>
 			<Group
 				header={<Header mode="secondary">Информация по счету</Header>}
 				separator="show"

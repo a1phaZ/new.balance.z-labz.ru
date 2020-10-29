@@ -24,14 +24,14 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({setAccount}) => {
+export default ({onRefresh}) => {
 	const [stateForm, dispatchForm] = useReducer(reducer, initialState);
 	const [{response}, doApiFetch] = useApi('/money-box');
 
 	useEffect(() => {
 		if (!response) return;
-		setAccount(response);
-	}, [response, setAccount]);
+		onRefresh();
+	}, [response, onRefresh]);
 
 	return (
 		<FormLayout
