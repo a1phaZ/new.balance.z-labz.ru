@@ -17,7 +17,6 @@ const findAccountsByUserId = async (userId, date = new Date()) => {
 }
 
 const findBudgets = async (userId, date = new Date()) => {
-	console.log(date);
 	return await Budget.find({userId: userId, year: new Date(date).getFullYear(), month: new Date(date).getMonth()})
 }
 
