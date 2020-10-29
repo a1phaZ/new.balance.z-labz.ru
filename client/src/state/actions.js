@@ -9,3 +9,4 @@ export const SET_ACTIVE_PANEL= 'SET_ACTIVE_PANEL';
 export const SET_ACCOUNT = 'SET_ACCOUNT';
 export const SET_POPOUT = 'SET_POPOUT';
 export const SET_EDITED_ITEM = 'SET_EDITED_ITEM';
+export const SET_DATE = 'SET_DATE';

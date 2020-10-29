@@ -21,6 +21,7 @@ import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
 import Icon28HomeOutline from '@vkontakte/icons/dist/28/home_outline';
 import Icon28CoinsOutline from '@vkontakte/icons/dist/28/coins_outline';
+import Icon28StatisticsOutline from '@vkontakte/icons/dist/28/statistics_outline';
 import AddAccount from "./components/modals/AddAccount";
 import AddMoney from "./components/modals/AddMoney";
 import AccountInfo from "./panels/AccountInfo";
@@ -36,9 +37,13 @@ const App = () => {
 
 	useEffect(() => {
 		if (!needFetch) return;
-		doApiFetch();
+		doApiFetch({
+			params: {
+				date: new Date(state.currentDate)
+			}
+		});
 		setNeedFetch(false);
-	}, [needFetch, doApiFetch]);
+	}, [needFetch, doApiFetch, state.currentDate]);
 
 	useEffect(() => {
 		if (!response) return;
@@ -121,6 +126,15 @@ const App = () => {
 				text={'Бюджеты'}
 			>
 				<Icon28CoinsOutline/>
+			</TabbarItem>
+			<TabbarItem
+				onClick={onStoryChange}
+				selected={state.activeView === 'info' && state.activePanel === 'stats'}
+				data-story={'info'}
+				data-panel={'stats'}
+				text={'Сводка'}
+			>
+				<Icon28StatisticsOutline/>
 			</TabbarItem>
 		</Tabbar>
 	)

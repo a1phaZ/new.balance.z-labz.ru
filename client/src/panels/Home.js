@@ -11,6 +11,7 @@ import {SET_ACCOUNT, SET_MODAL} from "../state/actions";
 import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
 import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 import InfoSnackbar from "../components/InfoSnackbar";
+import MonthSwitch from "../components/MonthSwitch";
 
 const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching}) => {
 	const sumOfAll = accounts.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
@@ -37,6 +38,7 @@ const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching}) => {
 					</>
 				}
 			>Balance</PanelHeader>
+			<MonthSwitch onRefresh={onRefresh} />
 			<PullToRefresh onRefresh={onRefresh} isFetching={isFetching}>
 				<List>
 					<Group

@@ -5,7 +5,7 @@ import {
 	SET_ACTIVE_PANEL,
 	SET_ACTIVE_VIEW,
 	SET_BUDGET,
-	SET_BUDGETS,
+	SET_BUDGETS, SET_DATE,
 	SET_EDITED_ITEM,
 	SET_ERROR,
 	SET_MODAL,
@@ -24,7 +24,8 @@ const initialState = {
 	activeView: 'home',
 	activePanel: 'home',
 	popout: null,
-	editedItem: null
+	editedItem: null,
+	currentDate: new Date()
 }
 
 const reducer = (state, action) => {
@@ -106,6 +107,12 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				error: action.payload.error
+			}
+		}
+		case SET_DATE: {
+			return {
+				...state,
+				currentDate: new Date(action.payload.date)
 			}
 		}
 		default:

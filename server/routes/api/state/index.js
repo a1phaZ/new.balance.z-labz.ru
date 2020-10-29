@@ -5,12 +5,19 @@ const Budget = require('../../../models/budget');
 const Item = require('../../../models/item');
 const toJson = require("../../../handlers/toJson");
 
-const findAccountsByUserId = async (userId) => {
+const findAccountsByUserId = async (userId, date = new Date()) => {
 	return MoneyBox.find({userId: userId})
-		.populate('operations');
+		.populate({
+			path: 'operations',
+			match: {
+				year: new Date(date).getFullYear(),
+				month: new Date(date).getMonth()
+			}
+		});
 }
 
 const findBudgets = async (userId, date = new Date()) => {
+	console.log(date);
 	return await Budget.find({userId: userId, year: new Date(date).getFullYear(), month: new Date(date).getMonth()})
 }
 
@@ -74,11 +81,10 @@ async function budgetWithDetails(array) {
 
 router.get('/', async (req, res) => {
 	const {
-		query: { vk_user_id },
-		body: { date }
+		query: { vk_user_id, date }
 	} = req;
 
-	req.accounts = await findAccountsByUserId(vk_user_id).then(data => data);
+	req.accounts = await findAccountsByUserId(vk_user_id, date).then(data => data);
 	req.budgets = await findBudgets(vk_user_id, date).then(data => data);
 	req.budgets = await budgetWithOutcomeF(req.budgets);
 	req.budgets = await budgetWithDetails(req.budgets);
