@@ -83,7 +83,7 @@ export default ({id, budget, dispatch, onRefresh}) => {
 		if (str === '') {
 			setFilteredItems(items);
 		} else {
-			setFilteredItems(filteredItems.filter(({title}) => title.toLowerCase().indexOf(str.toLowerCase()) > -1));
+			setFilteredItems(budget.items.filter(({title}) => title.toLowerCase().indexOf(str.toLowerCase()) > -1));
 		}
 	}
 
