@@ -28,6 +28,7 @@ import AccountInfo from "./panels/AccountInfo";
 import Budgets from "./panels/Budgets";
 import AddBudget from "./components/modals/AddBudget";
 import BudgetInfo from "./panels/BudgetInfo";
+import Stats from "./panels/Stats";
 
 const App = () => {
 	const os = platform();
@@ -151,6 +152,7 @@ const App = () => {
 				<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
 										dispatch={dispatch} onRefresh={onRefresh}/>
 				<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh} date={state.currentDate}/>
+				<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>
 			</View>
 		</Epic>
 	);
