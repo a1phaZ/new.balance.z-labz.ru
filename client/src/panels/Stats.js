@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Group, Panel, PanelHeader, Search} from "@vkontakte/vkui";
+import {Footer, Group, Panel, PanelHeader, Search} from "@vkontakte/vkui";
 import MonthSwitch from "../components/MonthSwitch";
 import mapStats from "../handlers/mapStats";
 
@@ -67,6 +67,7 @@ export default ({id, accounts, onRefresh}) => {
 			}}/>
 			<Group>
 				{accountItemsList}
+				{accountItemsList.length === 0 && <Footer>Нет данных для отображения</Footer>}
 			</Group>
 		</Panel>
 	)

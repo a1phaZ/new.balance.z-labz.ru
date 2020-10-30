@@ -143,6 +143,7 @@ export default ({id, account, dispatch, onRefresh}) => {
 				{account?.operations.length === 0 && <Footer>Операций по счету еще не было</Footer>}
 				<Div>
 					{accountItemsList}
+					{accountItemsList.length === 0 && <Footer>Нет данных для отображения</Footer>}
 				</Div>
 			</Group>
 			<InfoSnackbar/>

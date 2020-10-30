@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
 	Alert,
 	Cell,
-	Div,
+	Div, Footer,
 	List,
 	Panel,
 	PanelHeader,
@@ -140,6 +140,7 @@ export default ({id, budget, dispatch, onRefresh}) => {
 			}}/>
 			<Div>
 				{itemsList}
+				{itemsList.length === 0 && <Footer>Нет данных для отображения</Footer>}
 			</Div>
 			<InfoSnackbar/>
 		</Panel>
