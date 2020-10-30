@@ -4,7 +4,7 @@ import '@vkontakte/vkui/dist/vkui.css';
 import Home from './panels/Home';
 import useApi from "./handlers/useApi";
 import {State} from './state';
-import {SET_ACCOUNTS, SET_ACTIVE_VIEW, SET_BUDGETS, SET_MODAL} from "./state/actions";
+import {SET_ACCOUNTS, SET_ACTIVE_VIEW, SET_BUDGETS, SET_HISTORY_BACK, SET_MODAL} from "./state/actions";
 import {
 	ANDROID,
 	Epic,
@@ -51,6 +51,14 @@ const App = () => {
 		dispatch({type: SET_ACCOUNTS, payload: {accounts: response?.accounts ? response?.accounts : []}});
 		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
 	}, [response, dispatch]);
+
+	useEffect(() => {
+		window.onpopstate = (e) => {
+			if (state.history.length !== 0) {
+				return dispatch({type: SET_HISTORY_BACK, payload: {state: e.state}});
+			}
+		}
+	}, [dispatch, state.history]);
 
 	const onRefresh = useCallback(() => {
 		setNeedFetch(true);

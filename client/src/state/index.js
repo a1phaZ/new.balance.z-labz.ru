@@ -7,7 +7,7 @@ import {
 	SET_BUDGET,
 	SET_BUDGETS, SET_DATE,
 	SET_EDITED_ITEM,
-	SET_ERROR,
+	SET_ERROR, SET_HISTORY_BACK,
 	SET_MODAL,
 	SET_POPOUT,
 	SET_SUCCESS_MESSAGE
@@ -25,22 +25,56 @@ const initialState = {
 	activePanel: 'home',
 	popout: null,
 	editedItem: null,
-	currentDate: new Date()
+	currentDate: new Date(),
+	history: []
 }
 
 const reducer = (state, action) => {
 	switch (action.type) {
 		case SET_ACTIVE_VIEW: {
+			window.history.pushState({activeView: action.payload.view, activePanel: action.payload.panel}, `${action.payload.panel}.${action.payload.panel}`, window.location.search);
 			return {
 				...state,
 				activeView: action.payload.view,
 				activePanel: action.payload.panel,
+				history: [...state.history, {activeView: action.payload.view, activePanel: action.payload.panel}]
 			}
 		}
 		case SET_ACTIVE_PANEL: {
+			window.history.pushState({activeView: state.activeView, activePanel: action.payload.panel}, `${state.activeView}.${action.payload.panel}`, window.location.search);
 			return {
 				...state,
-				activePanel: action.payload.panel
+				activePanel: action.payload.panel,
+				history: [...state.history, {activeView: state.activeView, activePanel: action.payload.panel}]
+			}
+		}
+		case SET_HISTORY_BACK: {
+			const backEl = state.history[state.history.length-2];
+			const historyState = action.payload?.state;
+			if (historyState) {
+				return {
+					...state,
+					activeView: historyState.activeView,
+					activePanel: historyState.activePanel,
+					history: [{activeView: historyState.activeView, activePanel: historyState.activePanel}]
+				}
+			}
+			if (!backEl) {
+				return {
+					...state,
+					activeView: 'home',
+					activePanel: 'home',
+					history: [{activeView: 'home', activePanel: 'home'}]
+				}
+			} else {
+				const newHistory = state.history;
+				newHistory.pop();
+				return {
+					...state,
+					activeView: backEl.activeView,
+					activePanel: backEl.activePanel,
+					history: [...newHistory]
+				}
 			}
 		}
 		case SET_ACCOUNTS: {

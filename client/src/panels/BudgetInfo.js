@@ -12,7 +12,7 @@ import {
 	PanelHeaderContext,
 	Search
 } from "@vkontakte/vkui";
-import {SET_ACTIVE_VIEW, SET_BUDGET, SET_EDITED_ITEM, SET_MODAL, SET_POPOUT} from "../state/actions";
+import {SET_ACTIVE_VIEW, SET_BUDGET, SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import useApi from "../handlers/useApi";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
@@ -25,13 +25,13 @@ import reduce from "../handlers/reduce";
 
 export default ({id, budget, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
-	const [{response}, doApiFetch] = useApi(`/budget/${budget._id}`);
-	const [items, setItems] = useState(() => budget.items);
+	const [{response}, doApiFetch] = useApi(`/budget/${budget?._id}`);
+	const [items, setItems] = useState(() => budget?.items);
 	const [filteredItems, setFilteredItems] = useState(() => items);
 
 	useEffect(() => {
-		setItems(budget.items);
-		setFilteredItems(budget.items);
+		setItems(budget?.items);
+		setFilteredItems(budget?.items);
 	}, [budget])
 
 	useEffect(() => {
@@ -77,7 +77,7 @@ export default ({id, budget, dispatch, onRefresh}) => {
 		</Alert>
 	)
 
-	const itemsList = filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
+	const itemsList = filteredItems && filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
 
 	const onSearch = (str) => {
 		if (str === '') {
@@ -92,7 +92,8 @@ export default ({id, budget, dispatch, onRefresh}) => {
 			<PanelHeader left={
 				<>
 					<PanelHeaderBack onClick={() => {
-						dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
+						// dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
+						dispatch({type: SET_HISTORY_BACK});
 						dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 						dispatch({type: SET_BUDGET, payload: {id: null}});
 					}}/>
@@ -140,7 +141,7 @@ export default ({id, budget, dispatch, onRefresh}) => {
 			}}/>
 			<Div>
 				{itemsList}
-				{itemsList.length === 0 && <Footer>Нет данных для отображения</Footer>}
+				{itemsList?.length === 0 && <Footer>Нет данных для отображения</Footer>}
 			</Div>
 			<InfoSnackbar/>
 		</Panel>
