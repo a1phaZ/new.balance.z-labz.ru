@@ -79,7 +79,7 @@ async function budgetWithDetails(array) {
 			.then(item => budgetWithDetails = [...budgetWithDetails, item]);
 	}
 
-	console.log(budgetWithDetails);
+	// console.log(budgetWithDetails);
 	return budgetWithDetails;
 }
 
@@ -89,7 +89,13 @@ router.get('/', async (req, res) => {
 	} = req;
 
 	req.accounts = await findAccountsByUserId(vk_user_id, date).then(data => {
-		console.log(data);
+		const {items} = data;
+		const editedItems = items.map(item => {
+			item.date = item.date.replace(/[.]/g, '-');
+			return item;
+		})
+		data.items = [...editedItems];
+		// console.log(data);
 		return data;
 	});
 	req.budgets = await findBudgets(vk_user_id, date).then(data => data);
