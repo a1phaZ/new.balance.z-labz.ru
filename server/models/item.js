@@ -5,7 +5,7 @@ mongoose.Promise = global.Promise;
 
 const ItemSchema = new Schema({
 	userId: {type: String, required: [true, 'Отсутствует идентификатор пользователя']},
-	date: {type: String, default: format(new Date(), 'yyyy.MM.dd')},
+	date: {type: String, default: format(new Date(), 'yyyy-MM-dd')},
 	month: {type: Number},
 	year: {type: Number},
 	title: {type: String, required: [true, 'Отсутствует название']},

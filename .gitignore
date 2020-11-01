@@ -5,3 +5,4 @@
 /.idea/
 /client/vk-hosting-config.json
 /client/.env
+/yarn.lock

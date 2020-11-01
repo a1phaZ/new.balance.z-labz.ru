@@ -36,7 +36,7 @@ router.post('/', async (req, res, next) => {
 	} = req;
 
 	const item = new Item({
-		date: format(new Date(date), 'yyyy.MM.dd'),
+		date: format(new Date(date), 'yyyy-MM-dd'),
 		userId: vk_user_id,
 		title,
 		description,

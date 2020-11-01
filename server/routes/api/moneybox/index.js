@@ -41,7 +41,7 @@ router.post('/', async (req, res, next) => {
 	} = req;
 
 	const item = sum && await new Item({
-		date: format(new Date(), 'yyyy.MM.dd'),
+		date: format(new Date(), 'yyyy-MM-dd'),
 		userId: vk_user_id,
 		title: `Остаток на ${format(new Date(), 'dd MMMM yyyy', {locale: ruLocale})}`,
 		price: sum,

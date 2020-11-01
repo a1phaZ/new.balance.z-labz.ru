@@ -7,7 +7,7 @@ import {SET_EDITED_ITEM, SET_MODAL} from "../state/actions";
 
 export default function mapRichCell(dispatch) {
 	return (item, index) => {
-		if (item.titleDate) {
+		if (item?.titleDate) {
 			return (
 				<Caption level="2" weight="semibold" caps
 								 key={index}>{format(new Date(item?.titleDate), 'dd MMMM yyyy', {locale: ruLocale})}</Caption>
