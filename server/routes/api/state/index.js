@@ -88,7 +88,10 @@ router.get('/', async (req, res) => {
 		query: { vk_user_id, date }
 	} = req;
 
-	req.accounts = await findAccountsByUserId(vk_user_id, date).then(data => data);
+	req.accounts = await findAccountsByUserId(vk_user_id, date).then(data => {
+		console.log(data);
+		return data;
+	});
 	req.budgets = await findBudgets(vk_user_id, date).then(data => data);
 	req.budgets = await budgetWithOutcomeF(req.budgets);
 	req.budgets = await budgetWithDetails(req.budgets);
