@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c611aa751fcaf867c5b9ae32b6c71921",
+    "revision": "d2bc425d35f9cd9d5cc95c22e85f74ec",
     "url": "/new.balance.z-labz.ru/index.html"
   },
   {
@@ -28,8 +28,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/new.balance.z-labz.ru/static/js/4.01e4d099.chunk.js"
   },
   {
-    "revision": "72e197c72b790031aaf2",
-    "url": "/new.balance.z-labz.ru/static/js/main.00f0cd1c.chunk.js"
+    "revision": "ab60c6ab8a384c1163b4",
+    "url": "/new.balance.z-labz.ru/static/js/main.c369f9fc.chunk.js"
   },
   {
     "revision": "e4485c6aa8c7a2e897e9",
