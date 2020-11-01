@@ -70,7 +70,9 @@ async function budgetWithDetails(array) {
 		await findItems(changedItem.userId, changedItem.title, changedItem.year, changedItem.month)
 			.then(data => {
 				const changedData = data.map((item) => {
+					console.log(item);
 					item.date = item.date.replace(/[.]/g, '-');
+					console.log(item.date);
 					return item;
 				})
 				changedItem.items = [...changedData];
