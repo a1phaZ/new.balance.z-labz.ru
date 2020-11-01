@@ -35,6 +35,7 @@ export default ({id, account, dispatch, onRefresh}) => {
 	const [items, setItems] = useState(() => account?.operations);
 	const [filteredItems, setFilteredItems] = useState(() => items);
 
+	console.log(filteredItems);
 	const accountItemsList = filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
 
 	const toggleContext = () => {
