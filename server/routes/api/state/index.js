@@ -89,12 +89,15 @@ router.get('/', async (req, res) => {
 	} = req;
 
 	req.accounts = await findAccountsByUserId(vk_user_id, date).then(data => {
-		const {items} = data;
-		const editedItems = items.map(item => {
-			item.date = item.date.replace(/[.]/g, '-');
-			return item;
+		data.map(item => {
+			const {operations} = item;
+			const editedItems = operations.map(item => {
+				item.date = item.date.replace(/[.]/g, '-');
+				return item;
+			})
+			item.operations = [...editedItems];
 		})
-		data.items = [...editedItems];
+
 		// console.log(data);
 		return data;
 	});
