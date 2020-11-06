@@ -2,13 +2,15 @@ const { RateLimiterMongo } = require('rate-limiter-flexible');
 const mongoose = require('mongoose');
 const {createError} = require("./error");
 const connection = mongoose.connection;
+const dotenv = require('dotenv');
+dotenv.config();
 
 const opt = {
 	storeClient: connection,
 	keyPrefix: 'middleware',
-	points: 5,
-	duration: 1,
-	blockDuration: 2
+	points: process.env.POINTS || 5,
+	duration: process.env.DURATION || 1,
+	blockDuration: process.env.BLOCK_DURATION || 2
 }
 
 const rateLimiter = new RateLimiterMongo(opt);
