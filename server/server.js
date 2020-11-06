@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const logger = require('./handlers/logger');
 const {handleError, createError} = require("./handlers/error");
+const rateLimiterMiddleware = require('./handlers/rateLimiterMiddleware');
 
 dotenv.config();
 const app = express();
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 if (process.env.STATUS !== 'dev') {
 	app.use(require('./handlers/compareSign'));
+	app.use(rateLimiterMiddleware);
 }
 
 app.use(require('./routes'));
