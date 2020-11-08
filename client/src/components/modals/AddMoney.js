@@ -193,7 +193,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 						 placeholder={'0'}
 						 top={'Кол-во'}
 						 max={9999999}
-						 step={0.01}
+						 step={0.001}
 						 status={state.validate?.quantity?.status}
 						 bottom={state.validate?.quantity?.message}
 						 value={state.quantity}
