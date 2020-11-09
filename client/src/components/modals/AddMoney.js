@@ -1,6 +1,6 @@
 import React, {useEffect, useReducer, useState} from 'react';
 import {format} from 'date-fns';
-import {Button, Counter, Div, FormLayout, Input, Radio, Select, Textarea} from "@vkontakte/vkui";
+import {Button, Checkbox, Counter, Div, FormLayout, Input, Radio, Select, Textarea} from "@vkontakte/vkui";
 import currency from "../../handlers/currency";
 import useApi from "../../handlers/useApi";
 import validate from "../../handlers/validate";
@@ -14,6 +14,7 @@ const initialState = {
 	price: '',
 	quantity: '',
 	tags: [],
+	boxPrice: false,
 	validate: {
 		account: {},
 		title: {},
@@ -70,7 +71,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 					date: state.date,
 					title: state.title,
 					description: state.description,
-					price: state.price,
+					price: state.boxPrice ? state.price / state.quantity : state.price,
 					quantity: state.quantity,
 					income: state.income,
 					tags: state.tags,
@@ -189,6 +190,13 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 							 })
 						 }}
 			/>
+			<Checkbox value={state.boxPrice}
+								onClick={() => {
+									dispatch({type: 'CHANGE_STATE', payload: {boxPrice: !state.boxPrice}})
+								}}
+			>
+				Цена за упаковку
+			</Checkbox>
 			<Input type={'number'}
 						 placeholder={'0'}
 						 top={'Кол-во'}
@@ -206,7 +214,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 						 }}
 			/>
 			<Button size={'xl'}>
-				Сохранить
+				{`Сохранить ${state.boxPrice ? currency(state.price) : currency(state.price * state.quantity)}`}
 			</Button>
 		</FormLayout>
 	)
