@@ -53,19 +53,22 @@ const App = () => {
 
 	useEffect(() => {
 		window.onpopstate = (e) => {
+			if (state.modal) {
+				return dispatch({type: SET_MODAL, payload: {modal: null}});
+			}
 			if (state.history.length !== 0) {
 				return dispatch({type: SET_HISTORY_BACK, payload: {state: e.state}});
 			}
 		}
-	}, [dispatch, state.history]);
+	}, [dispatch, state.history, state.modal]);
 
 	const onRefresh = useCallback(() => {
 		setNeedFetch(true);
 	}, []);
 
-	const modalBack = () => {
+	const modalBack = (() => {
 		dispatch({type: SET_MODAL, payload: {modal: null}});
-	}
+	})
 
 	const modal = (
 		<ModalRoot

@@ -32,7 +32,13 @@ const initialState = {
 const reducer = (state, action) => {
 	switch (action.type) {
 		case SET_ACTIVE_VIEW: {
-			window.history.pushState({activeView: action.payload.view, activePanel: action.payload.panel}, `${action.payload.panel}.${action.payload.panel}`, window.location.search);
+			if (action.payload.view === state.activeView && action.payload.panel === state.activePanel) {
+				window.history.replaceState({activeView: state.activeView, activePanel: state.activePanel}, `${state.activeView}.${state.activePanel}`, window.location.search);
+				return {
+					...state
+				}
+			}
+			window.history.pushState({activeView: action.payload.view, activePanel: action.payload.panel}, `${action.payload.view}.${action.payload.panel}`, window.location.search);
 			return {
 				...state,
 				activeView: action.payload.view,
@@ -41,7 +47,7 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_ACTIVE_PANEL: {
-			window.history.pushState({activeView: state.activeView, activePanel: action.payload.panel}, `${state.activeView}.${action.payload.panel}`, window.location.search);
+			window.history.replaceState({activeView: state.activeView, activePanel: action.payload.panel}, `${state.activeView}.${action.payload.panel}`, window.location.search);
 			return {
 				...state,
 				activePanel: action.payload.panel,
@@ -54,9 +60,10 @@ const reducer = (state, action) => {
 			if (historyState) {
 				return {
 					...state,
-					activeView: historyState.activeView,
-					activePanel: historyState.activePanel,
-					history: [{activeView: historyState.activeView, activePanel: historyState.activePanel}]
+					activeView: historyState.activeView ? historyState.activeView : 'home',
+					activePanel: historyState.activePanel ? historyState.activePanel : 'home',
+					modal: historyState.modal ? historyState.modal : null,
+					history: [{activeView: historyState.activeView ? historyState.activeView : 'home', activePanel: historyState.activePanel ? historyState.activePanel : 'home'}],
 				}
 			}
 			if (!backEl) {
@@ -126,6 +133,11 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_MODAL: {
+			if (action.payload.modal) {
+				window.history.pushState({modal: action.payload.modal}, `modal.${action.payload.modal}`, window.location.search);
+			} else {
+				window.history.replaceState({activeView: state.activeView, activePanel: state.activePanel}, `${state.activeView}.${state.activePanel}`, window.location.search);
+			}
 			return {
 				...state,
 				modal: action.payload.modal
