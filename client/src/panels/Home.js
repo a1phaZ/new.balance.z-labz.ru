@@ -37,7 +37,7 @@ const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching}) => {
 						</PanelHeaderButton>}
 					</>
 				}
-			>Balance</PanelHeader>
+			>Баланс</PanelHeader>
 			<MonthSwitch onRefresh={onRefresh} />
 			<PullToRefresh onRefresh={onRefresh} isFetching={isFetching}>
 				<List>
