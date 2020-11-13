@@ -57,6 +57,7 @@ export default ({id, budget, dispatch, onRefresh}) => {
 				},
 				{
 					title: 'Удалить',
+					mode: 'destructive',
 					autoclose: true,
 					action: async () => {
 						toggleContext();

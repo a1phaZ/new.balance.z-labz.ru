@@ -51,6 +51,7 @@ export default ({id, account, dispatch, onRefresh}) => {
 				},
 				{
 					title: 'Удалить',
+					mode: 'destructive',
 					autoclose: true,
 					action: async () => {
 						toggleContext();
@@ -67,7 +68,7 @@ export default ({id, account, dispatch, onRefresh}) => {
 		>
 			<h2>Удалить счет?</h2>
 			<p>Удаление счета приведет к удалению всех данных по доходам и расходам, привязанным к данному счету. Суммы
-				бюджетов могут отображаться некоректно.</p>
+				бюджетов могут отображаться некорректно.</p>
 		</Alert>
 	)
 
