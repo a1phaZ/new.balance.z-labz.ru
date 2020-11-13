@@ -18,7 +18,6 @@ import {
 	TabbarItem
 } from "@vkontakte/vkui";
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
-import Icon24Done from '@vkontakte/icons/dist/24/done';
 import Icon28HomeOutline from '@vkontakte/icons/dist/28/home_outline';
 import Icon28CoinsOutline from '@vkontakte/icons/dist/28/coins_outline';
 import Icon28StatisticsOutline from '@vkontakte/icons/dist/28/statistics_outline';
@@ -76,7 +75,7 @@ const App = () => {
 			<ModalPage id={'add-account'} header={
 				<ModalPageHeader
 					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
-					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Готово' : <Icon24Done/>}</PanelHeaderButton>}
+					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : <Icon24Cancel/>}</PanelHeaderButton>}
 				>
 					Добавить счет
 				</ModalPageHeader>
@@ -87,7 +86,7 @@ const App = () => {
 			<ModalPage id={'add-money'} header={
 				<ModalPageHeader
 					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
-					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Готово' : <Icon24Done/>}</PanelHeaderButton>}
+					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : <Icon24Cancel/>}</PanelHeaderButton>}
 				>
 					{state.editedItem ? 'Редактировать' : 'Добавить запись'}
 				</ModalPageHeader>
@@ -99,7 +98,7 @@ const App = () => {
 			<ModalPage id={'add-budget'} header={
 				<ModalPageHeader
 					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
-					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Готово' : <Icon24Done/>}</PanelHeaderButton>}
+					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : <Icon24Cancel/>}</PanelHeaderButton>}
 				>
 					Добавить бюджет
 				</ModalPageHeader>
@@ -159,7 +158,8 @@ const App = () => {
 										 dispatch={dispatch} onRefresh={onRefresh}/>
 				<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
 										dispatch={dispatch} onRefresh={onRefresh}/>
-				<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh} date={state.currentDate}/>
+				<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
+								 date={state.currentDate}/>
 				<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>
 			</View>
 		</Epic>
