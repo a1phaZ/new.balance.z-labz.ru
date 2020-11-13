@@ -4,7 +4,11 @@ mongoose.Promise = global.Promise;
 
 const MoneyBoxSchema = new Schema({
 	userId: {type: Number, required: [true, 'Отсутствует идентификатор пользователя']},
-	title: {type: String, required: [true, 'Отсутствует название']},
+	title: {
+		type: String,
+		required: [true, 'Отсутствует название'],
+		maxlength: [20, 'Слишком длинное название']
+	},
 	sum: {type: Number, default: 0},
 	operations: [{type: Schema.Types.ObjectId, ref: 'Item'}]
 });

@@ -8,8 +8,16 @@ const ItemSchema = new Schema({
 	date: {type: String, default: format(new Date(), 'yyyy-MM-dd')},
 	month: {type: Number},
 	year: {type: Number},
-	title: {type: String, required: [true, 'Отсутствует название']},
-	description: {type: String, default: ''},
+	title: {
+		type: String,
+		required: [true, 'Отсутствует название'],
+		maxlength: [20, 'Слишком длинное название']
+	},
+	description: {
+		type: String,
+		default: '',
+		maxlength: [70, 'Слишком длинное описание']
+	},
 	price: {type: Number, required: [true, 'Отсутствует цена']},
 	quantity: {type: Number, required: [true, 'Отсутствует кол-во']},
 	sum: {type: Number, default: 0},

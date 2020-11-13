@@ -3,8 +3,15 @@ const { model, Schema } = mongoose;
 mongoose.Promise = global.Promise;
 
 const BudgetSchema = new Schema({
-	userId: {type: String, required: [true, 'Отсутствует идентификатор пользователя']},
-	title: {type: String, required: [true, 'Отсутствует название']},
+	userId: {
+		type: String,
+		required: [true, 'Отсутствует идентификатор пользователя']
+	},
+	title: {
+		type: String,
+		required: [true, 'Отсутствует название'],
+		maxlength: [20, 'Слишком длинное название']
+	},
 	month: {type: Number},
 	year: {type: Number},
 	sum: {type: Number, required: true},
