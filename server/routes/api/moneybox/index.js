@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const {format} = require('date-fns');
-const ruLocale = require('date-fns/locale/ru');
 const MoneyBox = require('../../../models/moneybox');
 const Item = require('../../../models/item');
 const toJson = require("../../../handlers/toJson");
@@ -43,7 +42,7 @@ router.post('/', async (req, res, next) => {
 	const item = sum && await new Item({
 		date: format(new Date(), 'yyyy-MM-dd'),
 		userId: vk_user_id,
-		title: `Остаток на ${format(new Date(), 'dd MMMM yyyy', {locale: ruLocale})}`,
+		title: `Остаток`,
 		price: sum,
 		quantity: 1,
 		sum: sum,
