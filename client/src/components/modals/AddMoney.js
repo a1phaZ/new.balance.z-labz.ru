@@ -159,11 +159,11 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 						 placeholder={'Тэги через пробел'}
 						 status={state.validate?.tags?.status}
 						 maxLength={100}
-						 bottom={state.validate?.tags?.message ? state.validate?.tags?.message : `${state.tags.length} из 100`}
+						 bottom={state.validate?.tags?.message ? state.validate?.tags?.message : `${state.tags.join(' ').length} из 100 символов`}
 						 onChange={(e) => {
 							 dispatch({
 								 type: 'CHANGE_STATE',
-								 payload: {tags: e.currentTarget.value.toLowerCase().split(' '), validateForm: {tags: validate(e)}}
+								 payload: {tags: e.currentTarget.value !== '' ? e.currentTarget.value.toLowerCase().split(' ') : [], validateForm: {tags: validate(e)}}
 							 })
 						 }}
 			/>
