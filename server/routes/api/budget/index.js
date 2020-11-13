@@ -60,7 +60,7 @@ router.post('/', async (req, res, next) => {
 	await Budget.findOne({userId: vk_user_id, title: title, month: month, year: year})
 		.then((budget) => {
 			if (budget) {
-				return Promise.reject(createError(309, `${title} уже добавален, укажите другое название или дату`));
+				return Promise.reject(createError(309, `${title} уже добавален, укажите другое название`));
 			}
 			const newBudget = new Budget({
 				userId: vk_user_id,
