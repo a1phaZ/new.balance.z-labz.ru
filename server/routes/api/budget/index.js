@@ -4,6 +4,7 @@ const router = express.Router();
 const {createError} = require('../../../handlers/error');
 const Budget = require('../../../models/budget');
 const Item = require('../../../models/item');
+const {getMongooseError} = require("../../../handlers/error");
 
 function getYear(date) {
 	return date ? new Date(date).getFullYear() : new Date().getFullYear();
@@ -76,7 +77,12 @@ router.post('/', async (req, res, next) => {
 			data.message = 'Сохранено'
 			res.status(200).json(data)
 		})
-		.catch(err => next(createError(err.statusCode, err.message)));
+		.catch(err => {
+			if (err.errors) {
+				return next(createError(err.statusCode, getMongooseError(err)))
+			}
+			return next(createError(err.statusCode, err.message))
+		});
 });
 
 router.patch('/:id', async (req, res, next) => {
@@ -97,7 +103,12 @@ router.patch('/:id', async (req, res, next) => {
 			data.message = 'Сохранено'
 			res.status(200).json(data)
 		})
-		.catch(err => next(createError(err.statusCode, err.message)));
+		.catch(err => {
+			if (err.errors) {
+				return next(createError(err.statusCode, getMongooseError(err)))
+			}
+			return next(createError(err.statusCode, err.message))
+		});
 })
 
 router.delete('/:id', async (req, res, next) => {

@@ -5,7 +5,7 @@ const ruLocale = require('date-fns/locale/ru');
 const MoneyBox = require('../../../models/moneybox');
 const Item = require('../../../models/item');
 const toJson = require("../../../handlers/toJson");
-const {createError} = require('../../../handlers/error');
+const {createError, getMongooseError} = require('../../../handlers/error');
 
 const findByUserId = async (userId) => {
 	return await MoneyBox.find({userId: userId})
@@ -57,29 +57,29 @@ router.post('/', async (req, res, next) => {
 		operations: !!sum ? [item._id] : []
 	});
 
-	moneyBox.$sum= sum || 0;
+	moneyBox.$sum = sum || 0;
 	moneyBox.$income = income;
 
 	await moneyBox
 		.save()
-		// .then(async () => await findByUserId(vk_user_id))
 		.then(async response => await MoneyBox.findById({_id: response._id}).populate('operations'))
 		.then(response => toJson.dataToJson(response))
 		.then(data => {
 			data.message = 'Сохранено'
 			res.status(200).json(data)
 		})
-		.catch(err => next(createError(err.statusCode, err.message)));
+		.catch(err => {
+			if (err.errors) {
+				return next(createError(err.statusCode, getMongooseError(err)))
+			}
+			return next(createError(err.statusCode, err.message))
+		});
 });
 
-// router.patch('/:id', (req, res, next) => {
-//
-// })
-//
 router.delete('/:id', async (req, res, next) => {
 	const {
 		query: {vk_user_id},
-		params: { id }
+		params: {id}
 	} = req;
 
 	await MoneyBox.findOne({userId: vk_user_id, _id: id})
@@ -93,6 +93,5 @@ router.delete('/:id', async (req, res, next) => {
 		})
 		.catch(err => next(createError(err.statusCode, err.message)));
 });
-
 
 module.exports = router;

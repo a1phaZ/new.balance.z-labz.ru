@@ -17,7 +17,12 @@ const handleError = (err, res) => {
 	});
 }
 
+const getMongooseError = (err) => {
+	return Object.values(err.errors).map((item) => item.message).join(' | ');
+}
+
 module.exports = {
 	createError,
-	handleError
+	handleError,
+	getMongooseError
 }

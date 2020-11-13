@@ -3,6 +3,7 @@ const {format} = require('date-fns');
 const Item = require('../../../models/item');
 const MoneyBox = require('../../../models/moneybox');
 const toJson = require("../../../handlers/toJson");
+const {getMongooseError} = require("../../../handlers/error");
 const router = express.Router();
 const {createError} = require('../../../handlers/error');
 
@@ -36,13 +37,12 @@ router.post('/', async (req, res, next) => {
 	} = req;
 
 	const item = new Item({
-		date: format(new Date(date), 'yyyy-MM-dd'),
+		date: format(date ? new Date(date) : new Date(), 'yyyy-MM-dd'),
 		userId: vk_user_id,
 		title,
 		description,
 		price,
 		quantity,
-		sum: price * quantity,
 		income,
 		tags,
 		itemFrom
@@ -66,7 +66,12 @@ router.post('/', async (req, res, next) => {
 		.then(async box => await MoneyBox.findById(box._id).populate('operations'))
 		.then(response => toJson.dataToJson(response))
 		.then(data => res.status(200).json(data))
-		.catch(err => next(createError(err.statusCode, err.message)));
+		.catch(err => {
+			if (err.errors) {
+				return next(createError(err.statusCode, getMongooseError(err)))
+			}
+			return next(createError(err.statusCode, err.message))
+		});
 });
 
 router.patch('/:id', async (req, res, next) => {
@@ -111,7 +116,12 @@ router.patch('/:id', async (req, res, next) => {
 		})
 		.then(response => toJson.dataToJson(response))
 		.then(data => res.status(200).json(data))
-		.catch(err => next(createError(err.statusCode, err.message)));
+		.catch(err => {
+			if (err.errors) {
+				return next(createError(err.statusCode, getMongooseError(err)))
+			}
+			return next(createError(err.statusCode, err.message))
+		});
 });
 
 // {

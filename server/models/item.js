@@ -12,7 +12,7 @@ const ItemSchema = new Schema({
 	description: {type: String, default: ''},
 	price: {type: Number, required: [true, 'Отсутствует цена']},
 	quantity: {type: Number, required: [true, 'Отсутствует кол-во']},
-	sum: {type: Number, required: true},
+	sum: {type: Number, default: 0},
 	income: {type: Boolean, default: false},
 	tags: {type: Array, default: []},
 	itemFrom: {type: Schema.Types.ObjectId, ref: 'MoneyBox'}
@@ -21,6 +21,7 @@ const ItemSchema = new Schema({
 ItemSchema.pre('save', function (next) {
 	this.month = new Date(this.date).getMonth();
 	this.year = new Date(this.date).getFullYear();
+	this.sum = this.price * this.quantity;
 	next();
 });
 
