@@ -85,7 +85,7 @@ router.patch('/:id', async (req, res, next) => {
 		query: {vk_user_id}
 	} = req;
 
-	await Item.findOneAndUpdate({_id: id}, {
+	await Item.findOneAndUpdate({userId: vk_user_id, _id: id}, {
 		$set: {
 			date,
 			title,
