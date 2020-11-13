@@ -58,7 +58,7 @@ export default ({onRefresh}) => {
 						 status={stateForm.titleValidation.status}
 						 bottom={stateForm.titleValidation.message ? stateForm.titleValidation.message : `${stateForm.title.length} из 20`}
 						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {title: e.currentTarget.value.replace(/^\s*/g, ''), titleValidation: validate(e)}})}/>
-			<Input type={'number'} placeholder={currency(0)} top={'Остаток в рублях'} value={stateForm.sum}
+			<Input type={'number'} placeholder={currency(0)} top={'Баланс'} value={stateForm.sum}
 						 required={true}
 						 status={stateForm.sumValidation.status}
 						 max={999999999}
