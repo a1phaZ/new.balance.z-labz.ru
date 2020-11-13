@@ -131,7 +131,7 @@ const App = () => {
 			</TabbarItem>
 			<TabbarItem
 				onClick={onStoryChange}
-				selected={state.activeView === 'info' && state.activePanel === 'budgets'}
+				selected={state.activeView === 'info' && (state.activePanel === 'budgets' || state.activePanel === 'budget')}
 				data-story={'info'}
 				data-panel={'budgets'}
 				text={'Бюджеты'}
