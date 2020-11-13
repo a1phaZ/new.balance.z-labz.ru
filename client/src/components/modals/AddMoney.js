@@ -154,9 +154,9 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 				/>
 			}
 			<Input type={'text'}
-						 top={'Тэги'}
+						 top={'Теги'}
 						 value={state.tags.join(' ')}
-						 placeholder={'Тэги через пробел'}
+						 placeholder={'Теги через пробел'}
 						 status={state.validate?.tags?.status}
 						 maxLength={100}
 						 bottom={state.validate?.tags?.message ? state.validate?.tags?.message : `${state.tags.join(' ').length} из 100 символов`}
