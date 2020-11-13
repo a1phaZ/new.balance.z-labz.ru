@@ -110,41 +110,46 @@ export default ({id, budget, dispatch, onRefresh}) => {
 			}
 			>
 				<PanelHeaderContent
-					aside={<Icon16Dropdown style={{transform: `rotate(${isOpened ? '180deg' : '0'})`}}/>}
+					aside={budget && <Icon16Dropdown style={{transform: `rotate(${isOpened ? '180deg' : '0'})`}}/>}
 					onClick={toggleContext}
 				>
-					{budget?.title}
+					{budget ? budget?.title : 'Бюджет удалён'}
 				</PanelHeaderContent>
 			</PanelHeader>
-			<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
-				<List>
-					<Cell
-						before={<Icon28EditOutline/>}
-						onClick={() => {
-							dispatch({type: SET_MODAL, payload: {modal: 'add-budget'}})
-							toggleContext();
-						}}
-					>
-						Изменить бюджет {budget?.title}
-					</Cell>
-					<Cell
-						before={<Icon28DeleteOutline/>}
-						onClick={() => {
-							dispatch({type: SET_POPOUT, payload: {popout: alertDelete}})
-						}}
-					>
-						Удалить бюджет {budget?.title}
-					</Cell>
-				</List>
-			</PanelHeaderContext>
-			<Search onChange={(e) => {
-				onSearch(e.currentTarget.value)
-			}}/>
-			<Div>
-				{itemsList}
-				{itemsList?.length === 0 && <Footer>Нет данных для отображения</Footer>}
-			</Div>
-			<InfoSnackbar/>
+			{
+				budget &&
+				<>
+					<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
+						<List>
+							<Cell
+								before={<Icon28EditOutline/>}
+								onClick={() => {
+									dispatch({type: SET_MODAL, payload: {modal: 'add-budget'}})
+									toggleContext();
+								}}
+							>
+								Изменить бюджет {budget?.title}
+							</Cell>
+							<Cell
+								before={<Icon28DeleteOutline/>}
+								onClick={() => {
+									dispatch({type: SET_POPOUT, payload: {popout: alertDelete}})
+								}}
+							>
+								Удалить бюджет {budget?.title}
+							</Cell>
+						</List>
+					</PanelHeaderContext>
+					<Search onChange={(e) => {
+						onSearch(e.currentTarget.value)
+					}}/>
+					<Div>
+						{itemsList}
+						{itemsList?.length === 0 && <Footer>Нет данных для отображения</Footer>}
+					</Div>
+					<InfoSnackbar/>
+				</>
+			}
 		</Panel>
 	)
 }

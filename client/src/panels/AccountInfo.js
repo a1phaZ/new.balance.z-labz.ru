@@ -32,10 +32,12 @@ import MonthSwitch from "../components/MonthSwitch";
 export default ({id, account, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
 	const [{response}, doApiFetch] = useApi(`/money-box/${account?._id}`);
-	const [items, setItems] = useState(() => account?.operations);
-	const [filteredItems, setFilteredItems] = useState(() => items);
+	const [items, setItems] = useState(() => {
+		if (!account) return [];
+		return account?.operations;
+	});
+	const [filteredItems, setFilteredItems] = useState(() => items || []);
 
-	// console.log(filteredItems);
 	const accountItemsList = filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
 
 	const toggleContext = () => {
@@ -73,6 +75,7 @@ export default ({id, account, dispatch, onRefresh}) => {
 	)
 
 	useEffect(() => {
+		if (!account) return;
 		setItems(account?.operations);
 		setFilteredItems(account?.operations);
 	}, [account]);
@@ -114,43 +117,50 @@ export default ({id, account, dispatch, onRefresh}) => {
 			}
 			>
 				<PanelHeaderContent
-					aside={<Icon16Dropdown style={{transform: `rotate(${isOpened ? '180deg' : '0'})`}}/>}
+					aside={account && <Icon16Dropdown style={{transform: `rotate(${isOpened ? '180deg' : '0'})`}}/>}
 					onClick={toggleContext}
 				>
-					{account?.title}
+					{account ? account?.title : 'Счет удалён'}
 				</PanelHeaderContent>
 			</PanelHeader>
-			<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
-				<List>
-					<Cell
-						before={<Icon28DeleteOutline/>}
-						onClick={() => {
-							dispatch({type: SET_POPOUT, payload: {popout: alert}})
-						}}
-					>
-						Удалить счет {account?.title}
-					</Cell>
-				</List>
-			</PanelHeaderContext>
-			<MonthSwitch onRefresh={onRefresh} />
-			<Search onChange={(e) => {
-				onSearch(e.currentTarget.value)
-			}}/>
-			<Group
-				header={<Header mode="secondary">Информация по счету</Header>}
-				separator="show"
-			>
-				<Div>
-					<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(account?.sum)}</Title>
-				</Div>
+			{
+				account
+				&&
+			<>
+				<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
+					<List>
+						<Cell
+							before={<Icon28DeleteOutline/>}
+							onClick={() => {
+								dispatch({type: SET_POPOUT, payload: {popout: alert}})
+							}}
+						>
+							Удалить счет {account?.title}
+						</Cell>
+					</List>
+				</PanelHeaderContext>
+				<MonthSwitch onRefresh={onRefresh}/>
+				<Search onChange={(e) => {
+					onSearch(e.currentTarget.value)
+				}}/>
+				<Group
+					header={<Header mode="secondary">Информация по счету</Header>}
+					separator="show"
+				>
+					<Div>
+						<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(account?.sum)}</Title>
+					</Div>
 
-				{account?.operations.length === 0 && <Footer>Операций по счету еще не было</Footer>}
-				<Div>
-					{accountItemsList}
-					{accountItemsList.length === 0 && <Footer>Нет данных для отображения</Footer>}
-				</Div>
-			</Group>
-			<InfoSnackbar/>
+					{account?.operations.length === 0 && <Footer>Операций по счету еще не было</Footer>}
+					<Div>
+						{accountItemsList}
+						{accountItemsList.length === 0 && <Footer>Нет данных для отображения</Footer>}
+					</Div>
+				</Group>
+				<InfoSnackbar/>
+			</>
+			}
+
 		</Panel>
 	)
 }
