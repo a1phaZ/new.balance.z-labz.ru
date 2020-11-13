@@ -1,9 +1,9 @@
 export default (e) => {
 	const validity = e.currentTarget.validity;
-	if (validity.valid) {
+	if (validity.valid && e.currentTarget.value !== ' ') {
 		return {status: 'valid', message: null}
 	} else {
-		if (validity.badInput || validity.valueMissing) {
+		if (validity.badInput || validity.valueMissing || e.currentTarget.value === ' ') {
 			return {status: 'error', message: 'Неверный формат ввода | Отсутствует значение'}
 		}
 		if (validity.tooLong) {

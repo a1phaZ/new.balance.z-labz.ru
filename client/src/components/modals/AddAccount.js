@@ -15,6 +15,14 @@ const reducer = (state, action) => {
 	switch (action.type) {
 		case 'CHANGE_STATE':
 			const {payload} = action;
+			// if (payload.title === ' ' && state.title === '') {
+			// 	console.log(payload.title);
+			// 	return {
+			// 		...state,
+			// 		title: payload.title,
+			// 		titleValidation: payload.titleValidation
+			// 	}
+			// }
 			return {
 				...state,
 				...payload
@@ -49,7 +57,7 @@ export default ({onRefresh}) => {
 						 maxLength={'20'}
 						 status={stateForm.titleValidation.status}
 						 bottom={stateForm.titleValidation.message ? stateForm.titleValidation.message : `${stateForm.title.length} из 20`}
-						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {title: e.currentTarget.value, titleValidation: validate(e)}})}/>
+						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {title: e.currentTarget.value.replace(/^\s*/g, ''), titleValidation: validate(e)}})}/>
 			<Input type={'number'} placeholder={currency(0)} top={'Остаток в рублях'} value={stateForm.sum}
 						 required={true}
 						 status={stateForm.sumValidation.status}

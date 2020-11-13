@@ -112,7 +112,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 						 onChange={(e) => {
 							 dispatch({
 								 type: 'CHANGE_STATE',
-								 payload: {title: e.currentTarget.value, validateForm: {title: validate(e)}}
+								 payload: {title: e.currentTarget.value.replace(/^\s*/g, ''), validateForm: {title: validate(e)}}
 							 })
 						 }}/>
 			<Radio name={'income'}
