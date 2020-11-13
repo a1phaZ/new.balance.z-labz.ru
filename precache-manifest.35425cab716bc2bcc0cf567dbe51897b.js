@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d628cc1ba22b6e32092e5dfd71ea0f3c",
+    "revision": "388c67fd0d5ad77184b55c95f548dc21",
     "url": "/new.balance.z-labz.ru/index.html"
   },
   {
-    "revision": "87955c641686f7ea05e8",
+    "revision": "a0b75749e6452a3682e9",
     "url": "/new.balance.z-labz.ru/static/css/2.6326594c.chunk.css"
   },
   {
-    "revision": "87955c641686f7ea05e8",
-    "url": "/new.balance.z-labz.ru/static/js/2.9203eeb3.chunk.js"
+    "revision": "a0b75749e6452a3682e9",
+    "url": "/new.balance.z-labz.ru/static/js/2.5d073872.chunk.js"
   },
   {
     "revision": "570d362d673dab785e62d2b8563e1118",
-    "url": "/new.balance.z-labz.ru/static/js/2.9203eeb3.chunk.js.LICENSE.txt"
+    "url": "/new.balance.z-labz.ru/static/js/2.5d073872.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "1d0403bf73486a10ab43",
-    "url": "/new.balance.z-labz.ru/static/js/main.55c41da8.chunk.js"
+    "revision": "9410c7ad14eac2bd391c",
+    "url": "/new.balance.z-labz.ru/static/js/main.b7151a1c.chunk.js"
   },
   {
     "revision": "1cb9db3945fad1ad820f",
