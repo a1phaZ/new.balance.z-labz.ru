@@ -75,7 +75,7 @@ const App = () => {
 			<ModalPage id={'add-account'} header={
 				<ModalPageHeader
 					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
-					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : <Icon24Cancel/>}</PanelHeaderButton>}
+					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
 				>
 					Добавить счет
 				</ModalPageHeader>
@@ -86,7 +86,7 @@ const App = () => {
 			<ModalPage id={'add-money'} header={
 				<ModalPageHeader
 					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
-					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : <Icon24Cancel/>}</PanelHeaderButton>}
+					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
 				>
 					{state.editedItem ? 'Редактировать' : 'Добавить запись'}
 				</ModalPageHeader>
@@ -98,7 +98,7 @@ const App = () => {
 			<ModalPage id={'add-budget'} header={
 				<ModalPageHeader
 					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
-					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : <Icon24Cancel/>}</PanelHeaderButton>}
+					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
 				>
 					Добавить бюджет
 				</ModalPageHeader>
