@@ -3,8 +3,8 @@ export default (e) => {
 	if (validity.valid) {
 		return {status: 'valid', message: null}
 	} else {
-		if (validity.badInput) {
-			return {status: 'error', message: 'Неверный формат ввода'}
+		if (validity.badInput || validity.valueMissing) {
+			return {status: 'error', message: 'Неверный формат ввода | Отсутствует значение'}
 		}
 		if (validity.tooLong) {
 			return {status: 'error', message: 'Превышена максимальная длина'}
@@ -15,6 +15,10 @@ export default (e) => {
 		if (validity.rangeOverflow) {
 			return {status: 'error', message: 'Слишком большое число'}
 		}
+		if (validity.rangeUnderflow) {
+			return {status: 'error', message: 'Нельзя вводить отрицательные числа'}
+		}
+
 		return {status: 'default', message: null}
 	}
 }

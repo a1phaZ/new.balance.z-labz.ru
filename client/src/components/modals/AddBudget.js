@@ -67,6 +67,7 @@ export default ({onRefresh, editedItem = null}) => {
 			<Input type={'number'} placeholder={currency(0)} top={'Бюджет в рублях'} value={stateForm.startSum}
 						 required={true}
 						 status={stateForm.validate?.startSum?.status}
+						 min={0}
 						 max={999999999}
 						 step={0.01}
 						 bottom={stateForm.validate?.startSum?.message ? stateForm.validate?.startSum?.message : 'Сколько вы готовы на это потратить?'}

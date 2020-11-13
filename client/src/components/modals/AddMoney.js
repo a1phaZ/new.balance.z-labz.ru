@@ -178,6 +178,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 						 placeholder={currency(0)}
 						 top={'Цена'}
 						 max={99999999}
+						 min={0}
 						 step={0.01}
 						 status={state.validate?.price?.status}
 						 bottom={state.validate?.price?.message}
@@ -201,6 +202,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 						 placeholder={'0'}
 						 top={'Кол-во'}
 						 max={9999999}
+						 min={0}
 						 step={0.001}
 						 status={state.validate?.quantity?.status}
 						 bottom={state.validate?.quantity?.message}
