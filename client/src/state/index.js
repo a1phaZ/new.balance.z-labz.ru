@@ -63,6 +63,7 @@ const reducer = (state, action) => {
 					activeView: historyState.activeView ? historyState.activeView : 'home',
 					activePanel: historyState.activePanel ? historyState.activePanel : 'home',
 					modal: historyState.modal ? historyState.modal : null,
+					popout: historyState.popout ? historyState.popout : null,
 					history: [{activeView: historyState.activeView ? historyState.activeView : 'home', activePanel: historyState.activePanel ? historyState.activePanel : 'home'}],
 				}
 			}
@@ -127,6 +128,11 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_POPOUT: {
+			if (action.payload.popout) {
+				window.history.pushState({popout: null}, `popout`, window.location.search);
+			} else {
+				window.history.replaceState({activeView: state.activeView, activePanel: state.activePanel}, `${state.activeView}.${state.activePanel}`, window.location.search);
+			}
 			return {
 				...state,
 				popout: action.payload.popout
