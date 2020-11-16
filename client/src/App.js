@@ -4,8 +4,9 @@ import '@vkontakte/vkui/dist/vkui.css';
 import Home from './panels/Home';
 import useApi from "./handlers/useApi";
 import {State} from './state';
-import {SET_ACCOUNTS, SET_ACTIVE_VIEW, SET_BUDGETS, SET_HISTORY_BACK, SET_MODAL} from "./state/actions";
+import {SET_ACCOUNTS, SET_ACTIVE_VIEW, SET_BUDGETS, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT} from "./state/actions";
 import {
+	Alert,
 	ANDROID,
 	Epic,
 	IOS,
@@ -17,6 +18,7 @@ import {
 	Tabbar,
 	TabbarItem
 } from "@vkontakte/vkui";
+import bridge from "@vkontakte/vk-bridge";
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon28HomeOutline from '@vkontakte/icons/dist/28/home_outline';
 import Icon28CoinsOutline from '@vkontakte/icons/dist/28/coins_outline';
@@ -34,6 +36,33 @@ const App = () => {
 	const [{response, isLoading}, doApiFetch] = useApi('/state');
 	const [needFetch, setNeedFetch] = useState(true);
 	const [state, dispatch] = useContext(State);
+	const [lastBackAction, setLastBackAction] = useState(0);
+
+	const alert = (
+		<Alert
+			actions={[
+				{
+					title: 'Отмена',
+					autoclose: true,
+					mode: "cancel"
+				},
+				{
+					title: 'Выйти',
+					mode: 'destructive',
+					autoclose: true,
+					action: async () => {
+						await bridge.send('VKWebAppClose', {status: 'success'});
+					}
+				}
+			]}
+			onClose={() => {
+				dispatch({type: SET_POPOUT, payload: {popout: null}})
+			}}
+		>
+			<h2>Выйти из приложения?</h2>
+			<p>Вы действительно хотите выйти?</p>
+		</Alert>
+	)
 
 	useEffect(() => {
 		if (!needFetch) return;
@@ -52,15 +81,21 @@ const App = () => {
 	}, [response, dispatch]);
 
 	useEffect(() => {
-		window.onpopstate = (e) => {
-			if (state.modal) {
-				return dispatch({type: SET_MODAL, payload: {modal: null}});
-			}
-			if (state.history.length !== 0) {
-				return dispatch({type: SET_HISTORY_BACK, payload: {state: e.state}});
+		window.onpopstate = () => {
+			let timeNow = +new Date();
+			if (timeNow - lastBackAction > 500) {
+				if (state.canClose) {
+					dispatch({type: SET_POPOUT, payload: {popout: alert}});
+				} else {
+					setLastBackAction(timeNow);
+					dispatch({type: SET_HISTORY_BACK});
+				}
+
+			} else {
+				window.history.pushState(null, null, window.location.search);
 			}
 		}
-	}, [dispatch, state.history, state.modal]);
+	}, [dispatch, state.history, state.modal, lastBackAction, state.canClose, alert]);
 
 	const onRefresh = useCallback(() => {
 		setNeedFetch(true);

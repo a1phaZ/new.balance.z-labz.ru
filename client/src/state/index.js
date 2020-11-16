@@ -2,12 +2,13 @@ import React, {createContext, useReducer} from 'react';
 import {
 	SET_ACCOUNT,
 	SET_ACCOUNTS,
-	SET_ACTIVE_PANEL,
 	SET_ACTIVE_VIEW,
 	SET_BUDGET,
-	SET_BUDGETS, SET_DATE,
+	SET_BUDGETS,
+	SET_DATE,
 	SET_EDITED_ITEM,
-	SET_ERROR, SET_HISTORY_BACK,
+	SET_ERROR,
+	SET_HISTORY_BACK,
 	SET_MODAL,
 	SET_POPOUT,
 	SET_SUCCESS_MESSAGE
@@ -26,64 +27,84 @@ const initialState = {
 	popout: null,
 	editedItem: null,
 	currentDate: new Date(),
-	history: []
+	history: [],
+	modalsHistory: [],
+	popoutHistory: [],
+	canClose: true
 }
 
 const reducer = (state, action) => {
 	switch (action.type) {
 		case SET_ACTIVE_VIEW: {
-			if (action.payload.view === state.activeView && action.payload.panel === state.activePanel) {
-				window.history.replaceState({activeView: state.activeView, activePanel: state.activePanel}, `${state.activeView}.${state.activePanel}`, window.location.search);
-				return {
-					...state
+			window.history.pushState(null, null, window.location.search);
+
+			let history = state.history;
+			if (history.length !== 0) {
+				let lastHistoryState = history[history.length - 1];
+				if (lastHistoryState.view === action.payload.view && lastHistoryState.panel === action.payload.panel) {
+					return {
+						...state
+					}
+				} else {
+					return {
+						...state,
+						activeView: action.payload.view,
+						activePanel: action.payload.panel,
+						history: [...history, {view: action.payload.view, panel: action.payload.panel}],
+						canClose: false
+					}
 				}
-			}
-			window.history.pushState({activeView: action.payload.view, activePanel: action.payload.panel}, `${action.payload.view}.${action.payload.panel}`, window.location.search);
-			return {
-				...state,
-				activeView: action.payload.view,
-				activePanel: action.payload.panel,
-				history: [...state.history, {activeView: action.payload.view, activePanel: action.payload.panel}]
-			}
-		}
-		case SET_ACTIVE_PANEL: {
-			window.history.replaceState({activeView: state.activeView, activePanel: action.payload.panel}, `${state.activeView}.${action.payload.panel}`, window.location.search);
-			return {
-				...state,
-				activePanel: action.payload.panel,
-				history: [...state.history, {activeView: state.activeView, activePanel: action.payload.panel}]
+			} else {
+				return {
+					...state,
+					activeView: action.payload.view,
+					activePanel: action.payload.panel,
+					history: [...history, {view: action.payload.view, panel: action.payload.panel}],
+					canClose: false
+				}
 			}
 		}
 		case SET_HISTORY_BACK: {
-			const backEl = state.history[state.history.length-2];
-			const historyState = action.payload?.state;
-			if (historyState) {
+			window.history.pushState(null, null, window.location.search);
+			const backEl = state.history[state.history.length - 2];
+			let popoutHistory = state.popoutHistory || [];
+			let modalsHistory = state.modalsHistory || [];
+
+			if (popoutHistory.length !== 0) {
 				return {
 					...state,
-					activeView: historyState.activeView ? historyState.activeView : 'home',
-					activePanel: historyState.activePanel ? historyState.activePanel : 'home',
-					modal: historyState.modal ? historyState.modal : null,
-					popout: historyState.popout ? historyState.popout : null,
-					history: [{activeView: historyState.activeView ? historyState.activeView : 'home', activePanel: historyState.activePanel ? historyState.activePanel : 'home'}],
+					popout: null,
+					popoutHistory: []
 				}
 			}
+
+			if (modalsHistory.length !== 0) {
+				return {
+					...state,
+					modal: null,
+					modalsHistory: []
+				}
+			}
+
 			if (!backEl) {
 				return {
 					...state,
 					activeView: 'home',
 					activePanel: 'home',
-					history: [{activeView: 'home', activePanel: 'home'}]
+					history: [],
+					canClose: true
 				}
 			} else {
 				const newHistory = state.history;
 				newHistory.pop();
 				return {
 					...state,
-					activeView: backEl.activeView,
-					activePanel: backEl.activePanel,
+					activeView: backEl.view,
+					activePanel: backEl.panel,
 					history: [...newHistory]
 				}
 			}
+
 		}
 		case SET_ACCOUNTS: {
 			const accountId = state.account?._id;
@@ -128,25 +149,17 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_POPOUT: {
-			if (action.payload.popout) {
-				window.history.pushState({popout: null}, `popout`, window.location.search);
-			} else {
-				window.history.replaceState({activeView: state.activeView, activePanel: state.activePanel}, `${state.activeView}.${state.activePanel}`, window.location.search);
-			}
 			return {
 				...state,
-				popout: action.payload.popout
+				popout: action.payload.popout,
+				popoutHistory: action.payload.popout ? [action.payload.popout] : [],
 			}
 		}
 		case SET_MODAL: {
-			if (action.payload.modal) {
-				window.history.pushState({modal: action.payload.modal}, `modal.${action.payload.modal}`, window.location.search);
-			} else {
-				window.history.replaceState({activeView: state.activeView, activePanel: state.activePanel}, `${state.activeView}.${state.activePanel}`, window.location.search);
-			}
 			return {
 				...state,
-				modal: action.payload.modal
+				modal: action.payload.modal,
+				modalsHistory: action.payload.modal ? [action.payload.modal] : []
 			}
 		}
 		case SET_SUCCESS_MESSAGE: {
