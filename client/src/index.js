@@ -20,7 +20,9 @@ ReactDOM.render(
   <StateProvider>
     <App />
   </StateProvider>, document.getElementById("root"));
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "development" || new URL(window.location.href).searchParams.get('vk_user_id') === process.env.REACT_ID) {
   import("./eruda").then(({ default: eruda }) => {}); //runtime download
 }
+
+console.log(new URL(window.location.href).searchParams.get('vk_user_id'));
 // import("./eruda").then(({ default: eruda }) => {}); //runtime download
