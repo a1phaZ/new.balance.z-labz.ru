@@ -26,7 +26,7 @@ export default ({id, budgets, dispatch, date = new Date(), onRefresh}) => {
 			<MonthSwitch onRefresh={onRefresh} />
 			<Group
 				header={<Header mode="secondary">Ваши бюджеты
-					на {format(new Date(date), 'MMM yyyy', {locale: ruLocale})}</Header>}
+					на {format(new Date(date), 'dd MMMM yyyy', {locale: ruLocale})}</Header>}
 				separator="show"
 			>
 				<ListOfItems data={budgets} dispatch={dispatch} showAll={true} itemsName={'budgets'} needHide={false}/>
