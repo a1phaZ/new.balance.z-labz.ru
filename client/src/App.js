@@ -81,21 +81,22 @@ const App = () => {
 	}, [response, dispatch]);
 
 	useEffect(() => {
-		window.onpopstate = () => {
-			let timeNow = +new Date();
-			if (timeNow - lastBackAction > 500) {
+			window.onpopstate = () => {
+				let timeNow = +new Date();
 				if (state.canClose) {
+					window.history.pushState(null, null, window.location.search);
 					dispatch({type: SET_POPOUT, payload: {popout: alert}});
 				} else {
-					setLastBackAction(timeNow);
-					dispatch({type: SET_HISTORY_BACK});
+					if (timeNow - lastBackAction > 500) {
+						setLastBackAction(timeNow);
+						dispatch({type: SET_HISTORY_BACK});
+					} else {
+						window.history.pushState(null, null, window.location.search);
+					}
 				}
-
-			} else {
-				window.history.pushState(null, null, window.location.search);
 			}
-		}
-	}, [dispatch, state.history, state.modal, lastBackAction, state.canClose, alert]);
+		}, [dispatch, state.history, state.modal, lastBackAction, state.canClose, alert]
+	);
 
 	const onRefresh = useCallback(() => {
 		setNeedFetch(true);

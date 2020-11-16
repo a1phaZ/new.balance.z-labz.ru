@@ -153,13 +153,15 @@ const reducer = (state, action) => {
 				...state,
 				popout: action.payload.popout,
 				popoutHistory: action.payload.popout ? [action.payload.popout] : [],
+				canClose: false
 			}
 		}
 		case SET_MODAL: {
 			return {
 				...state,
 				modal: action.payload.modal,
-				modalsHistory: action.payload.modal ? [action.payload.modal] : []
+				modalsHistory: action.payload.modal ? [action.payload.modal] : [],
+				canClose: false
 			}
 		}
 		case SET_SUCCESS_MESSAGE: {
