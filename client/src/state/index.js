@@ -11,7 +11,8 @@ import {
 	SET_HISTORY_BACK,
 	SET_MODAL,
 	SET_POPOUT,
-	SET_SUCCESS_MESSAGE
+	SET_SUCCESS_MESSAGE,
+	SET_COLOR_SCHEME
 } from './actions';
 
 const initialState = {
@@ -30,11 +31,18 @@ const initialState = {
 	history: [],
 	modalsHistory: [],
 	popoutHistory: [],
-	canClose: true
+	canClose: true,
+	scheme: 'client_light'
 }
 
 const reducer = (state, action) => {
 	switch (action.type) {
+		case SET_COLOR_SCHEME: {
+			return {
+				...state,
+				scheme: action.payload.scheme
+			}
+		}
 		case SET_ACTIVE_VIEW: {
 			window.history.pushState(null, null, window.location.search);
 

@@ -4,10 +4,19 @@ import '@vkontakte/vkui/dist/vkui.css';
 import Home from './panels/Home';
 import useApi from "./handlers/useApi";
 import {State} from './state';
-import {SET_ACCOUNTS, SET_ACTIVE_VIEW, SET_BUDGETS, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT} from "./state/actions";
+import {
+	SET_ACCOUNTS,
+	SET_ACTIVE_VIEW,
+	SET_BUDGETS,
+	SET_COLOR_SCHEME,
+	SET_HISTORY_BACK,
+	SET_MODAL,
+	SET_POPOUT
+} from "./state/actions";
 import {
 	Alert,
 	ANDROID,
+	ConfigProvider,
 	Epic,
 	IOS,
 	ModalPage,
@@ -37,6 +46,21 @@ const App = () => {
 	const [needFetch, setNeedFetch] = useState(true);
 	const [state, dispatch] = useContext(State);
 	const [lastBackAction, setLastBackAction] = useState(0);
+
+	useEffect(() => {
+		bridge.subscribe(({detail: {type, data}}) => {
+			if (type === 'VKWebAppUpdateConfig') {
+				// const schemeAttribute = document.createAttribute('scheme');
+				// schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
+				// console.log(data);
+				// document.body.attributes.setNamedItem(schemeAttribute);
+				dispatch({type: SET_COLOR_SCHEME, payload: {scheme: data.scheme}})
+			}
+		});
+
+// Init VK  Mini App
+		bridge.send("VKWebAppInit", {});
+	}, [dispatch]);
 
 	const alert = (
 		<Alert
@@ -186,21 +210,23 @@ const App = () => {
 	)
 
 	return (
-		<Epic activeStory={state.activeView} tabbar={tabBar}>
-			<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-				<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}
-							onRefresh={onRefresh} isFetching={isLoading}/>
-			</View>
-			<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-				<AccountInfo id={'account'} account={state.accounts.find(item => item._id === state.account?._id)}
-										 dispatch={dispatch} onRefresh={onRefresh}/>
-				<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
-										dispatch={dispatch} onRefresh={onRefresh}/>
-				<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
-								 date={state.currentDate}/>
-				<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>
-			</View>
-		</Epic>
+		<ConfigProvider scheme={state.scheme}>
+			<Epic activeStory={state.activeView} tabbar={tabBar}>
+				<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
+					<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}
+								onRefresh={onRefresh} isFetching={isLoading}/>
+				</View>
+				<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
+					<AccountInfo id={'account'} account={state.accounts.find(item => item._id === state.account?._id)}
+											 dispatch={dispatch} onRefresh={onRefresh}/>
+					<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
+											dispatch={dispatch} onRefresh={onRefresh}/>
+					<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
+									 date={state.currentDate}/>
+					<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>
+				</View>
+			</Epic>
+		</ConfigProvider>
 	);
 }
 
