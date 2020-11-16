@@ -6,6 +6,9 @@ import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
 import {StateProvider} from "./state";
 
+// Init VK  Mini App
+bridge.send("VKWebAppInit");
+
 bridge.subscribe(({detail: {type, data}}) => {
   if (type === 'VKWebAppUpdateConfig') {
     const schemeAttribute = document.createAttribute('scheme');
@@ -13,16 +16,14 @@ bridge.subscribe(({detail: {type, data}}) => {
     document.body.attributes.setNamedItem(schemeAttribute);
   }
 });
-// Init VK  Mini App
-bridge.send("VKWebAppInit");
 
 ReactDOM.render(
   <StateProvider>
     <App />
   </StateProvider>, document.getElementById("root"));
-if (process.env.NODE_ENV === "development" || new URL(window.location.href).searchParams.get('vk_user_id') === process.env.REACT_ID) {
+if (new URL(window.location.href).searchParams.get('vk_user_id') === process.env.REACT_APP_ID.toString()) {
   import("./eruda").then(({ default: eruda }) => {}); //runtime download
 }
 
-console.log(new URL(window.location.href).searchParams.get('vk_user_id'));
+// console.log(new URL(window.location.href).searchParams.get('vk_user_id'));
 // import("./eruda").then(({ default: eruda }) => {}); //runtime download
