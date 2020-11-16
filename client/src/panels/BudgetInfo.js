@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {
 	Alert,
 	Cell,
-	Div, Footer,
+	Div,
+	Footer,
 	List,
 	Panel,
 	PanelHeader,
@@ -12,7 +13,7 @@ import {
 	PanelHeaderContext,
 	Search
 } from "@vkontakte/vkui";
-import {SET_ACTIVE_VIEW, SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT} from "../state/actions";
+import {SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import useApi from "../handlers/useApi";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
@@ -37,7 +38,9 @@ export default ({id, budget, dispatch, onRefresh}) => {
 	useEffect(() => {
 		if (!response) return;
 		if (response?.deletedCount) {
-			dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
+			// console.log(state.history);
+			// dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
+			dispatch({type: SET_HISTORY_BACK});
 			dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 			onRefresh();
 		}
@@ -123,6 +126,7 @@ export default ({id, budget, dispatch, onRefresh}) => {
 							<Cell
 								before={<Icon28EditOutline/>}
 								onClick={() => {
+									dispatch({type: SET_EDITED_ITEM, payload: {item: budget}})
 									dispatch({type: SET_MODAL, payload: {modal: 'add-budget'}})
 									toggleContext();
 								}}

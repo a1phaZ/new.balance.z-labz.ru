@@ -60,6 +60,7 @@ const App = () => {
 
 // Init VK  Mini App
 		bridge.send("VKWebAppInit", {});
+		// dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
 	}, [dispatch]);
 
 	const alert = (
@@ -162,10 +163,10 @@ const App = () => {
 					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
 					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
 				>
-					{state.budget ? 'Редактировать' : 'Добавить бюджет'}
+					{state.editedItem ? 'Редактировать' : 'Добавить бюджет'}
 				</ModalPageHeader>
 			}>
-				<AddBudget editedItem={state.budget} onRefresh={onRefresh} dispatch={dispatch}/>
+				<AddBudget editedItem={state.editedItem} onRefresh={onRefresh} dispatch={dispatch}/>
 			</ModalPage>
 		</ModalRoot>
 	)

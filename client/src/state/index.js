@@ -28,7 +28,7 @@ const initialState = {
 	popout: null,
 	editedItem: null,
 	currentDate: new Date(),
-	history: [],
+	history: [{view: 'home', panel: 'home'}],
 	modalsHistory: [],
 	popoutHistory: [],
 	canClose: true,
@@ -47,6 +47,15 @@ const reducer = (state, action) => {
 			window.history.pushState(null, null, window.location.search);
 
 			let history = state.history;
+			// if (action.payload.view === 'home' && action.payload.panel === 'home') {
+			// 	return {
+			// 		...state,
+			// 		activeView: 'home',
+			// 		activePanel: 'home',
+			// 		history: [],
+			// 		canClose: true
+			// 	}
+			// }
 			if (history.length !== 0) {
 				let lastHistoryState = history[history.length - 1];
 				if (lastHistoryState.view === action.payload.view && lastHistoryState.panel === action.payload.panel) {
@@ -68,7 +77,7 @@ const reducer = (state, action) => {
 					activeView: action.payload.view,
 					activePanel: action.payload.panel,
 					history: [...history, {view: action.payload.view, panel: action.payload.panel}],
-					canClose: false
+					canClose: true
 				}
 			}
 		}
@@ -84,7 +93,8 @@ const reducer = (state, action) => {
 					...state,
 					popout: null,
 					popoutHistory: [],
-					canClose: canClose
+					canClose: canClose,
+					editedItem: null
 				}
 			}
 
@@ -94,7 +104,8 @@ const reducer = (state, action) => {
 					...state,
 					modal: null,
 					modalsHistory: [],
-					canClose: canClose
+					canClose: canClose,
+					editedItem: null
 				}
 			}
 
@@ -104,7 +115,8 @@ const reducer = (state, action) => {
 					activeView: 'home',
 					activePanel: 'home',
 					history: [],
-					canClose: true
+					canClose: true,
+					editedItem: null
 				}
 			} else {
 				const newHistory = state.history;
@@ -113,7 +125,8 @@ const reducer = (state, action) => {
 					...state,
 					activeView: backEl.view,
 					activePanel: backEl.panel,
-					history: [...newHistory]
+					history: [...newHistory],
+					editedItem: null
 				}
 			}
 
@@ -165,7 +178,7 @@ const reducer = (state, action) => {
 			let history = state.history;
 			let canClose = state.canClose;
 			if (history.length !== 0 || action.payload.popout) {
-				canClose = false;
+				canClose = history.length === 1 && !action.payload.popout;
 			} else {
 				if (history.length === 0 && !action.payload.popout) {
 					canClose = true
@@ -183,7 +196,7 @@ const reducer = (state, action) => {
 			let history = state.history;
 			let canClose = state.canClose;
 			if (history.length !== 0 || action.payload.modal) {
-				canClose = false;
+				canClose = history.length === 1 && !action.payload.modal;
 			} else {
 				if (history.length === 0 && !action.payload.modal) {
 					canClose = true

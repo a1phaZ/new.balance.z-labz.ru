@@ -18,7 +18,7 @@ import {
 } from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import Group from "@vkontakte/vkui/dist/components/Group/Group";
-import {SET_ACTIVE_VIEW, SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT} from "../state/actions";
+import {SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
 
@@ -82,8 +82,8 @@ export default ({id, account, dispatch, onRefresh}) => {
 
 	useEffect(() => {
 		if (!response) return;
-		dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
-		// dispatch({type: SET_HISTORY_BACK});
+		// dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
+		dispatch({type: SET_HISTORY_BACK});
 		dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 		onRefresh();
 	}, [dispatch, response, onRefresh]);
@@ -126,39 +126,39 @@ export default ({id, account, dispatch, onRefresh}) => {
 			{
 				account
 				&&
-			<>
-				<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
-					<List>
-						<Cell
-							before={<Icon28DeleteOutline/>}
-							onClick={() => {
-								dispatch({type: SET_POPOUT, payload: {popout: alert}})
-							}}
-						>
-							Удалить счет {account?.title}
-						</Cell>
-					</List>
-				</PanelHeaderContext>
-				<MonthSwitch onRefresh={onRefresh}/>
-				<Search onChange={(e) => {
-					onSearch(e.currentTarget.value)
-				}}/>
-				<Group
-					header={<Header mode="secondary">Информация по счету</Header>}
-					separator="show"
-				>
-					<Div>
-						<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(account?.sum)}</Title>
-					</Div>
+				<>
+					<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
+						<List>
+							<Cell
+								before={<Icon28DeleteOutline/>}
+								onClick={() => {
+									dispatch({type: SET_POPOUT, payload: {popout: alert}})
+								}}
+							>
+								Удалить счет {account?.title}
+							</Cell>
+						</List>
+					</PanelHeaderContext>
+					<MonthSwitch onRefresh={onRefresh}/>
+					<Search onChange={(e) => {
+						onSearch(e.currentTarget.value)
+					}}/>
+					<Group
+						header={<Header mode="secondary">Информация по счету</Header>}
+						separator="show"
+					>
+						<Div>
+							<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(account?.sum)}</Title>
+						</Div>
 
-					{account?.operations.length === 0 && <Footer>Операций по счету еще не было</Footer>}
-					<Div>
-						{accountItemsList}
-						{accountItemsList.length === 0 && <Footer>Нет данных для отображения</Footer>}
-					</Div>
-				</Group>
-				<InfoSnackbar/>
-			</>
+						{account?.operations.length === 0 && <Footer>Операций по счету еще не было</Footer>}
+						<Div>
+							{accountItemsList}
+							{accountItemsList.length === 0 && <Footer>Нет данных для отображения</Footer>}
+						</Div>
+					</Group>
+					<InfoSnackbar/>
+				</>
 			}
 
 		</Panel>
