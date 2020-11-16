@@ -162,7 +162,7 @@ const App = () => {
 					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
 					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
 				>
-					Добавить бюджет
+					{state.budget ? 'Редактировать' : 'Добавить бюджет'}
 				</ModalPageHeader>
 			}>
 				<AddBudget editedItem={state.budget} onRefresh={onRefresh} dispatch={dispatch}/>
