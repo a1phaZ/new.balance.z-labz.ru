@@ -84,7 +84,6 @@ const App = () => {
 			window.onpopstate = () => {
 				let timeNow = +new Date();
 				if (state.canClose) {
-					window.history.pushState(null, null, window.location.search);
 					dispatch({type: SET_POPOUT, payload: {popout: alert}});
 				} else {
 					if (timeNow - lastBackAction > 500) {

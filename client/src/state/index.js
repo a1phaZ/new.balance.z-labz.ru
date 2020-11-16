@@ -71,18 +71,22 @@ const reducer = (state, action) => {
 			let modalsHistory = state.modalsHistory || [];
 
 			if (popoutHistory.length !== 0) {
+				const canClose = state.history.length === 0;
 				return {
 					...state,
 					popout: null,
-					popoutHistory: []
+					popoutHistory: [],
+					canClose: canClose
 				}
 			}
 
 			if (modalsHistory.length !== 0) {
+				const canClose = state.history.length === 0;
 				return {
 					...state,
 					modal: null,
-					modalsHistory: []
+					modalsHistory: [],
+					canClose: canClose
 				}
 			}
 
@@ -149,19 +153,39 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_POPOUT: {
+			window.history.pushState(null, null, window.location.search);
+			let history = state.history;
+			let canClose = state.canClose;
+			if (history.length !== 0 || action.payload.popout) {
+				canClose = false;
+			} else {
+				if (history.length === 0 && !action.payload.popout) {
+					canClose = true
+				}
+			}
 			return {
 				...state,
 				popout: action.payload.popout,
 				popoutHistory: action.payload.popout ? [action.payload.popout] : [],
-				canClose: false
+				canClose: canClose
 			}
 		}
 		case SET_MODAL: {
+			window.history.pushState(null, null, window.location.search);
+			let history = state.history;
+			let canClose = state.canClose;
+			if (history.length !== 0 || action.payload.modal) {
+				canClose = false;
+			} else {
+				if (history.length === 0 && !action.payload.modal) {
+					canClose = true
+				}
+			}
 			return {
 				...state,
 				modal: action.payload.modal,
 				modalsHistory: action.payload.modal ? [action.payload.modal] : [],
-				canClose: false
+				canClose: canClose
 			}
 		}
 		case SET_SUCCESS_MESSAGE: {
