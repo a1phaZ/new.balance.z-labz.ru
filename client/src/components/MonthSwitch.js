@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {addMonths, format, subMonths, isAfter} from 'date-fns';
 import {ru} from 'date-fns/locale';
 import Icon24BrowserBack from '@vkontakte/icons/dist/24/browser_back';
@@ -10,15 +10,24 @@ export default ({onRefresh}) => {
 	const [state, dispatch] = useContext(State);
 	const dateFormat = 'LLLL yyyy';
 	const disabled = isAfter(addMonths(state.currentDate, 1), new Date());
+	const [clickTime, setClickTime] = useState(0);
 	
 	const nextMonth = () => {
-		dispatch({type: 'SET_DATE', payload: {date: (addMonths(state.currentDate, 1))}});
-		onRefresh();
+		let timeNow = +new Date();
+		if (timeNow - clickTime > 500) {
+			dispatch({type: 'SET_DATE', payload: {date: (addMonths(state.currentDate, 1))}});
+			onRefresh();
+			setClickTime(timeNow);
+		}
 	};
 
 	const prevMonth = () => {
-		dispatch({type: 'SET_DATE', payload: {date: (subMonths(state.currentDate, 1))}});
-		onRefresh();
+		let timeNow = +new Date();
+		if (timeNow - clickTime > 500) {
+			dispatch({type: 'SET_DATE', payload: {date: (subMonths(state.currentDate, 1))}});
+			onRefresh();
+			setClickTime(timeNow);
+		}
 	};
 
 	return (
