@@ -39,6 +39,7 @@ import Budgets from "./panels/Budgets";
 import AddBudget from "./components/modals/AddBudget";
 import BudgetInfo from "./panels/BudgetInfo";
 import Stats from "./panels/Stats";
+import InitialScreen from "./panels/InitialScreen";
 
 const App = () => {
 	const os = platform();
@@ -115,7 +116,7 @@ const App = () => {
 						setLastBackAction(timeNow);
 						dispatch({type: SET_HISTORY_BACK});
 					} else {
-						window.history.pushState(null, null, window.location.search);
+						window.history.pushState(null, null);
 					}
 				}
 			}
@@ -214,6 +215,7 @@ const App = () => {
 		<ConfigProvider scheme={state.scheme}>
 			<Epic activeStory={state.activeView} tabbar={tabBar}>
 				<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
+					<InitialScreen id={'init'} dispatch={dispatch} />
 					<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}
 								onRefresh={onRefresh} isFetching={isLoading}/>
 				</View>
