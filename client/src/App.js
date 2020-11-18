@@ -156,7 +156,7 @@ const App = () => {
 				</ModalPageHeader>
 			}>
 				<AddMoney accounts={state.accounts} id={state.account?._id}
-									editedItem={state.editedItem} onRefresh={onRefresh}/>
+									editedItem={state.editedItem} onRefresh={onRefresh} budget={state.budget}/>
 			</ModalPage>
 
 			<ModalPage id={'add-budget'} header={

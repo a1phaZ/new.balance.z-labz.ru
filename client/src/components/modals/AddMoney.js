@@ -39,7 +39,7 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({accounts, id = null, editedItem = null, onRefresh}) => {
+export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => {
 	const [apiStr] = useState(() => {
 		return !editedItem ? '/item' : `/item/${editedItem._id}`;
 	})
@@ -54,6 +54,16 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 		editedItem.date = format(new Date(editedItem.date), 'yyyy-MM-dd');
 		dispatch({type: 'CHANGE_STATE', payload: {...editedItem}});
 	}, [editedItem, dispatch]);
+
+	useEffect(() => {
+		if (!budget?.title) return;
+		dispatch({
+			type: 'CHANGE_STATE',
+			payload: {
+				tags: budget?.title !== '' ? budget?.title.toLowerCase().split(' ') : []
+			}
+		})
+	}, [budget, dispatch]);
 
 	useEffect(() => {
 		if (!response) return;
