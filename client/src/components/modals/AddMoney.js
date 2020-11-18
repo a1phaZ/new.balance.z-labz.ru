@@ -97,9 +97,13 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 						 top={'Дата'}
 						 value={state.date}
 						 required={true}
+						 min={'2015-01-01'}
+						 max={format(new Date(), 'yyyy-MM-dd')}
 						 onChange={(e) => {
-							 dispatch({type: 'CHANGE_STATE', payload: {date: e.currentTarget.value}})
+							 dispatch({type: 'CHANGE_STATE', payload: {date: e.currentTarget.value, validateForm: {date: validate(e)}}})
 						 }}
+						 status={state.validate?.date?.status}
+						 bottom={state.validate?.date?.message}
 			/>
 			<Input type={'text'}
 						 placeholder={'Продукт, услуга, товар'}

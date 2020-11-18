@@ -13,9 +13,11 @@ export default (e) => {
 			return {status: 'error', message: 'Несоответствие типа'}
 		}
 		if (validity.rangeOverflow) {
+			if (e.currentTarget.type === 'date') return {status: 'error', message: 'Нельзя ввести будущую дату'}
 			return {status: 'error', message: 'Слишком большое число'}
 		}
 		if (validity.rangeUnderflow) {
+			if (e.currentTarget.type === 'date') return {status: 'error', message: 'Нельзя ввести дату раньше 1 января 2015'}
 			return {status: 'error', message: 'Нельзя вводить отрицательные числа'}
 		}
 
