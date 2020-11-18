@@ -25,7 +25,7 @@ export default ({data, showAll = false, dispatch, itemsName, needHide = true}) =
 		.map((account, index) => {
 			if (index === 3 && !isShow) {
 				return <Cell
-					key={index}
+					key={'showAll'}
 					expandable
 					onClick={() => {
 						setIsShow(true);
