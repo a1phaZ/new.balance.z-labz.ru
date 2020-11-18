@@ -3,6 +3,7 @@ import {Button, FormLayout, Input} from "@vkontakte/vkui";
 import currency from "../../handlers/currency";
 import useApi from "../../handlers/useApi";
 import validate from "../../handlers/validate";
+import regexp from "../../handlers/regexp";
 
 const initialState = {
 	title: '',
@@ -57,7 +58,7 @@ export default ({onRefresh}) => {
 						 maxLength={'20'}
 						 status={stateForm.titleValidation.status}
 						 bottom={stateForm.titleValidation.message ? stateForm.titleValidation.message : `${stateForm.title.length} из 20`}
-						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {title: e.currentTarget.value.replace(/^\s*/g, ''), titleValidation: validate(e)}})}/>
+						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {title: regexp(e.currentTarget.value), titleValidation: validate(e)}})}/>
 			<Input type={'number'} placeholder={currency(0)} top={'Баланс счета'} value={stateForm.sum}
 						 required={true}
 						 status={stateForm.sumValidation.status}

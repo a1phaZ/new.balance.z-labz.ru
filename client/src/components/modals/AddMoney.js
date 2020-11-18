@@ -4,6 +4,7 @@ import {Button, Checkbox, Counter, Div, FormLayout, Input, Radio, Select, Textar
 import currency from "../../handlers/currency";
 import useApi from "../../handlers/useApi";
 import validate from "../../handlers/validate";
+import regexp from "../../handlers/regexp";
 
 const initialState = {
 	account: '',
@@ -130,7 +131,10 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 						 onChange={(e) => {
 							 dispatch({
 								 type: 'CHANGE_STATE',
-								 payload: {title: e.currentTarget.value.replace(/^\s*/g, ''), validateForm: {title: validate(e)}}
+								 payload: {
+									 title: regexp(e.currentTarget.value),
+									 validateForm: {title: validate(e)}
+								 }
 							 })
 						 }}/>
 			<Radio name={'income'}
@@ -164,7 +168,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 										dispatch({
 											type: 'CHANGE_STATE',
 											payload: {
-												description: e.currentTarget.value,
+												description: regexp(e.currentTarget.value),
 												validateForm: {description: validate(e)}
 											}
 										})
@@ -182,7 +186,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 							 dispatch({
 								 type: 'CHANGE_STATE',
 								 payload: {
-									 tags: e.currentTarget.value !== '' ? e.currentTarget.value.toLowerCase().split(' ') : [],
+									 tags: e.currentTarget.value !== '' ? regexp(e.currentTarget.value).toLowerCase().split(' ') : [],
 									 validateForm: {tags: validate(e)}
 								 }
 							 })
