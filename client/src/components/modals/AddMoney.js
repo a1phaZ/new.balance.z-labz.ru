@@ -70,7 +70,8 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 		onRefresh();
 	}, [response, onRefresh]);
 
-	const tags = state.tags.map((tag, index) => <Counter style={{marginRight: '5px', marginBottom: '5px'}} key={index}>{tag}</Counter>);
+	const tags = state.tags.map((tag, index) => <Counter style={{marginRight: '5px', marginBottom: '5px'}}
+																											 key={index}>{tag}</Counter>);
 
 	return (
 		<FormLayout
@@ -81,7 +82,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 					date: state.date,
 					title: state.title,
 					description: state.description,
-					price: state.boxPrice ? state.price / state.quantity : state.price,
+					price: state.boxPrice ? (state.price / state.quantity).toFixed(4) : state.price,
 					quantity: state.quantity,
 					income: state.income,
 					tags: state.tags,
@@ -110,7 +111,10 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 						 min={'2015-01-01'}
 						 max={format(new Date(), 'yyyy-MM-dd')}
 						 onChange={(e) => {
-							 dispatch({type: 'CHANGE_STATE', payload: {date: e.currentTarget.value, validateForm: {date: validate(e)}}})
+							 dispatch({
+								 type: 'CHANGE_STATE',
+								 payload: {date: e.currentTarget.value, validateForm: {date: validate(e)}}
+							 })
 						 }}
 						 status={state.validate?.date?.status}
 						 bottom={state.validate?.date?.message}
@@ -177,7 +181,10 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 						 onChange={(e) => {
 							 dispatch({
 								 type: 'CHANGE_STATE',
-								 payload: {tags: e.currentTarget.value !== '' ? e.currentTarget.value.toLowerCase().split(' ') : [], validateForm: {tags: validate(e)}}
+								 payload: {
+									 tags: e.currentTarget.value !== '' ? e.currentTarget.value.toLowerCase().split(' ') : [],
+									 validateForm: {tags: validate(e)}
+								 }
 							 })
 						 }}
 			/>
@@ -193,7 +200,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 						 top={'Цена'}
 						 max={99999999}
 						 min={0}
-						 step={0.01}
+						 step={0.0001}
 						 status={state.validate?.price?.status}
 						 bottom={state.validate?.price?.message}
 						 value={state.price}
@@ -205,13 +212,17 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 							 })
 						 }}
 			/>
-			<Checkbox value={state.boxPrice}
-								onClick={() => {
-									dispatch({type: 'CHANGE_STATE', payload: {boxPrice: !state.boxPrice}})
-								}}
-			>
-				Цена за упаковку
-			</Checkbox>
+			{
+				!state.income
+				&&
+				<Checkbox value={state.boxPrice}
+									onClick={() => {
+										dispatch({type: 'CHANGE_STATE', payload: {boxPrice: !state.boxPrice}})
+									}}
+				>
+					Цена за упаковку
+				</Checkbox>
+			}
 			<Input type={'number'}
 						 placeholder={'0'}
 						 top={'Кол-во'}

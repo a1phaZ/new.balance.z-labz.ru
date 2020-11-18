@@ -12,6 +12,9 @@ export default (e) => {
 		if (validity.typeMismatch) {
 			return {status: 'error', message: 'Несоответствие типа'}
 		}
+		if (validity.stepMismatch) {
+			return {status: 'error', message: 'Слишком большая дробная часть'}
+		}
 		if (validity.rangeOverflow) {
 			if (e.currentTarget.type === 'date') return {status: 'error', message: 'Нельзя ввести будущую дату'}
 			return {status: 'error', message: 'Слишком большое число'}
