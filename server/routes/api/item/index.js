@@ -65,7 +65,10 @@ router.post('/', async (req, res, next) => {
 		})
 		.then(async box => await MoneyBox.findById(box._id).populate('operations'))
 		.then(response => toJson.dataToJson(response))
-		.then(data => res.status(200).json(data))
+		.then(data => {
+			data.message = 'Запись сохранена'
+			res.status(200).json(data)
+		})
 		.catch(err => {
 			if (err.errors) {
 				return next(createError(err.statusCode, getMongooseError(err)))
@@ -115,7 +118,10 @@ router.patch('/:id', async (req, res, next) => {
 			}, {$set: {sum: sum}}, {new: true}).populate('operations');
 		})
 		.then(response => toJson.dataToJson(response))
-		.then(data => res.status(200).json(data))
+		.then(data => {
+			data.message = 'Запись обновлена'
+			res.status(200).json(data)
+		})
 		.catch(err => {
 			if (err.errors) {
 				return next(createError(err.statusCode, getMongooseError(err)))

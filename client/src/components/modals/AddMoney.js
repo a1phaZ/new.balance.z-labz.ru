@@ -75,7 +75,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 					quantity: state.quantity,
 					income: state.income,
 					tags: state.tags,
-					itemFrom: state.account || id
+					itemFrom: editedItem?.itemFrom || id || state.account
 				});
 			}}
 		>

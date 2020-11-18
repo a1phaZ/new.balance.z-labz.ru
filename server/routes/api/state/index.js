@@ -39,7 +39,7 @@ async function budgetWithOutcomeF(array) {
 		};
 		await findItems(changedItem.userId, changedItem.title, changedItem.year, changedItem.month)
 			.then(data => {
-				return data.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
+				return data.map(el => el.income ? -1*el.sum : el.sum).reduce((acc, cur) => acc + cur, 0);
 			})
 			.then(sum => {
 				changedItem.sum = changedItem.sum - sum;
