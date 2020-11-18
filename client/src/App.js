@@ -213,9 +213,11 @@ const App = () => {
 
 	return (
 		<ConfigProvider scheme={state.scheme}>
-			<Epic activeStory={state.activeView} tabbar={tabBar}>
+			<Epic activeStory={state.activeView} tabbar={state.activeView !== 'init' && state.activePanel !== 'init' && tabBar}>
+				<View id={'init'} activePanel={state.activePanel}>
+					<InitialScreen id={'init'} dispatch={dispatch} loading={state.popout}/>
+				</View>
 				<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-					<InitialScreen id={'init'} dispatch={dispatch} />
 					<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}
 								onRefresh={onRefresh} isFetching={isLoading}/>
 				</View>

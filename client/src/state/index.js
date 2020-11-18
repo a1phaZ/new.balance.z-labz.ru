@@ -23,7 +23,7 @@ const initialState = {
 	modal: null,
 	successMessage: null,
 	error: null,
-	activeView: 'home',
+	activeView: 'init',
 	activePanel: 'init',
 	popout: null,
 	editedItem: null,
