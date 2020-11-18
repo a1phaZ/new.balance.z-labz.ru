@@ -24,11 +24,11 @@ const initialState = {
 	successMessage: null,
 	error: null,
 	activeView: 'home',
-	activePanel: 'home',
+	activePanel: 'init',
 	popout: null,
 	editedItem: null,
 	currentDate: new Date(),
-	history: [{view: 'home', panel: 'home'}],
+	history: [],
 	modalsHistory: [],
 	popoutHistory: [],
 	canClose: true,
@@ -44,18 +44,9 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_ACTIVE_VIEW: {
-			window.history.pushState(null, null, window.location.search);
+			window.history.pushState(null, null);
 
 			let history = state.history;
-			// if (action.payload.view === 'home' && action.payload.panel === 'home') {
-			// 	return {
-			// 		...state,
-			// 		activeView: 'home',
-			// 		activePanel: 'home',
-			// 		history: [],
-			// 		canClose: true
-			// 	}
-			// }
 			if (history.length !== 0) {
 				let lastHistoryState = history[history.length - 1];
 				if (lastHistoryState.view === action.payload.view && lastHistoryState.panel === action.payload.panel) {
@@ -82,13 +73,13 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_HISTORY_BACK: {
-			window.history.pushState(null, null, window.location.search);
+			window.history.pushState(null, null);
 			const backEl = state.history[state.history.length - 2];
 			let popoutHistory = state.popoutHistory || [];
 			let modalsHistory = state.modalsHistory || [];
 
 			if (popoutHistory.length !== 0) {
-				const canClose = state.history.length === 0;
+				const canClose = state.history.length <= 1;
 				return {
 					...state,
 					popout: null,
@@ -99,7 +90,7 @@ const reducer = (state, action) => {
 			}
 
 			if (modalsHistory.length !== 0) {
-				const canClose = state.history.length === 0;
+				const canClose = state.history.length <= 1;
 				return {
 					...state,
 					modal: null,
@@ -119,6 +110,7 @@ const reducer = (state, action) => {
 					editedItem: null
 				}
 			} else {
+				const canClose = (backEl.view === 'home' && backEl.panel === 'home');
 				const newHistory = state.history;
 				newHistory.pop();
 				return {
@@ -126,7 +118,8 @@ const reducer = (state, action) => {
 					activeView: backEl.view,
 					activePanel: backEl.panel,
 					history: [...newHistory],
-					editedItem: null
+					editedItem: null,
+					canClose: canClose
 				}
 			}
 
@@ -174,7 +167,7 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_POPOUT: {
-			window.history.pushState(null, null, window.location.search);
+			window.history.pushState(null, null);
 			let history = state.history;
 			let canClose = state.canClose;
 			if (history.length !== 0 || action.payload.popout) {
@@ -192,7 +185,7 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_MODAL: {
-			window.history.pushState(null, null, window.location.search);
+			window.history.pushState(null, null);
 			let history = state.history;
 			let canClose = state.canClose;
 			if (history.length !== 0 || action.payload.modal) {
