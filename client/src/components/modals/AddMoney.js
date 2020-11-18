@@ -60,7 +60,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 		onRefresh();
 	}, [response, onRefresh]);
 
-	const tags = state.tags.map((tag, index) => <Counter style={{marginRight: '5px'}} key={index}>{tag}</Counter>);
+	const tags = state.tags.map((tag, index) => <Counter style={{marginRight: '5px', marginBottom: '5px'}} key={index}>{tag}</Counter>);
 
 	return (
 		<FormLayout
@@ -170,7 +170,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh}) => {
 			{
 				state.tags.length !== 0
 				&&
-				<Div style={{display: 'flex'}}>
+				<Div style={{display: 'flex', flexWrap: 'wrap'}}>
 					{tags}
 				</Div>
 			}
