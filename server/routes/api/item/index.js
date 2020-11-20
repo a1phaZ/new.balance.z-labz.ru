@@ -7,6 +7,36 @@ const {getMongooseError} = require("../../../handlers/error");
 const router = express.Router();
 const {createError} = require('../../../handlers/error');
 
+const removeItemsFromAccount = async (userId, oldItem) => {
+	return await MoneyBox.findOne({userId: userId, operations: oldItem._id})
+		.then(box => {
+			if (!box) {
+				return Promise.reject(createError(404, 'Not Found'));
+			}
+			return box;
+		})
+		.then(async account => {
+			const index = account.operations.findIndex((item) => {
+				return item.toString() === oldItem._id.toString()
+			});
+			account.operations = [...account.operations.slice(0, index), ...account.operations.slice(index+1, account.operations.length)];
+			account.$sum = -1*(oldItem.sum);
+			account.$income = oldItem.income;
+			return await account.save();
+		})
+}
+
+const addItemsToAccount = async (userId, item) => {
+	return await MoneyBox.findOne({userId: userId, _id: item.itemFrom})
+		.then(async account => {
+			account.operations = [...account.operations, item._id];
+			console.log(account.operations);
+			account.$sum = account.sum;
+			account.$income = account.income;
+			return await account.save();
+		})
+}
+
 router.get('/', (req, res, next) => {
 	const {
 		// body: {
@@ -93,6 +123,8 @@ router.patch('/:id', async (req, res, next) => {
 		query: {vk_user_id}
 	} = req;
 
+	const oldItem = await Item.findOne({userId: vk_user_id, _id: id}).then(doc => doc);
+
 	await Item.findOneAndUpdate({userId: vk_user_id, _id: id}, {
 		$set: {
 			date,
@@ -106,6 +138,12 @@ router.patch('/:id', async (req, res, next) => {
 			itemFrom
 		}
 	}, {new: true})
+		.then(async (doc) => {
+			if (oldItem.itemForm !== doc.itemFrom) {
+				await removeItemsFromAccount(vk_user_id, oldItem);
+				await addItemsToAccount(vk_user_id, doc);
+			}
+		})
 		.then(async () => await MoneyBox.findOne({userId: vk_user_id, _id: itemFrom}).populate('operations'))
 		.then(box => {
 			const operation = [...box.operations];

@@ -87,7 +87,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 					quantity: state.quantity,
 					income: state.income,
 					tags: state.tags,
-					itemFrom: editedItem?.itemFrom || id || state.account
+					itemFrom: state.account || editedItem?.itemFrom || id
 				});
 			}}
 		>
@@ -99,7 +99,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 									payload: {account: e.currentTarget.value, validateForm: {account: validate(e)}}
 								})
 							}}
-							defaultValue={editedItem?.itemFrom || id || state.account} required={true}
+							defaultValue={state.account || editedItem?.itemFrom || id } required={true}
 							status={state.validate?.account?.status}
 							bottom={state.validate?.account?.message}
 			>
