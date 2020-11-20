@@ -8,7 +8,7 @@ import {
 	SET_ACCOUNTS,
 	SET_ACTIVE_VIEW,
 	SET_BUDGETS,
-	SET_COLOR_SCHEME,
+	SET_COLOR_SCHEME, SET_EDITED_ITEM,
 	SET_HISTORY_BACK,
 	SET_MODAL,
 	SET_POPOUT
@@ -128,6 +128,7 @@ const App = () => {
 	}, []);
 
 	const modalBack = (() => {
+		dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 		dispatch({type: SET_MODAL, payload: {modal: null}});
 	})
 
