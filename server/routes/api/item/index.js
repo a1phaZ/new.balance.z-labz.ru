@@ -5,13 +5,14 @@ const MoneyBox = require('../../../models/moneybox');
 const toJson = require("../../../handlers/toJson");
 const {getMongooseError} = require("../../../handlers/error");
 const router = express.Router();
-const {createError} = require('../../../handlers/error');
+const {createError, setErrorStatusCodeAndMessage} = require('../../../handlers/error');
+const {isFuture} = require('date-fns');
 
 const removeItemsFromAccount = async (userId, oldItem) => {
 	return await MoneyBox.findOne({userId: userId, operations: oldItem._id})
 		.then(box => {
 			if (!box) {
-				return Promise.reject(createError(404, 'Not Found'));
+				return Promise.reject(createError(404, 'Счет не найден'));
 			}
 			return box;
 		})
@@ -29,6 +30,9 @@ const removeItemsFromAccount = async (userId, oldItem) => {
 const addItemsToAccount = async (userId, item) => {
 	return await MoneyBox.findOne({userId: userId, _id: item.itemFrom})
 		.then(async account => {
+			if (!account) {
+				return Promise.reject(createError(404, 'Счет не найден'));
+			}
 			account.operations = [...account.operations, item._id];
 			account.$sum = account.sum;
 			account.$income = account.income;
@@ -38,10 +42,6 @@ const addItemsToAccount = async (userId, item) => {
 
 router.get('/', (req, res, next) => {
 	const {
-		// body: {
-		// 	beginDate,
-		// 	endDate
-		// },
 		query: {vk_user_id}
 	} = req;
 	Item.find({userId: vk_user_id})
@@ -65,6 +65,13 @@ router.post('/', async (req, res, next) => {
 		query: {vk_user_id}
 	} = req;
 
+	if (isFuture(new Date(date))) {
+		return next(createError(400,  'Дата в будущем'));
+	}
+	if (!itemFrom) {
+		return next(createError(400, 'Отсутствует идентификатор счета'));
+	}
+
 	const item = new Item({
 		date: format(date ? new Date(date) : new Date(), 'yyyy-MM-dd'),
 		userId: vk_user_id,
@@ -82,7 +89,7 @@ router.post('/', async (req, res, next) => {
 		.then(async () => await MoneyBox.findOne({userId: vk_user_id, _id: itemFrom}))
 		.then(box => {
 			if (!box) {
-				return Promise.reject(createError(404, 'Not Found'));
+				return Promise.reject(createError(404, 'Счет не найден'));
 			}
 			return box;
 		})
@@ -100,12 +107,17 @@ router.post('/', async (req, res, next) => {
 		})
 		.catch(err => {
 			if (err.errors) {
-				return next(createError(err.statusCode, getMongooseError(err)))
+				return next(createError(400, getMongooseError(err)))
+			}
+			if (err.reason) {
+				const e = setErrorStatusCodeAndMessage(err);
+				next(createError(e.statusCode, e.message));
 			}
 			return next(createError(err.statusCode, err.message))
 		});
 });
 
+//TODO Обработка ошибок
 router.patch('/:id', async (req, res, next) => {
 	const {
 		params: {id},

@@ -18,12 +18,27 @@ const ItemSchema = new Schema({
 		default: '',
 		maxlength: [70, 'Слишком длинное описание']
 	},
-	price: {type: Number, required: [true, 'Отсутствует цена']},
-	quantity: {type: Number, required: [true, 'Отсутствует кол-во']},
-	sum: {type: Number, default: 0},
+	price: {
+		type: Number,
+		required: [true, 'Отсутствует цена'],
+		min: [0, 'Значение цены должно быть больше либо равно 0']
+	},
+	quantity: {
+		type: Number,
+		required: [true, 'Отсутствует кол-во'],
+		min: [0, 'Значение кол-ва должно быть больше либо равно 0']
+	},
+	sum: {
+		type: Number,
+		default: 0,
+		min: [0, 'Значение суммы должно быть больше либо равно 0']
+	},
 	income: {type: Boolean, default: false},
 	tags: {type: Array, default: []},
-	itemFrom: {type: Schema.Types.ObjectId, ref: 'MoneyBox'}
+	itemFrom: {
+		type: Schema.Types.ObjectId,
+		ref: 'MoneyBox'
+	}
 });
 
 ItemSchema.pre('save', function (next) {
