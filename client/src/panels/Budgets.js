@@ -5,13 +5,14 @@ import {Footer, Group, Header, Panel, PanelHeader, PanelHeaderButton} from "@vko
 import ListOfItems from "../components/ListOfItems";
 import {SET_MODAL} from "../state/actions";
 import Icon28ListAddOutline from "@vkontakte/icons/dist/28/list_add_outline";
-import currency from "../handlers/currency";
 import InfoSnackbar from "../components/InfoSnackbar";
 import MonthSwitch from "../components/MonthSwitch";
 
 export default ({id, budgets, dispatch, date = new Date(), onRefresh}) => {
-	const budgetsStartSum = budgets.map(el => el.startSum).reduce((acc, cur) => acc + cur, 0);
-	const budgetsSum = budgets.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
+	// let budgetsStartSum = budgets.map(el => el.startSum).reduce((acc, cur) => acc + cur, 0);
+	// let incomeBudgetSum = budgets.map(el => el.items).flat().map(item => item.income ? item.sum : 0).reduce((acc, cur) => acc + cur, 0);
+	// let outcomeBudgetsSum = budgets.map(el => el.items).flat().map(item => !item.income ? item.sum : 0).reduce((acc, cur) => acc + cur, 0);
+
 	return (
 		<Panel id={id}>
 			<PanelHeader
@@ -27,10 +28,10 @@ export default ({id, budgets, dispatch, date = new Date(), onRefresh}) => {
 			<Group
 				header={<Header mode="secondary">Ваши бюджеты
 					на {format(new Date(date), 'dd MMMM yyyy', {locale: ruLocale})}</Header>}
-				separator="show"
+				// separator="show"
 			>
 				<ListOfItems data={budgets} dispatch={dispatch} showAll={true} itemsName={'budgets'} needHide={false}/>
-				<Footer>Осталось {currency(budgetsSum)} из {currency(budgetsStartSum)}</Footer>
+				<Footer>Цифры напротив бюджета отображают сколько вы можете еще потратить, но помните, что могут быть смежные траты, которые относятся к нескольким бюджетам. Проверяйте внимательно.</Footer>
 			</Group>
 			<InfoSnackbar/>
 		</Panel>

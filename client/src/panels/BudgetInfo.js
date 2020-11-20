@@ -3,8 +3,8 @@ import {
 	Alert,
 	Cell,
 	Div,
-	Footer,
-	List,
+	Footer, Group,
+	List, MiniInfoCell,
 	Panel,
 	PanelHeader,
 	PanelHeaderBack,
@@ -19,10 +19,14 @@ import useApi from "../handlers/useApi";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
 import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
 import Icon28EditOutline from '@vkontakte/icons/dist/28/edit_outline';
+import Icon20PinOutline from '@vkontakte/icons/dist/20/pin_outline';
+import Icon20Add from '@vkontakte/icons/dist/20/add';
+import Icon20BombOutline from '@vkontakte/icons/dist/20/bomb_outline';
 import mapRichCell from "../handlers/mapRichCell";
 import InfoSnackbar from "../components/InfoSnackbar";
 import sort from "../handlers/sort";
 import reduce from "../handlers/reduce";
+import currency from "../handlers/currency";
 
 export default ({id, budget, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
@@ -146,6 +150,26 @@ export default ({id, budget, dispatch, onRefresh}) => {
 					<Search onChange={(e) => {
 						onSearch(e.currentTarget.value)
 					}}/>
+					<Group>
+						<MiniInfoCell
+							before={<Icon20PinOutline/>}
+							mode={'base'}
+						>
+							Первоначальная сумма {currency(budget.startSum)}
+						</MiniInfoCell>
+						<MiniInfoCell
+							before={<Icon20Add/>}
+							mode={'base'}
+						>
+							Добавлено в бюджет {currency(budget.items.map(item => item.income ? item.sum : 0).reduce((acc, cur) => acc + cur, 0))}
+						</MiniInfoCell>
+						<MiniInfoCell
+							before={<Icon20BombOutline/>}
+							mode={'base'}
+						>
+							Потрачено {currency(budget.items.map(item => !item.income ? item.sum : 0).reduce((acc, cur) => acc + cur, 0))}
+						</MiniInfoCell>
+					</Group>
 					<Div>
 						{itemsList}
 						{itemsList?.length === 0 && <Footer>Нет данных для отображения</Footer>}
