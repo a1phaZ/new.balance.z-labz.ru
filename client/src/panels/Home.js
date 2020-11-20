@@ -52,7 +52,7 @@ const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching}) => {
 					</Group>
 					<Group
 						header={<Header mode={'secondary'}>Ваши бюджеты</Header>}
-						separator={'show'}
+						// separator={'show'}
 					>
 						<Div>
 							<ListOfItems data={budgets} dispatch={dispatch} showAll={false} itemsName={'budgets'}/>
