@@ -1,0 +1,1 @@
+{"version":3,"sources":["style.css"],"names":[],"mappings":"AAAA,aACI,sBAAuB,CACvB,kBAAmB,CACnB,eACJ","file":"main.c17353be.chunk.css","sourcesContent":[".Counter__in {\r\n    text-overflow: ellipsis;\r\n    white-space: nowrap;\r\n    overflow: hidden;\r\n}"]}
