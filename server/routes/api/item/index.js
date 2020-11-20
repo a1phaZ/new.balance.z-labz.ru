@@ -30,7 +30,6 @@ const addItemsToAccount = async (userId, item) => {
 	return await MoneyBox.findOne({userId: userId, _id: item.itemFrom})
 		.then(async account => {
 			account.operations = [...account.operations, item._id];
-			console.log(account.operations);
 			account.$sum = account.sum;
 			account.$income = account.income;
 			return await account.save();
