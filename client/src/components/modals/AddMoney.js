@@ -40,7 +40,7 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => {
+export default ({accounts, id = null, editedItem = null, onRefresh, budget, panel=''}) => {
 	const [apiStr] = useState(() => {
 		return !editedItem ? '/item' : `/item/${editedItem._id}`;
 	})
@@ -58,21 +58,35 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 
 	useEffect(() => {
 		if (!budget?.title) return;
+		if (panel === 'home') return;
 		dispatch({
 			type: 'CHANGE_STATE',
 			payload: {
-				tags: budget?.title !== '' ? budget?.title.toLowerCase().split(' ') : []
+				tags: editedItem?.tags || budget?.title.toLowerCase().split(' ')
 			}
 		})
-	}, [budget, dispatch]);
+	}, [budget, dispatch, panel, editedItem]);
 
 	useEffect(() => {
 		if (!response) return;
 		onRefresh();
 	}, [response, onRefresh]);
 
-	const tags = state.tags.map((tag, index) => <Counter style={{marginRight: '5px', marginBottom: '5px'}}
-																											 key={index}>{tag}</Counter>);
+	const tags = state.tags.filter(tag => !!tag.length).map(
+		(tag, index) =>
+			<Counter
+				style={{
+					marginRight: '5px',
+					marginBottom: '5px',
+					maxWidth: '100%',
+					overflow: 'hidden',
+					overflowWrap: 'normal'
+				}}
+				key={index}
+			>
+				{tag}
+			</Counter>
+	);
 
 	return (
 		<FormLayout
@@ -86,7 +100,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 					price: state.boxPrice ? (state.price / state.quantity).toFixed(4) : state.price,
 					quantity: state.quantity,
 					income: state.income,
-					tags: state.tags,
+					tags: state.tags.filter(tag => !!tag.length),
 					itemFrom: state.account || editedItem?.itemFrom || id
 				});
 			}}
@@ -99,7 +113,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 									payload: {account: e.currentTarget.value, validateForm: {account: validate(e)}}
 								})
 							}}
-							defaultValue={state.account || editedItem?.itemFrom || id } required={true}
+							defaultValue={state.account || editedItem?.itemFrom || id} required={true}
 							status={state.validate?.account?.status}
 							bottom={state.validate?.account?.message}
 			>
@@ -193,6 +207,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget}) => 
 						 }}
 			/>
 			{
+				!!tags.length &&
 				state.tags.length !== 0
 				&&
 				<Div style={{display: 'flex', flexWrap: 'wrap'}}>

@@ -41,6 +41,8 @@ import BudgetInfo from "./panels/BudgetInfo";
 import Stats from "./panels/Stats";
 import InitialScreen from "./panels/InitialScreen";
 
+import './style.css';
+
 const App = () => {
 	const os = platform();
 	const [{response, isLoading}, doApiFetch] = useApi('/state');
@@ -157,7 +159,7 @@ const App = () => {
 				</ModalPageHeader>
 			}>
 				<AddMoney accounts={state.accounts} id={state.account?._id}
-									editedItem={state.editedItem} onRefresh={onRefresh} budget={state.budget}/>
+									editedItem={state.editedItem} onRefresh={onRefresh} budget={state.budget} panel={state.activePanel}/>
 			</ModalPage>
 
 			<ModalPage id={'add-budget'} header={

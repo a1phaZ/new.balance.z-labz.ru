@@ -167,7 +167,7 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_POPOUT: {
-			window.history.pushState(null, null);
+			// window.history.pushState(null, null);
 			let history = state.history;
 			let canClose = state.canClose;
 			if (history.length !== 0 || action.payload.popout) {
@@ -185,7 +185,7 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_MODAL: {
-			window.history.pushState(null, null);
+			// window.history.pushState(null, null);
 			let history = state.history;
 			let canClose = state.canClose;
 			if (history.length !== 0 || action.payload.modal) {
