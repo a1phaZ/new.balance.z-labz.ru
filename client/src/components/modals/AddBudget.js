@@ -67,7 +67,7 @@ export default ({onRefresh, editedItem = null}) => {
 						 })}/>
 			<Input type={'number'} placeholder={currency(0)} top={'Бюджет в рублях'} value={stateForm.startSum}
 						 pattern={'[0-9]+([,\\.][0-9]+)?'}
-						 inputmode="decimal"
+						 inputMode="decimal"
 						 required={true}
 						 status={stateForm.validate?.startSum?.status}
 						 min={0}

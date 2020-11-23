@@ -218,7 +218,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 						 placeholder={currency(0)}
 						 pattern={'[0-9]+([,\\.][0-9]+)?'}
 						 top={'Цена'}
-						 inputmode="decimal"
+						 inputMode="decimal"
 						 max={99999999}
 						 min={0}
 						 step={0.0001}
@@ -248,7 +248,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 						 placeholder={'0'}
 						 pattern={'[0-9]+([,\\.][0-9]+)?'}
 						 top={'Кол-во'}
-						 inputmode="decimal"
+						 inputMode="decimal"
 						 max={9999999}
 						 min={0}
 						 step={0.001}
