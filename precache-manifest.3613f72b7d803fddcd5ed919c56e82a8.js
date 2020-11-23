@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d2d86ced2ad6419261063c68dd6cd8aa",
+    "revision": "614e4218ebb612092ae5cf329b62e9d8",
     "url": "/new.balance.z-labz.ru/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/new.balance.z-labz.ru/static/css/2.6326594c.chunk.css"
   },
   {
-    "revision": "5d632b3c876cdd34941d",
+    "revision": "62951f852685327f0275",
     "url": "/new.balance.z-labz.ru/static/css/main.c17353be.chunk.css"
   },
   {
@@ -32,8 +32,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/new.balance.z-labz.ru/static/js/4.87f30877.chunk.js"
   },
   {
-    "revision": "5d632b3c876cdd34941d",
-    "url": "/new.balance.z-labz.ru/static/js/main.881dcd1d.chunk.js"
+    "revision": "62951f852685327f0275",
+    "url": "/new.balance.z-labz.ru/static/js/main.e13bc1ff.chunk.js"
   },
   {
     "revision": "fad65d8f141d2b902130",
