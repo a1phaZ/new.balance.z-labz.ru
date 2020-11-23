@@ -14,7 +14,7 @@ import {
 	PanelHeaderContent,
 	PanelHeaderContext
 } from "@vkontakte/vkui";
-import {SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT} from "../state/actions";
+import {SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT, SET_TOGGLE_CONTEXT} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import useApi from "../handlers/useApi";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
@@ -30,8 +30,8 @@ import reduce from "../handlers/reduce";
 import currency from "../handlers/currency";
 import SearchForm from "../components/SearchForm";
 
-export default ({id, budget, dispatch, onRefresh}) => {
-	const [isOpened, setIsOpened] = useState(false);
+export default ({id, budget, dispatch, onRefresh, context}) => {
+	const [isOpened, setIsOpened] = useState(() => context);
 	const [{response}, doApiFetch] = useApi(`/budget/${budget?._id}`);
 	const [items, setItems] = useState(() => budget?.items);
 	const [filteredItems, setFilteredItems] = useState(() => items);
@@ -44,16 +44,18 @@ export default ({id, budget, dispatch, onRefresh}) => {
 	useEffect(() => {
 		if (!response) return;
 		if (response?.deletedCount) {
-			// console.log(state.history);
-			// dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
 			dispatch({type: SET_HISTORY_BACK});
 			dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 			onRefresh();
 		}
 	}, [response, dispatch, onRefresh]);
 
+	useEffect(() => {
+		setIsOpened(context);
+	},[context]);
+
 	const toggleContext = () => {
-		setIsOpened(!isOpened);
+		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});
 	}
 
 	const alertDelete = (
@@ -103,8 +105,6 @@ export default ({id, budget, dispatch, onRefresh}) => {
 				<>
 					<PanelHeaderBack onClick={() => {
 						dispatch({type: SET_HISTORY_BACK});
-						// dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
-						// dispatch({type: SET_BUDGET, payload: {id: null}});
 					}}/>
 					<PanelHeaderButton
 						onClick={() => {

@@ -12,7 +12,7 @@ import {
 	SET_MODAL,
 	SET_POPOUT,
 	SET_SUCCESS_MESSAGE,
-	SET_COLOR_SCHEME
+	SET_COLOR_SCHEME, SET_TOGGLE_CONTEXT
 } from './actions';
 
 const initialState = {
@@ -31,6 +31,7 @@ const initialState = {
 	history: [],
 	modalsHistory: [],
 	popoutHistory: [],
+	contextHistory: false,
 	canClose: true,
 	scheme: 'client_light'
 }
@@ -77,6 +78,7 @@ const reducer = (state, action) => {
 			const backEl = state.history[state.history.length - 2];
 			let popoutHistory = state.popoutHistory || [];
 			let modalsHistory = state.modalsHistory || [];
+			let contextHistory = state.contextHistory || false;
 
 			if (popoutHistory.length !== 0) {
 				const canClose = state.history.length <= 1;
@@ -84,6 +86,16 @@ const reducer = (state, action) => {
 					...state,
 					popout: null,
 					popoutHistory: [],
+					canClose: canClose,
+					editedItem: null
+				}
+			}
+
+			if (!!contextHistory) {
+				const canClose = state.history.length <= 1;
+				return {
+					...state,
+					contextHistory: false,
 					canClose: canClose,
 					editedItem: null
 				}
@@ -201,6 +213,23 @@ const reducer = (state, action) => {
 				...state,
 				modal: action.payload.modal,
 				modalsHistory: action.payload.modal ? [action.payload.modal] : [],
+				canClose: canClose
+			}
+		}
+		case SET_TOGGLE_CONTEXT: {
+			let history = state.history;
+			let canClose = state.canClose;
+			if (history.length !== 0 || action.payload.context) {
+				canClose = history.length === 1 && !action.payload.context;
+			} else {
+				if (history.length === 0 && !action.payload.context) {
+					canClose = true
+				}
+			}
+			return {
+				...state,
+				// modal: action.payload.modal,
+				contextHistory: action.payload.context,
 				canClose: canClose
 			}
 		}

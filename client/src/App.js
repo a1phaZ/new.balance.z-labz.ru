@@ -53,17 +53,12 @@ const App = () => {
 	useEffect(() => {
 		bridge.subscribe(({detail: {type, data}}) => {
 			if (type === 'VKWebAppUpdateConfig') {
-				// const schemeAttribute = document.createAttribute('scheme');
-				// schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
-				// console.log(data);
-				// document.body.attributes.setNamedItem(schemeAttribute);
 				dispatch({type: SET_COLOR_SCHEME, payload: {scheme: data.scheme}})
 			}
 		});
 
 // Init VK  Mini App
 		bridge.send("VKWebAppInit", {});
-		// dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
 	}, [dispatch]);
 
 	const alert = (
@@ -226,11 +221,11 @@ const App = () => {
 				</View>
 				<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<AccountInfo id={'account'} account={state.accounts.find(item => item._id === state.account?._id)}
-											 dispatch={dispatch} onRefresh={onRefresh}/>
+											 dispatch={dispatch} onRefresh={onRefresh} context={state.contextHistory}/>
 					<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
 									 date={state.currentDate}/>
 					<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
-											dispatch={dispatch} onRefresh={onRefresh}/>
+											dispatch={dispatch} onRefresh={onRefresh} context={state.contextHistory}/>
 				</View>
 				<View id={'stats'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>

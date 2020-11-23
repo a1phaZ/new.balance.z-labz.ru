@@ -17,7 +17,7 @@ import {
 } from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import Group from "@vkontakte/vkui/dist/components/Group/Group";
-import {SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT} from "../state/actions";
+import {SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT, SET_TOGGLE_CONTEXT} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
 
@@ -29,8 +29,8 @@ import reduce from "../handlers/reduce";
 import MonthSwitch from "../components/MonthSwitch";
 import SearchForm from "../components/SearchForm";
 
-export default ({id, account, dispatch, onRefresh}) => {
-	const [isOpened, setIsOpened] = useState(false);
+export default ({id, account, dispatch, onRefresh, context}) => {
+	const [isOpened, setIsOpened] = useState(() => context);
 	const [{response}, doApiFetch] = useApi(`/money-box/${account?._id}`);
 	const [items, setItems] = useState(() => {
 		if (!account) return [];
@@ -41,7 +41,7 @@ export default ({id, account, dispatch, onRefresh}) => {
 	const accountItemsList = filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
 
 	const toggleContext = () => {
-		setIsOpened(!isOpened);
+		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});
 	}
 	const alert = (
 		<Alert
@@ -88,6 +88,10 @@ export default ({id, account, dispatch, onRefresh}) => {
 		onRefresh();
 	}, [dispatch, response, onRefresh]);
 
+	useEffect(() => {
+		setIsOpened(context);
+	}, [context]);
+
 	const onSearch = (str) => {
 		if (str === '') {
 			setFilteredItems(items);
@@ -101,7 +105,6 @@ export default ({id, account, dispatch, onRefresh}) => {
 			<PanelHeader left={
 				<>
 					<PanelHeaderBack onClick={() => {
-						// dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
 						dispatch({type: SET_HISTORY_BACK})
 						dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 					}}/>
