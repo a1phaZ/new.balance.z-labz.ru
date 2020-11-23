@@ -5,7 +5,7 @@ const Budget = require('../../../models/budget');
 const Item = require('../../../models/item');
 const toJson = require("../../../handlers/toJson");
 const {createError} = require('../../../handlers/error');
-const {isFuture, isValid, isBefore} = require('date-fns');
+const {isValid, isBefore} = require('date-fns');
 
 const findAccountsByUserId = async (userId, date = new Date()) => {
 	return MoneyBox.find({userId: userId})
