@@ -4,6 +4,8 @@ const MoneyBox = require('../../../models/moneybox');
 const Budget = require('../../../models/budget');
 const Item = require('../../../models/item');
 const toJson = require("../../../handlers/toJson");
+const {createError} = require('../../../handlers/error');
+const {isFuture, isValid, isBefore} = require('date-fns');
 
 const findAccountsByUserId = async (userId, date = new Date()) => {
 	return MoneyBox.find({userId: userId})
@@ -83,10 +85,20 @@ async function budgetWithDetails(array) {
 	return budgetWithDetails;
 }
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
 	const {
 		query: { vk_user_id, date }
 	} = req;
+
+	if (isFuture(new Date(date))) {
+		return next(createError(400,  'Дата в будущем'));
+	}
+	if (!isValid(new Date(date))) {
+		return next(createError(400,  'Дата невалидна'));
+	}
+	if (isBefore(new Date(date), new Date(2015, 0, 1))) {
+		return next(createError(400,  'Ошибка диапазона даты'));
+	}
 
 	req.accounts = await findAccountsByUserId(vk_user_id, date).then(data => {
 		data.map(item => {

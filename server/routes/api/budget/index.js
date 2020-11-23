@@ -6,14 +6,14 @@ const Budget = require('../../../models/budget');
 // const Item = require('../../../models/item');
 const {setErrorStatusCodeAndMessage} = require("../../../handlers/error");
 const {getMongooseError} = require("../../../handlers/error");
+const mongoose = require('mongoose');
+const { Types: {ObjectId}} = mongoose;
 
 function getYear(date) {
-	console.log(new Date(date))
 	return date ? new Date(date).getFullYear() : new Date().getFullYear();
 }
 
 function getMonth(date) {
-	console.log(new Date(date))
 	return date ? new Date(date).getMonth() : new Date().getMonth();
 }
 
@@ -63,8 +63,9 @@ function getMonth(date) {
 router.post('/', async (req, res, next) => {
 	const {
 		query: {vk_user_id},
-		body: {title, sum, date}
+		body: {title, sum}
 	} = req;
+	const date = new Date();
 	const year = getYear(date);
 	const month = getMonth(date);
 	await Budget.findOne({userId: vk_user_id, title: title, month: month, year: year})
@@ -106,11 +107,20 @@ router.patch('/:id', async (req, res, next) => {
 		body: {title, sum}
 	} = req;
 
-	if (title === '') {
+	if (!(ObjectId.isValid(id) && (new ObjectId(id)).toString() === id)) {
+		return next(createError(400,  'Ошибка идентификатора объекта'));
+	}
+	if (title === '' || title === null) {
 		return next(createError(400, 'Название не должно быть пустым'))
+	}
+	if (!sum) {
+		return next(createError(400, 'Сумма не должна быть пустой'));
 	}
 	if (sum < 0) {
 		return next(createError(400, 'Сумма не должна быть меньше 0'));
+	}
+	if (title.length > 20) {
+		return next(createError(400, 'Превышена допустимая длина названия'));
 	}
 
 	await Budget.findOneAndUpdate({_id: id, userId: vk_user_id}, {
@@ -143,6 +153,9 @@ router.delete('/:id', async (req, res, next) => {
 		query: {vk_user_id}
 	} = req;
 
+	if (!(ObjectId.isValid(id) && (new ObjectId(id)).toString() === id)) {
+		return next(createError(400,  'Ошибка идентификатора объекта'));
+	}
 	await Budget.deleteOne({_id: id, userId: vk_user_id})
 		.then(response => {
 			return toJson.dataToJson(response)

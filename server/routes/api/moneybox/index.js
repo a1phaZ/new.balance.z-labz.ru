@@ -5,6 +5,8 @@ const MoneyBox = require('../../../models/moneybox');
 const Item = require('../../../models/item');
 const toJson = require("../../../handlers/toJson");
 const {createError, getMongooseError} = require('../../../handlers/error');
+const mongoose = require('mongoose');
+const { Types: {ObjectId}} = mongoose;
 
 const findByUserId = async (userId) => {
 	return await MoneyBox.find({userId: userId})
@@ -26,6 +28,9 @@ router.get('/:id', async (req, res, next) => {
 		query: {vk_user_id},
 		params: {id}
 	} = req;
+	if (!(ObjectId.isValid(id) && (new ObjectId(id)).toString() === id)) {
+		return next(createError(400,  'Ошибка идентификатора объекта'));
+	}
 	await MoneyBox.findOne({userId: vk_user_id, _id: id})
 		.populate('operations')
 		.then(response => toJson.dataToJson(response))
@@ -38,6 +43,16 @@ router.post('/', async (req, res, next) => {
 		body: {title, sum, income = true},
 		query: {vk_user_id}
 	} = req;
+
+	if (title === '' || title === null) {
+		return next(createError(400, 'Название не должно быть пустым'));
+	}
+	if (sum < 0) {
+		return next(createError(400, 'Сумма не должна быть меньше 0'));
+	}
+	if (title.length > 20) {
+		return next(createError(400, 'Превышена допустимая длина названия'));
+	}
 
 	const item = sum && await new Item({
 		date: format(new Date(), 'yyyy-MM-dd'),
@@ -62,6 +77,10 @@ router.post('/', async (req, res, next) => {
 	await moneyBox
 		.save()
 		.then(async response => await MoneyBox.findById({_id: response._id}).populate('operations'))
+		.then(box => {
+			if (!box) return Promise.reject(createError(404, 'Счет не найден'));
+			return box;
+		})
 		.then(response => toJson.dataToJson(response))
 		.then(data => {
 			data.message = 'Сохранено'
@@ -81,14 +100,21 @@ router.delete('/:id', async (req, res, next) => {
 		params: {id}
 	} = req;
 
+	if (!(ObjectId.isValid(id) && (new ObjectId(id)).toString() === id)) {
+		return next(createError(400,  'Ошибка идентификатора объекта'));
+	}
 	await MoneyBox.findOne({userId: vk_user_id, _id: id})
+		.then(box => {
+			if (!box) return Promise.reject(createError(404, 'Счет не найден'));
+			return box;
+		})
 		.then(box => box.operations)
 		.then(operations => Item.deleteMany({_id: {$in: operations}}))
 		.then(() => MoneyBox.deleteOne({_id: id}))
 		.then(response => toJson.dataToJson(response))
 		.then(data => {
-			data.message = 'Удалено'
-			res.status(200).json(data)
+			data.message = data.data.deletedCount !== 0 ? 'Удалено' : 'Нечего удалять'
+			res.status(data.data.deletedCount !== 0 ? 200 : 404).json(data)
 		})
 		.catch(err => next(createError(err.statusCode, err.message)));
 });

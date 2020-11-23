@@ -6,7 +6,9 @@ const toJson = require("../../../handlers/toJson");
 const {getMongooseError} = require("../../../handlers/error");
 const router = express.Router();
 const {createError, setErrorStatusCodeAndMessage} = require('../../../handlers/error');
-const {isFuture} = require('date-fns');
+const {isFuture, isValid, isBefore} = require('date-fns');
+const mongoose = require('mongoose');
+const { Types: {ObjectId}} = mongoose;
 
 const removeItemsFromAccount = async (userId, oldItem) => {
 	return await MoneyBox.findOne({userId: userId, operations: oldItem._id})
@@ -65,8 +67,17 @@ router.post('/', async (req, res, next) => {
 		query: {vk_user_id}
 	} = req;
 
+	if (title === '' || title === null) {
+		return next(createError(400, 'Название не должно быть пустым'));
+	}
 	if (isFuture(new Date(date))) {
 		return next(createError(400,  'Дата в будущем'));
+	}
+	if (!isValid(new Date(date))) {
+		return next(createError(400,  'Дата невалидна'));
+	}
+	if (isBefore(new Date(date), new Date(2015, 0, 1))) {
+		return next(createError(400,  'Ошибка диапазона даты'));
 	}
 	if (!itemFrom) {
 		return next(createError(400, 'Отсутствует идентификатор счета'));
@@ -134,6 +145,35 @@ router.patch('/:id', async (req, res, next) => {
 		query: {vk_user_id}
 	} = req;
 
+	if (!(ObjectId.isValid(id) && (new ObjectId(id)).toString() === id)) {
+		return next(createError(400,  'Ошибка идентификатора объекта'));
+	}
+	if (isFuture(new Date(date))) {
+		return next(createError(400,  'Дата в будущем'));
+	}
+	if (!isValid(new Date(date))) {
+		return next(createError(400,  'Дата невалидна'));
+	}
+	if (isBefore(new Date(date), new Date(2015, 0, 1))) {
+		return next(createError(400,  'Ошибка диапазона даты'));
+	}
+	if (!itemFrom) {
+		return next(createError(400, 'Отсутствует идентификатор счета'));
+	}
+	if (title === '' || title === null) {
+		return next(createError(400, 'Название не должно быть пустым'));
+	}
+	if (title.length > 20) {
+		return next(createError(400, 'Превышена допустимая длина названия'));
+	}
+	if (price < 0) {
+		return next(createError(400, 'Цена не должна быть меньше 0'));
+	}
+	if (quantity < 0) {
+		return next(createError(400, 'Кол-во не должно быть меньше 0'));
+	}
+
+
 	const oldItem = await Item.findOne({userId: vk_user_id, _id: id}).then(doc => doc);
 
 	await Item.findOneAndUpdate({userId: vk_user_id, _id: id}, {
@@ -172,22 +212,16 @@ router.patch('/:id', async (req, res, next) => {
 			res.status(200).json(data)
 		})
 		.catch(err => {
+			res.json(err);
 			if (err.errors) {
-				return next(createError(err.statusCode, getMongooseError(err)))
+				return next(createError(400, getMongooseError(err)))
+			}
+			if (err.reason) {
+				const e = setErrorStatusCodeAndMessage(err);
+				next(createError(e.statusCode, e.message));
 			}
 			return next(createError(err.statusCode, err.message))
 		});
 });
-
-// {
-// 	title: {type: String, required: true},
-// 	description: {type: String, default: ''},
-// 	price: {type: Number, required: true},
-// 	quantity: {type: Number, required: true},
-// 	sum: {type: Number, required: true},
-// 	income: {type: Number, default: false},
-// 	tags: {type: Array, default: []},
-// 	itemFrom: {type: Schema.Types.ObjectId, ref: 'MoneyBox'}
-// }
 
 module.exports = router;
