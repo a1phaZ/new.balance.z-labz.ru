@@ -66,7 +66,8 @@ export default ({onRefresh, editedItem = null}) => {
 							 payload: {title: regexp(e.currentTarget.value), validateForm: {title: validate(e)}}
 						 })}/>
 			<Input type={'number'} placeholder={currency(0)} top={'Бюджет в рублях'} value={stateForm.startSum}
-						 // pattern={'[0-9]+([,\\.][0-9]+)?'}
+						 pattern={'[0-9]+([,\\.][0-9]+)?'}
+						 inputmode="decimal"
 						 required={true}
 						 status={stateForm.validate?.startSum?.status}
 						 min={0}

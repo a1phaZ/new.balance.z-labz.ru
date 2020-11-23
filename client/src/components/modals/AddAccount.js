@@ -60,13 +60,15 @@ export default ({onRefresh}) => {
 						 bottom={stateForm.titleValidation.message ? stateForm.titleValidation.message : `${stateForm.title.length} из 20`}
 						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {title: regexp(e.currentTarget.value), titleValidation: validate(e)}})}/>
 			<Input type={'number'} placeholder={currency(0)} top={'Баланс счета'} value={stateForm.sum}
+						 pattern={'[0-9]+([,\\.][0-9]+)?'}
 						 required={true}
 						 status={stateForm.sumValidation.status}
+						 inputmode="decimal"
 						 max={999999999}
 						 min={0}
 						 step={0.01}
 						 bottom={stateForm.sumValidation.message ? stateForm.sumValidation.message : 'Денежные средства, находящиеся на счете в данный момент'}
-						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {sum: e.currentTarget.value, sumValidation: validate(e)}})}/>
+						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {sum: e.currentTarget.value.replace(/[^\d.]*/, ''), sumValidation: validate(e)}})}/>
 			<Button size={'xl'}>Сохранить</Button>
 		</FormLayout>
 	)

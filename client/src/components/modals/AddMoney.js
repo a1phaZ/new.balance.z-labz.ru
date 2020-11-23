@@ -216,7 +216,9 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 			}
 			<Input type={'number'}
 						 placeholder={currency(0)}
+						 pattern={'[0-9]+([,\\.][0-9]+)?'}
 						 top={'Цена'}
+						 inputmode="decimal"
 						 max={99999999}
 						 min={0}
 						 step={0.0001}
@@ -227,7 +229,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 						 onChange={(e) => {
 							 dispatch({
 								 type: 'CHANGE_STATE',
-								 payload: {price: e.currentTarget.value, validateForm: {price: validate(e)}}
+								 payload: {price: e.currentTarget.value.replace(/[^\d.]*/, ''), validateForm: {price: validate(e)}}
 							 })
 						 }}
 			/>
@@ -244,7 +246,9 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 			}
 			<Input type={'number'}
 						 placeholder={'0'}
+						 pattern={'[0-9]+([,\\.][0-9]+)?'}
 						 top={'Кол-во'}
+						 inputmode="decimal"
 						 max={9999999}
 						 min={0}
 						 step={0.001}
@@ -255,7 +259,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 						 onChange={(e) => {
 							 dispatch({
 								 type: 'CHANGE_STATE',
-								 payload: {quantity: e.currentTarget.value, validateForm: {quantity: validate(e)}}
+								 payload: {quantity: e.currentTarget.value.replace(/[^\d.]*/, ''), validateForm: {quantity: validate(e)}}
 							 })
 						 }}
 			/>
