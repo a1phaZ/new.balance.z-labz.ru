@@ -167,7 +167,9 @@ const reducer = (state, action) => {
 			}
 		}
 		case SET_POPOUT: {
-			// window.history.pushState(null, null);
+			if (action.payload.alert) {
+				window.history.pushState(null, null);
+			}
 			let history = state.history;
 			let canClose = state.canClose;
 			if (history.length !== 0 || action.payload.popout) {
