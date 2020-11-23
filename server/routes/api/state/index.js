@@ -90,9 +90,9 @@ router.get('/', async (req, res, next) => {
 		query: { vk_user_id, date }
 	} = req;
 
-	if (isFuture(new Date(date))) {
-		return next(createError(400,  'Дата в будущем'));
-	}
+	// if (isFuture(new Date(date))) {
+	// 	return next(createError(400,  'Дата в будущем'));
+	// }
 	if (!isValid(new Date(date))) {
 		return next(createError(400,  'Дата невалидна'));
 	}
