@@ -1,4 +1,4 @@
-* {
+.Header, .Title, .Footer, .Cell {
     -webkit-user-select: none;
     /*-khtml-user-select: none;*/
     -moz-user-select: none;
@@ -12,6 +12,6 @@
     overflow: hidden;
 }
 
-.Tappable {
+.Tappable, .TabbarItem {
     cursor: pointer;
 }
