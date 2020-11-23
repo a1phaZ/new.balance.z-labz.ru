@@ -204,8 +204,8 @@ const App = () => {
 			</TabbarItem>
 			<TabbarItem
 				onClick={onStoryChange}
-				selected={state.activeView === 'info' && state.activePanel === 'stats'}
-				data-story={'info'}
+				selected={state.activeView === 'stats' && state.activePanel === 'stats'}
+				data-story={'stats'}
 				data-panel={'stats'}
 				text={'Сводка'}
 			>
@@ -227,10 +227,12 @@ const App = () => {
 				<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<AccountInfo id={'account'} account={state.accounts.find(item => item._id === state.account?._id)}
 											 dispatch={dispatch} onRefresh={onRefresh}/>
-					<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
-											dispatch={dispatch} onRefresh={onRefresh}/>
 					<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
 									 date={state.currentDate}/>
+					<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
+											dispatch={dispatch} onRefresh={onRefresh}/>
+				</View>
+				<View id={'stats'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>
 				</View>
 			</Epic>
