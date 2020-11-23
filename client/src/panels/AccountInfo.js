@@ -13,7 +13,6 @@ import {
 	PanelHeaderButton,
 	PanelHeaderContent,
 	PanelHeaderContext,
-	Search,
 	Title
 } from "@vkontakte/vkui";
 import currency from "../handlers/currency";
@@ -28,6 +27,7 @@ import InfoSnackbar from "../components/InfoSnackbar";
 import sort from "../handlers/sort";
 import reduce from "../handlers/reduce";
 import MonthSwitch from "../components/MonthSwitch";
+import SearchForm from "../components/SearchForm";
 
 export default ({id, account, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
@@ -132,7 +132,7 @@ export default ({id, account, dispatch, onRefresh}) => {
 							<Cell
 								before={<Icon28DeleteOutline/>}
 								onClick={() => {
-									dispatch({type: SET_POPOUT, payload: {popout: alert}})
+									dispatch({type: SET_POPOUT, payload: {popout: alert, alert: true}})
 								}}
 							>
 								Удалить счет {account?.title}
@@ -140,9 +140,9 @@ export default ({id, account, dispatch, onRefresh}) => {
 						</List>
 					</PanelHeaderContext>
 					<MonthSwitch onRefresh={onRefresh}/>
-					<Search onChange={(e) => {
-						onSearch(e.currentTarget.value)
-					}}/>
+
+					<SearchForm onSearch={onSearch}/>
+
 					<Group
 						header={<Header mode="secondary">Информация по счету</Header>}
 						separator="show"

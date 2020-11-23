@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import {Footer, Group, Panel, PanelHeader, Search} from "@vkontakte/vkui";
+import React, {useEffect, useState} from 'react';
+import {Footer, Group, Panel, PanelHeader} from "@vkontakte/vkui";
 import MonthSwitch from "../components/MonthSwitch";
 import mapStats from "../handlers/mapStats";
+import SearchForm from "../components/SearchForm";
 
 export default ({id, accounts, onRefresh}) => {
 	const [operations, setOperations] = useState(() => {
@@ -13,11 +14,11 @@ export default ({id, accounts, onRefresh}) => {
 	});
 	const [filteredItems, setFilteredItems] = useState(() => operations);
 	const reducer = (prev, curr) => {
-		if (prev[prev.length-1]?.title === curr.title) {
-			const prevItem = prev[prev.length-1];
+		if (prev[prev.length - 1]?.title === curr.title) {
+			const prevItem = prev[prev.length - 1];
 			prevItem.sum = prevItem.sum + curr.sum;
 			prevItem.quantity += curr.quantity;
-			const array = [...prev.slice(0, prev.length-1), prevItem];
+			const array = [...prev.slice(0, prev.length - 1), prevItem];
 			return [...array];
 		} else {
 			return [...prev, {title: curr.title, sum: curr.sum, quantity: curr.quantity}];
@@ -61,10 +62,8 @@ export default ({id, accounts, onRefresh}) => {
 			<PanelHeader>
 				Сводка
 			</PanelHeader>
-			<MonthSwitch onRefresh={onRefresh} />
-			<Search onChange={(e) => {
-				onSearch(e.currentTarget.value)
-			}}/>
+			<MonthSwitch onRefresh={onRefresh}/>
+			<SearchForm onSearch={onSearch}/>
 			<Group>
 				{accountItemsList}
 				{accountItemsList.length === 0 && <Footer>Нет данных для отображения</Footer>}

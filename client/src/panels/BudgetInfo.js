@@ -3,15 +3,16 @@ import {
 	Alert,
 	Cell,
 	Div,
-	Footer, Group,
-	List, MiniInfoCell,
+	Footer,
+	Group,
+	List,
+	MiniInfoCell,
 	Panel,
 	PanelHeader,
 	PanelHeaderBack,
 	PanelHeaderButton,
 	PanelHeaderContent,
-	PanelHeaderContext,
-	Search
+	PanelHeaderContext
 } from "@vkontakte/vkui";
 import {SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
@@ -27,6 +28,7 @@ import InfoSnackbar from "../components/InfoSnackbar";
 import sort from "../handlers/sort";
 import reduce from "../handlers/reduce";
 import currency from "../handlers/currency";
+import SearchForm from "../components/SearchForm";
 
 export default ({id, budget, dispatch, onRefresh}) => {
 	const [isOpened, setIsOpened] = useState(false);
@@ -140,16 +142,14 @@ export default ({id, budget, dispatch, onRefresh}) => {
 							<Cell
 								before={<Icon28DeleteOutline/>}
 								onClick={() => {
-									dispatch({type: SET_POPOUT, payload: {popout: alertDelete}})
+									dispatch({type: SET_POPOUT, payload: {popout: alertDelete, alert: true}})
 								}}
 							>
 								Удалить бюджет {budget?.title}
 							</Cell>
 						</List>
 					</PanelHeaderContext>
-					<Search onChange={(e) => {
-						onSearch(e.currentTarget.value)
-					}}/>
+					<SearchForm onSearch={onSearch}/>
 					<Group>
 						<MiniInfoCell
 							before={<Icon20PinOutline/>}
@@ -161,7 +161,8 @@ export default ({id, budget, dispatch, onRefresh}) => {
 							before={<Icon20Add/>}
 							mode={'base'}
 						>
-							Добавлено в бюджет {currency(budget.items.map(item => item.income ? item.sum : 0).reduce((acc, cur) => acc + cur, 0))}
+							Добавлено в
+							бюджет {currency(budget.items.map(item => item.income ? item.sum : 0).reduce((acc, cur) => acc + cur, 0))}
 						</MiniInfoCell>
 						<MiniInfoCell
 							before={<Icon20BombOutline/>}
