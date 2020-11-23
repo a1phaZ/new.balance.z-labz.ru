@@ -39,7 +39,9 @@ export default ({onRefresh}) => {
 															mode={'secondary'}><Icon24BrowserForward/></Button>}
 				style={{textAlign: 'center', fontWeight: 'bold'}}
 			>
-				{format(state.currentDate, dateFormat, {locale: ru}).toLocaleUpperCase()}
+				<div style={{cursor: 'auto'}}>
+					{format(state.currentDate, dateFormat, {locale: ru}).toLocaleUpperCase()}
+				</div>
 			</Cell>
 		</Group>
 	)
