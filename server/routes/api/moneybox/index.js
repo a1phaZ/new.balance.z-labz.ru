@@ -47,6 +47,12 @@ router.post('/', async (req, res, next) => {
 	if (title === '' || title === null) {
 		return next(createError(400, 'Название не должно быть пустым'));
 	}
+	if (!sum) {
+		return next(createError(400, 'Сумма не должна быть пустой'));
+	}
+	if (!parseFloat(sum)) {
+		return next(createError(400, 'Ошибка преобразования суммы'));
+	}
 	if (sum < 0) {
 		return next(createError(400, 'Сумма не должна быть меньше 0'));
 	}
@@ -58,9 +64,9 @@ router.post('/', async (req, res, next) => {
 		date: format(new Date(), 'yyyy-MM-dd'),
 		userId: vk_user_id,
 		title: `Остаток`,
-		price: sum,
+		price: parseFloat(sum),
 		quantity: 1,
-		sum: sum,
+		sum: parseFloat(sum),
 		income,
 	}).save();
 

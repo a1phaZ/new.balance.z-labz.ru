@@ -68,6 +68,9 @@ router.post('/', async (req, res, next) => {
 	const date = new Date();
 	const year = getYear(date);
 	const month = getMonth(date);
+	if (!parseFloat(sum)) {
+		return next(createError(400, 'Ошибка преобразования суммы'));
+	}
 	await Budget.findOne({userId: vk_user_id, title: title, month: month, year: year})
 		.then((budget) => {
 			if (budget) {
@@ -78,7 +81,7 @@ router.post('/', async (req, res, next) => {
 				title: title,
 				month: month,
 				year: year,
-				sum: sum ? sum : 0,
+				sum: parseFloat(sum) ? parseFloat(sum) : 0,
 			})
 			return newBudget.save()
 		})
@@ -116,6 +119,9 @@ router.patch('/:id', async (req, res, next) => {
 	if (!sum) {
 		return next(createError(400, 'Сумма не должна быть пустой'));
 	}
+	if (!parseFloat(sum)) {
+		return next(createError(400, 'Ошибка преобразования суммы'));
+	}
 	if (sum < 0) {
 		return next(createError(400, 'Сумма не должна быть меньше 0'));
 	}
@@ -126,7 +132,7 @@ router.patch('/:id', async (req, res, next) => {
 	await Budget.findOneAndUpdate({_id: id, userId: vk_user_id}, {
 		$set: {
 			title,
-			sum
+			sum: parseFloat(sum)
 		}
 	}, {new: true})
 		.then(response => {

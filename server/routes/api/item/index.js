@@ -70,6 +70,12 @@ router.post('/', async (req, res, next) => {
 	if (title === '' || title === null) {
 		return next(createError(400, 'Название не должно быть пустым'));
 	}
+	if (!parseFloat(price)) {
+		return next(createError(400, 'Ошибка преобразования цены'));
+	}
+	if (!parseFloat(quantity)) {
+		return next(createError(400, 'Ошибка преобразования кол-ва'));
+	}
 	if (isFuture(new Date(date))) {
 		return next(createError(400,  'Дата в будущем'));
 	}
@@ -88,8 +94,8 @@ router.post('/', async (req, res, next) => {
 		userId: vk_user_id,
 		title,
 		description,
-		price,
-		quantity,
+		price: parseFloat(price),
+		quantity: parseFloat(quantity),
 		income,
 		tags,
 		itemFrom
@@ -128,7 +134,6 @@ router.post('/', async (req, res, next) => {
 		});
 });
 
-//TODO Обработка ошибок
 router.patch('/:id', async (req, res, next) => {
 	const {
 		params: {id},
@@ -147,6 +152,12 @@ router.patch('/:id', async (req, res, next) => {
 
 	if (!(ObjectId.isValid(id) && (new ObjectId(id)).toString() === id)) {
 		return next(createError(400,  'Ошибка идентификатора объекта'));
+	}
+	if (!parseFloat(price)) {
+		return next(createError(400, 'Ошибка преобразования цены'));
+	}
+	if (!parseFloat(quantity)) {
+		return next(createError(400, 'Ошибка преобразования кол-ва'));
 	}
 	if (isFuture(new Date(date))) {
 		return next(createError(400,  'Дата в будущем'));
@@ -181,10 +192,10 @@ router.patch('/:id', async (req, res, next) => {
 			date,
 			title,
 			description,
-			price,
-			quantity,
+			price: parseFloat(price),
+			quantity: parseFloat(quantity),
 			income,
-			sum: price * quantity,
+			sum: parseFloat(price) * parseFloat(quantity),
 			tags,
 			itemFrom
 		}
