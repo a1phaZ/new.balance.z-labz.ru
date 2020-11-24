@@ -178,7 +178,7 @@ const App = () => {
 	}
 
 	const tabBar = (
-		<Tabbar>
+		<Tabbar itemsLayout={'horizontal'}>
 			<TabbarItem
 				onClick={onStoryChange}
 				selected={state.activeView === 'home'}
