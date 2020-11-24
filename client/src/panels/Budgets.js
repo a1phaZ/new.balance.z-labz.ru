@@ -31,7 +31,7 @@ export default ({id, budgets, dispatch, date = new Date(), onRefresh}) => {
 				// separator="show"
 			>
 				<ListOfItems data={budgets} dispatch={dispatch} showAll={true} itemsName={'budgets'} needHide={false}/>
-				<Footer>Цифры напротив бюджета отображают сколько вы можете еще потратить, но помните, что могут быть смежные траты, которые относятся к нескольким бюджетам. Проверяйте внимательно.</Footer>
+				<Footer>Цифры напротив бюджета отображают сколько Вы можете еще потратить, но помните, что могут быть смежные траты, которые относятся к нескольким бюджетам. Проверяйте внимательно.</Footer>
 			</Group>
 			<InfoSnackbar/>
 		</Panel>
