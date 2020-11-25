@@ -109,10 +109,12 @@ const getState = async (req, res, next) => {
 	req.budgets = await findBudgets(vk_user_id, date).then(data => data);
 	req.budgets = await budgetWithOutcomeF(req.budgets);
 	req.budgets = await budgetWithDetails(req.budgets);
-	const dataToSend = await toJson.dataToJson( {accounts: req.accounts, budgets: req.budgets});
+
+	const dataToSend = await toJson.dataToJson( {accounts: req.accounts, budgets: req.budgets, deletedCount: req.deletedCount || null});
 	if (req.message) {
 		dataToSend.message = req.message;
 	}
+
 	await res.status(200).json(dataToSend);
 };
 

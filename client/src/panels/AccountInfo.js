@@ -17,7 +17,14 @@ import {
 } from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import Group from "@vkontakte/vkui/dist/components/Group/Group";
-import {SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT, SET_TOGGLE_CONTEXT} from "../state/actions";
+import {
+	SET_ACCOUNTS, SET_BUDGETS,
+	SET_EDITED_ITEM,
+	SET_HISTORY_BACK,
+	SET_MODAL,
+	SET_POPOUT,
+	SET_TOGGLE_CONTEXT
+} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
 
@@ -82,11 +89,11 @@ export default ({id, account, dispatch, onRefresh, context}) => {
 
 	useEffect(() => {
 		if (!response) return;
-		// dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
 		dispatch({type: SET_HISTORY_BACK});
 		dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
-		onRefresh();
-	}, [dispatch, response, onRefresh]);
+		dispatch({type: SET_ACCOUNTS, payload: {accounts: response?.accounts ? response?.accounts : []}});
+		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
+	}, [dispatch, response]);
 
 	useEffect(() => {
 		setIsOpened(context);

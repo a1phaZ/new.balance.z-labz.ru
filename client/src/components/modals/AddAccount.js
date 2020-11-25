@@ -4,6 +4,7 @@ import currency from "../../handlers/currency";
 import useApi from "../../handlers/useApi";
 import validate from "../../handlers/validate";
 import regexp from "../../handlers/regexp";
+import {SET_ACCOUNTS, SET_BUDGETS} from "../../state/actions";
 
 const initialState = {
 	title: '',
@@ -33,14 +34,15 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({onRefresh}) => {
+export default ({onRefresh, dispatch}) => {
 	const [stateForm, dispatchForm] = useReducer(reducer, initialState);
 	const [{response}, doApiFetch] = useApi('/money-box');
 
 	useEffect(() => {
 		if (!response) return;
-		onRefresh();
-	}, [response, onRefresh]);
+		dispatch({type: SET_ACCOUNTS, payload: {accounts: response?.accounts ? response?.accounts : []}});
+		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
+	}, [response, dispatch]);
 
 	return (
 		<FormLayout

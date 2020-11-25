@@ -14,7 +14,14 @@ import {
 	PanelHeaderContent,
 	PanelHeaderContext
 } from "@vkontakte/vkui";
-import {SET_EDITED_ITEM, SET_HISTORY_BACK, SET_MODAL, SET_POPOUT, SET_TOGGLE_CONTEXT} from "../state/actions";
+import {
+	SET_ACCOUNTS, SET_BUDGETS,
+	SET_EDITED_ITEM,
+	SET_HISTORY_BACK,
+	SET_MODAL,
+	SET_POPOUT,
+	SET_TOGGLE_CONTEXT
+} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import useApi from "../handlers/useApi";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
@@ -30,7 +37,7 @@ import reduce from "../handlers/reduce";
 import currency from "../handlers/currency";
 import SearchForm from "../components/SearchForm";
 
-export default ({id, budget, dispatch, onRefresh, context}) => {
+export default ({id, budget, dispatch, context}) => {
 	const [isOpened, setIsOpened] = useState(() => context);
 	const [{response}, doApiFetch] = useApi(`/budget/${budget?._id}`);
 	const [items, setItems] = useState(() => budget?.items);
@@ -46,9 +53,10 @@ export default ({id, budget, dispatch, onRefresh, context}) => {
 		if (response?.deletedCount) {
 			dispatch({type: SET_HISTORY_BACK});
 			dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
-			onRefresh();
 		}
-	}, [response, dispatch, onRefresh]);
+		dispatch({type: SET_ACCOUNTS, payload: {accounts: response?.accounts ? response?.accounts : []}});
+		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
+	}, [response, dispatch]);
 
 	useEffect(() => {
 		setIsOpened(context);

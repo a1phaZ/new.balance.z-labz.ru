@@ -118,7 +118,8 @@ router.delete('/:id', async (req, res, next) => {
 	}
 	await Budget.deleteOne({_id: id, userId: vk_user_id})
 		.then(data => {
-			req.message = data.deletedCount !== 0 ? 'Удалено' : 'Нечего удалять'
+			req.message = data.deletedCount !== 0 ? 'Удалено' : 'Нечего удалять';
+			req.deletedCount = data.deletedCount;
 			next();
 		})
 		.catch(err => next(createError(err.statusCode, err.message)));

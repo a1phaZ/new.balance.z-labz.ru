@@ -142,7 +142,7 @@ const App = () => {
 					Добавить счет
 				</ModalPageHeader>
 			}>
-				<AddAccount onRefresh={onRefresh}/>
+				<AddAccount dispatch={dispatch}/>
 			</ModalPage>
 
 			<ModalPage id={'add-money'} header={
@@ -154,7 +154,7 @@ const App = () => {
 				</ModalPageHeader>
 			}>
 				<AddMoney accounts={state.accounts} id={state.account?._id}
-									editedItem={state.editedItem} onRefresh={onRefresh} budget={state.budget} panel={state.activePanel}/>
+									editedItem={state.editedItem} dispatch={dispatch} budget={state.budget} panel={state.activePanel}/>
 			</ModalPage>
 
 			<ModalPage id={'add-budget'} header={
@@ -165,7 +165,7 @@ const App = () => {
 					{state.editedItem ? 'Редактировать' : 'Добавить бюджет'}
 				</ModalPageHeader>
 			}>
-				<AddBudget editedItem={state.editedItem} onRefresh={onRefresh} dispatch={dispatch}/>
+				<AddBudget editedItem={state.editedItem} dispatch={dispatch}/>
 			</ModalPage>
 		</ModalRoot>
 	)
@@ -225,7 +225,7 @@ const App = () => {
 					<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
 									 date={state.currentDate}/>
 					<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
-											dispatch={dispatch} onRefresh={onRefresh} context={state.contextHistory}/>
+											dispatch={dispatch} context={state.contextHistory}/>
 				</View>
 				<View id={'stats'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>

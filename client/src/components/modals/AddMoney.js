@@ -5,6 +5,7 @@ import currency from "../../handlers/currency";
 import useApi from "../../handlers/useApi";
 import validate from "../../handlers/validate";
 import regexp from "../../handlers/regexp";
+import {SET_ACCOUNTS, SET_BUDGETS} from "../../state/actions";
 
 const initialState = {
 	account: '',
@@ -40,12 +41,12 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({accounts, id = null, editedItem = null, onRefresh, budget, panel=''}) => {
+export default ({accounts, id = null, editedItem = null, dispatch, budget, panel=''}) => {
 	const [apiStr] = useState(() => {
 		return !editedItem ? '/item' : `/item/${editedItem._id}`;
 	})
 	const [{response}, doApiFetch] = useApi(apiStr);
-	const [state, dispatch] = useReducer(reducer, initialState);
+	const [state, dispatchForm] = useReducer(reducer, initialState);
 	const accountList = accounts.map(item => {
 		return (<option key={item._id} value={item._id}>{item.title} ({currency(item.sum)})</option>)
 	});
@@ -53,13 +54,13 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 	useEffect(() => {
 		if (!editedItem) return;
 		editedItem.date = format(new Date(editedItem.date), 'yyyy-MM-dd');
-		dispatch({type: 'CHANGE_STATE', payload: {...editedItem}});
+		dispatchForm({type: 'CHANGE_STATE', payload: {...editedItem}});
 	}, [editedItem, dispatch]);
 
 	useEffect(() => {
 		if (!budget?.title) return;
 		if (panel === 'home') return;
-		dispatch({
+		dispatchForm({
 			type: 'CHANGE_STATE',
 			payload: {
 				tags: editedItem?.tags || budget?.title.toLowerCase().split(' ')
@@ -69,8 +70,9 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 
 	useEffect(() => {
 		if (!response) return;
-		onRefresh();
-	}, [response, onRefresh]);
+		dispatch({type: SET_ACCOUNTS, payload: {accounts: response?.accounts ? response?.accounts : []}});
+		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
+	}, [response, dispatch]);
 
 	const tags = state.tags.filter(tag => !!tag.length).map(
 		(tag, index) =>
@@ -108,7 +110,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 			<Select top={'Счет'}
 							placeholder={'Выберите счет'}
 							onChange={(e) => {
-								dispatch({
+								dispatchForm({
 									type: 'CHANGE_STATE',
 									payload: {account: e.currentTarget.value, validateForm: {account: validate(e)}}
 								})
@@ -126,7 +128,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 						 min={'2015-01-01'}
 						 max={format(new Date(), 'yyyy-MM-dd')}
 						 onChange={(e) => {
-							 dispatch({
+							 dispatchForm({
 								 type: 'CHANGE_STATE',
 								 payload: {date: e.currentTarget.value, validateForm: {date: validate(e)}}
 							 })
@@ -143,7 +145,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 						 status={state.validate?.title?.status}
 						 bottom={state.validate?.title?.message ? state.validate?.title?.message : `${state.title.length} из 20`}
 						 onChange={(e) => {
-							 dispatch({
+							 dispatchForm({
 								 type: 'CHANGE_STATE',
 								 payload: {
 									 title: regexp(e.currentTarget.value),
@@ -155,7 +157,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 						 value={false}
 						 defaultChecked={state.income ? null : true}
 						 onClick={() => {
-							 dispatch({type: 'CHANGE_STATE', payload: {income: false}})
+							 dispatchForm({type: 'CHANGE_STATE', payload: {income: false}})
 						 }}
 			>
 				Расход
@@ -164,7 +166,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 						 value={true}
 						 defaultChecked={state.income ? true : null}
 						 onClick={() => {
-							 dispatch({type: 'CHANGE_STATE', payload: {income: true}})
+							 dispatchForm({type: 'CHANGE_STATE', payload: {income: true}})
 						 }}
 			>
 				Доход
@@ -179,7 +181,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 									status={state.validate?.description?.status}
 									bottom={state.validate?.description?.message ? state.validate?.description?.message : `${state.description.length} из 70`}
 									onChange={(e) => {
-										dispatch({
+										dispatchForm({
 											type: 'CHANGE_STATE',
 											payload: {
 												description: regexp(e.currentTarget.value),
@@ -197,7 +199,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 						 maxLength={100}
 						 bottom={state.validate?.tags?.message ? state.validate?.tags?.message : `${state.tags.join(' ').length} из 100 символов`}
 						 onChange={(e) => {
-							 dispatch({
+							 dispatchForm({
 								 type: 'CHANGE_STATE',
 								 payload: {
 									 tags: e.currentTarget.value !== '' ? regexp(e.currentTarget.value).toLowerCase().split(' ') : [],
@@ -227,7 +229,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 						 value={state.price}
 						 required={true}
 						 onChange={(e) => {
-							 dispatch({
+							 dispatchForm({
 								 type: 'CHANGE_STATE',
 								 payload: {price: e.currentTarget.value.replace(/[^\d.]*/, ''), validateForm: {price: validate(e)}}
 							 })
@@ -238,7 +240,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 				&&
 				<Checkbox value={state.boxPrice}
 									onClick={() => {
-										dispatch({type: 'CHANGE_STATE', payload: {boxPrice: !state.boxPrice}})
+										dispatchForm({type: 'CHANGE_STATE', payload: {boxPrice: !state.boxPrice}})
 									}}
 				>
 					Цена за упаковку
@@ -257,7 +259,7 @@ export default ({accounts, id = null, editedItem = null, onRefresh, budget, pane
 						 value={state.quantity}
 						 required={true}
 						 onChange={(e) => {
-							 dispatch({
+							 dispatchForm({
 								 type: 'CHANGE_STATE',
 								 payload: {quantity: e.currentTarget.value.replace(/[^\d.]*/, ''), validateForm: {quantity: validate(e)}}
 							 })

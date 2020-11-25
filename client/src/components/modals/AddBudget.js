@@ -4,6 +4,7 @@ import useApi from "../../handlers/useApi";
 import validate from "../../handlers/validate";
 import currency from "../../handlers/currency";
 import regexp from "../../handlers/regexp";
+import {SET_ACCOUNTS, SET_BUDGETS} from "../../state/actions";
 
 const initialState = {
 	title: '',
@@ -28,7 +29,7 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({onRefresh, editedItem = null}) => {
+export default ({dispatch, editedItem = null}) => {
 	const [stateForm, dispatchForm] = useReducer(reducer, initialState);
 	const [apiStr] = useState(() => {
 		return !editedItem ? '/budget' : `/budget/${editedItem._id}`;
@@ -42,8 +43,9 @@ export default ({onRefresh, editedItem = null}) => {
 
 	useEffect(() => {
 		if (!response) return;
-		onRefresh();
-	}, [onRefresh, response]);
+		dispatch({type: SET_ACCOUNTS, payload: {accounts: response?.accounts ? response?.accounts : []}});
+		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
+	}, [response, dispatch]);
 
 	return (
 		<FormLayout
