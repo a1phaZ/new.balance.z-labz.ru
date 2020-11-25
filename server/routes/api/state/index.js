@@ -1,5 +1,3 @@
-const express = require('express');
-const router = express.Router();
 const MoneyBox = require('../../../models/moneybox');
 const Budget = require('../../../models/budget');
 const Item = require('../../../models/item');
@@ -81,18 +79,14 @@ async function budgetWithDetails(array) {
 			.then(item => budgetWithDetails = [...budgetWithDetails, item]);
 	}
 
-	// console.log(budgetWithDetails);
 	return budgetWithDetails;
 }
 
-router.get('/', async (req, res, next) => {
+const getState = async (req, res, next) => {
 	const {
-		query: { vk_user_id, date }
+		query: { vk_user_id, date = new Date() }
 	} = req;
 
-	// if (isFuture(new Date(date))) {
-	// 	return next(createError(400,  'Дата в будущем'));
-	// }
 	if (!isValid(new Date(date))) {
 		return next(createError(400,  'Дата невалидна'));
 	}
@@ -110,14 +104,18 @@ router.get('/', async (req, res, next) => {
 			item.operations = [...editedItems];
 		})
 
-		// console.log(data);
 		return data;
 	});
 	req.budgets = await findBudgets(vk_user_id, date).then(data => data);
 	req.budgets = await budgetWithOutcomeF(req.budgets);
 	req.budgets = await budgetWithDetails(req.budgets);
-	await res.status(200).json(await toJson.dataToJson( {accounts: req.accounts, budgets: req.budgets}));
-	// await next();
-});
+	const dataToSend = await toJson.dataToJson( {accounts: req.accounts, budgets: req.budgets});
+	if (req.message) {
+		dataToSend.message = req.message;
+	}
+	await res.status(200).json(dataToSend);
+};
 
-module.exports = router;
+module.exports = {
+	getState
+};

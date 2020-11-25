@@ -8,6 +8,7 @@ const router = express.Router();
 const {createError, setErrorStatusCodeAndMessage} = require('../../../handlers/error');
 const {isFuture, isValid, isBefore} = require('date-fns');
 const mongoose = require('mongoose');
+const {getState} = require("../state");
 const { Types: {ObjectId}} = mongoose;
 
 const removeItemsFromAccount = async (userId, oldItem) => {
@@ -117,10 +118,9 @@ router.post('/', async (req, res, next) => {
 			return await box.save();
 		})
 		.then(async box => await MoneyBox.findById(box._id).populate('operations'))
-		.then(response => toJson.dataToJson(response))
-		.then(data => {
-			data.message = 'Запись сохранена'
-			res.status(200).json(data)
+		.then(() => {
+			req.message = 'Запись сохранена';
+			next();
 		})
 		.catch(err => {
 			if (err.errors) {
@@ -132,7 +132,7 @@ router.post('/', async (req, res, next) => {
 			}
 			return next(createError(err.statusCode, err.message))
 		});
-});
+}, getState);
 
 router.patch('/:id', async (req, res, next) => {
 	const {
@@ -217,10 +217,9 @@ router.patch('/:id', async (req, res, next) => {
 				_id: itemFrom
 			}, {$set: {sum: sum}}, {new: true}).populate('operations');
 		})
-		.then(response => toJson.dataToJson(response))
-		.then(data => {
-			data.message = 'Запись обновлена'
-			res.status(200).json(data)
+		.then(() => {
+			req.message = 'Запись обновлена';
+			next()
 		})
 		.catch(err => {
 			res.json(err);
@@ -233,6 +232,6 @@ router.patch('/:id', async (req, res, next) => {
 			}
 			return next(createError(err.statusCode, err.message))
 		});
-});
+}, getState);
 
 module.exports = router;

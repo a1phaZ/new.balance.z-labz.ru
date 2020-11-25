@@ -3,10 +3,10 @@ const toJson = require("../../../handlers/toJson");
 const router = express.Router();
 const {createError} = require('../../../handlers/error');
 const Budget = require('../../../models/budget');
-// const Item = require('../../../models/item');
 const {setErrorStatusCodeAndMessage} = require("../../../handlers/error");
 const {getMongooseError} = require("../../../handlers/error");
 const mongoose = require('mongoose');
+const {getState} = require("../state");
 const { Types: {ObjectId}} = mongoose;
 
 function getYear(date) {
@@ -16,49 +16,6 @@ function getYear(date) {
 function getMonth(date) {
 	return date ? new Date(date).getMonth() : new Date().getMonth();
 }
-
-// router.get('/', async (req, res, next) => {
-// 	const {
-// 		query: {vk_user_id},
-// 		body: {date}
-// 	} = req;
-//
-// 	const year = getYear(date);
-// 	const month = getMonth(date);
-//
-// 	await Budget.find({userId: vk_user_id, year: year, month: month})
-// 		.then((budgetList) => {
-// 			return toJson.dataToJson(budgetList)
-// 		})
-// 		.then(data => res.status(200).json(data))
-// 		.catch(err => {
-// 			const e = err.reason ? setErrorStatusCodeAndMessage(err) : err;
-// 			next(createError(e.statusCode, e.message));
-// 		});
-// });
-//
-// router.get('/:id', async (req, res, next) => {
-// 	const {
-// 		query: {vk_user_id},
-// 		body: {date},
-// 		params: {id}
-// 	} = req;
-//
-// 	const year = getYear(date);
-// 	const month = getMonth(date);
-//
-// 	await Budget.findOne({_id: id, userId: vk_user_id, year: year, month: month})
-// 		.then(async budget => {
-// 			if (!budget) return Promise.reject(createError(404, 'Бюджет не найден'));
-// 			return await Item.find({userId: vk_user_id, year: year, month: month, tags: budget.title.toLowerCase()})
-// 		})
-// 		.then(itemList => toJson.dataToJson(itemList))
-// 		.then(data => res.status(200).json(data))
-// 		.catch(err => {
-// 			const e = err.reason ? setErrorStatusCodeAndMessage(err) : err;
-// 			next(createError(e.statusCode, e.message));
-// 		});
-// });
 
 router.post('/', async (req, res, next) => {
 	const {
@@ -85,13 +42,11 @@ router.post('/', async (req, res, next) => {
 			})
 			return newBudget.save()
 		})
-		.then(response => toJson.dataToJson(response))
-		.then(data => {
-			data.message = 'Сохранено'
-			res.status(200).json(data)
+		.then(() => {
+			req.message = 'Сохранено';
+			next()
 		})
 		.catch(err => {
-			// res.json(err);
 			if (err.errors) {
 				return next(createError(400, getMongooseError(err)))
 			}
@@ -101,7 +56,7 @@ router.post('/', async (req, res, next) => {
 			}
 			return next(createError(err.statusCode, err.message))
 		});
-});
+}, getState);
 
 router.patch('/:id', async (req, res, next) => {
 	const {
@@ -140,18 +95,17 @@ router.patch('/:id', async (req, res, next) => {
 				return toJson.dataToJson(response)
 			}
 		)
-		.then(data => {
-			data.message = 'Сохранено'
-			res.status(200).json(data)
+		.then(() => {
+			req.message = 'Сохранено';
+			next();
 		})
 		.catch(err => {
-			// res.json(err);
 			if (err.errors) {
 				return next(createError(err.statusCode, getMongooseError(err)))
 			}
 			return next(createError(err.statusCode, err.message))
 		});
-})
+}, getState);
 
 router.delete('/:id', async (req, res, next) => {
 	const {
@@ -163,14 +117,11 @@ router.delete('/:id', async (req, res, next) => {
 		return next(createError(400,  'Ошибка идентификатора объекта'));
 	}
 	await Budget.deleteOne({_id: id, userId: vk_user_id})
-		.then(response => {
-			return toJson.dataToJson(response)
-		})
 		.then(data => {
-			data.message = data.data.deletedCount !== 0 ? 'Удалено' : 'Нечего удалять'
-			res.status(data.data.deletedCount !== 0 ? 200 : 404).json(data)
+			req.message = data.deletedCount !== 0 ? 'Удалено' : 'Нечего удалять'
+			next();
 		})
 		.catch(err => next(createError(err.statusCode, err.message)));
-});
+}, getState);
 
 module.exports = router;

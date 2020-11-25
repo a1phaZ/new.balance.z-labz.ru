@@ -1,7 +1,8 @@
 const express = require('express');
+const {getState} = require("./state");
 const router = express.Router();
 
-router.use('/state', require('./state'));
+router.get('/state', getState);
 router.use('/money-box', require('./moneybox'));
 router.use('/item', require('./item'));
 router.use('/budget', require('./budget'));

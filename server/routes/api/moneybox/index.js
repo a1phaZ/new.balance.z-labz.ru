@@ -6,6 +6,7 @@ const Item = require('../../../models/item');
 const toJson = require("../../../handlers/toJson");
 const {createError, getMongooseError} = require('../../../handlers/error');
 const mongoose = require('mongoose');
+const {getState} = require("../state");
 const { Types: {ObjectId}} = mongoose;
 
 const findByUserId = async (userId) => {
@@ -87,10 +88,9 @@ router.post('/', async (req, res, next) => {
 			if (!box) return Promise.reject(createError(404, 'Счет не найден'));
 			return box;
 		})
-		.then(response => toJson.dataToJson(response))
-		.then(data => {
-			data.message = 'Сохранено'
-			res.status(200).json(data)
+		.then(() => {
+			req.message = 'Сохранено'
+			next();
 		})
 		.catch(err => {
 			if (err.errors) {
@@ -98,7 +98,7 @@ router.post('/', async (req, res, next) => {
 			}
 			return next(createError(err.statusCode, err.message))
 		});
-});
+}, getState);
 
 router.delete('/:id', async (req, res, next) => {
 	const {
@@ -117,12 +117,11 @@ router.delete('/:id', async (req, res, next) => {
 		.then(box => box.operations)
 		.then(operations => Item.deleteMany({_id: {$in: operations}}))
 		.then(() => MoneyBox.deleteOne({_id: id}))
-		.then(response => toJson.dataToJson(response))
 		.then(data => {
-			data.message = data.data.deletedCount !== 0 ? 'Удалено' : 'Нечего удалять'
-			res.status(data.data.deletedCount !== 0 ? 200 : 404).json(data)
+			req.message = data.deletedCount !== 0 ? 'Удалено' : 'Нечего удалять'
+			next()
 		})
 		.catch(err => next(createError(err.statusCode, err.message)));
-});
+}, getState);
 
 module.exports = router;
