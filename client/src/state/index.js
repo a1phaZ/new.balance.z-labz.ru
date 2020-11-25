@@ -33,7 +33,8 @@ const initialState = {
 	popoutHistory: [],
 	contextHistory: false,
 	canClose: true,
-	scheme: 'client_light'
+	scheme: 'client_light',
+	modalOpenTime: +new Date(),
 }
 
 const reducer = (state, action) => {
@@ -104,6 +105,11 @@ const reducer = (state, action) => {
 			}
 
 			if (modalsHistory.length !== 0) {
+				if (+new Date() - state.modalOpenTime < 700) {
+					return {
+						...state
+					}
+				}
 				const canClose = state.history.length <= 1;
 				return {
 					...state,
@@ -215,7 +221,8 @@ const reducer = (state, action) => {
 				...state,
 				modal: action.payload.modal,
 				modalsHistory: action.payload.modal ? [action.payload.modal] : [],
-				canClose: canClose
+				canClose: canClose,
+				modalOpenTime: +new Date()
 			}
 		}
 		case SET_TOGGLE_CONTEXT: {
