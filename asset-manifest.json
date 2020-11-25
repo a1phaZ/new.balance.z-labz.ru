@@ -1,30 +1,30 @@
 {
   "files": {
     "main.css": "/new.balance.z-labz.ru/static/css/main.50806ac8.chunk.css",
-    "main.js": "/new.balance.z-labz.ru/static/js/main.8ab9ed15.chunk.js",
-    "main.js.map": "/new.balance.z-labz.ru/static/js/main.8ab9ed15.chunk.js.map",
+    "main.js": "/new.balance.z-labz.ru/static/js/main.83f0dd83.chunk.js",
+    "main.js.map": "/new.balance.z-labz.ru/static/js/main.83f0dd83.chunk.js.map",
     "runtime-main.js": "/new.balance.z-labz.ru/static/js/runtime-main.bc507bae.js",
     "runtime-main.js.map": "/new.balance.z-labz.ru/static/js/runtime-main.bc507bae.js.map",
     "static/css/2.6326594c.chunk.css": "/new.balance.z-labz.ru/static/css/2.6326594c.chunk.css",
-    "static/js/2.0db0b0d5.chunk.js": "/new.balance.z-labz.ru/static/js/2.0db0b0d5.chunk.js",
-    "static/js/2.0db0b0d5.chunk.js.map": "/new.balance.z-labz.ru/static/js/2.0db0b0d5.chunk.js.map",
+    "static/js/2.301cdb64.chunk.js": "/new.balance.z-labz.ru/static/js/2.301cdb64.chunk.js",
+    "static/js/2.301cdb64.chunk.js.map": "/new.balance.z-labz.ru/static/js/2.301cdb64.chunk.js.map",
     "static/js/3.6978f571.chunk.js": "/new.balance.z-labz.ru/static/js/3.6978f571.chunk.js",
     "static/js/3.6978f571.chunk.js.map": "/new.balance.z-labz.ru/static/js/3.6978f571.chunk.js.map",
     "static/js/4.8a88772c.chunk.js": "/new.balance.z-labz.ru/static/js/4.8a88772c.chunk.js",
     "static/js/4.8a88772c.chunk.js.map": "/new.balance.z-labz.ru/static/js/4.8a88772c.chunk.js.map",
     "index.html": "/new.balance.z-labz.ru/index.html",
-    "precache-manifest.e78103fee8a83d35b31eb1f75c3e1594.js": "/new.balance.z-labz.ru/precache-manifest.e78103fee8a83d35b31eb1f75c3e1594.js",
+    "precache-manifest.40533d7b282fcdb95c1185a3b51bb053.js": "/new.balance.z-labz.ru/precache-manifest.40533d7b282fcdb95c1185a3b51bb053.js",
     "service-worker.js": "/new.balance.z-labz.ru/service-worker.js",
     "static/css/2.6326594c.chunk.css.map": "/new.balance.z-labz.ru/static/css/2.6326594c.chunk.css.map",
     "static/css/main.50806ac8.chunk.css.map": "/new.balance.z-labz.ru/static/css/main.50806ac8.chunk.css.map",
-    "static/js/2.0db0b0d5.chunk.js.LICENSE.txt": "/new.balance.z-labz.ru/static/js/2.0db0b0d5.chunk.js.LICENSE.txt",
+    "static/js/2.301cdb64.chunk.js.LICENSE.txt": "/new.balance.z-labz.ru/static/js/2.301cdb64.chunk.js.LICENSE.txt",
     "static/js/3.6978f571.chunk.js.LICENSE.txt": "/new.balance.z-labz.ru/static/js/3.6978f571.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.bc507bae.js",
     "static/css/2.6326594c.chunk.css",
-    "static/js/2.0db0b0d5.chunk.js",
+    "static/js/2.301cdb64.chunk.js",
     "static/css/main.50806ac8.chunk.css",
-    "static/js/main.8ab9ed15.chunk.js"
+    "static/js/main.83f0dd83.chunk.js"
   ]
 }
