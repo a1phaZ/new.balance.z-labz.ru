@@ -15,4 +15,4 @@ ReactDOM.render(
 // }
 
 // console.log(new URL(window.location.href).searchParams.get('vk_user_id'));
-import("./eruda").then(({ default: eruda }) => {}); //runtime download
+//import("./eruda").then(({ default: eruda }) => {}); //runtime download
