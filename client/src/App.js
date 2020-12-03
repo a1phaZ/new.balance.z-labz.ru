@@ -32,6 +32,7 @@ import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon28HomeOutline from '@vkontakte/icons/dist/28/home_outline';
 import Icon28CoinsOutline from '@vkontakte/icons/dist/28/coins_outline';
 import Icon28StatisticsOutline from '@vkontakte/icons/dist/28/statistics_outline';
+import Icon28More from '@vkontakte/icons/dist/28/more';
 import AddAccount from "./components/modals/AddAccount";
 import AddMoney from "./components/modals/AddMoney";
 import AccountInfo from "./panels/AccountInfo";
@@ -42,6 +43,7 @@ import Stats from "./panels/Stats";
 import InitialScreen from "./panels/InitialScreen";
 
 import './style.css';
+import More from "./panels/More";
 
 const App = () => {
 	const os = platform();
@@ -206,6 +208,15 @@ const App = () => {
 			>
 				<Icon28StatisticsOutline/>
 			</TabbarItem>
+			<TabbarItem
+				onClick={onStoryChange}
+				selected={state.activeView === 'more' && state.activePanel === 'index'}
+				data-story={'more'}
+				data-panel={'index'}
+				text={'Еще'}
+			>
+				<Icon28More/>
+			</TabbarItem>
 		</Tabbar>
 	)
 
@@ -229,6 +240,9 @@ const App = () => {
 				</View>
 				<View id={'stats'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>
+				</View>
+				<View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
+					<More id={'index'} />
 				</View>
 			</Epic>
 		</ConfigProvider>
