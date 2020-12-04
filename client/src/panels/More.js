@@ -13,12 +13,12 @@ export default ({id}) => {
 
 	useEffect(() => {
 		bridge.subscribe(({detail: {type, data}}) => {
-			if (type === 'VKWebAppAddToHomeScreenResult') {
+			if (type === 'VKWebAppAddToHomeScreenInfoResult') {
 				console.log(data);
 				setAddToHomeScreenSupported(data.is_feature_supported);
 				setAddedToHomeScreen(data.is_added_to_home_screen);
 			}
-			if (type === 'VKWebAppGetGroupResult') {
+			if (type === 'VKWebAppGetGroupInfoResult') {
 				console.log(data);
 			}
 		});
