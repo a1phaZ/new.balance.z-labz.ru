@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import {Cell, Group, Header, Panel, PanelHeader} from "@vkontakte/vkui";
 import Icon28ShareExternalOutline from '@vkontakte/icons/dist/28/share_external_outline';
@@ -8,6 +8,19 @@ import Icon28ListCheckOutline from '@vkontakte/icons/dist/28/list_check_outline'
 
 export default ({id}) => {
 	const userId = new URL(window.location.href).searchParams.get('vk_user_id');
+	const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
+	const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
+
+	useEffect(() => {
+		bridge.subscribe(({detail: {type, data}}) => {
+			if (type === 'VKWebAppAddToHomeScreenInfo') {
+				setAddToHomeScreenSupported(data.is_feature_supported);
+				setAddedToHomeScreen(data.is_added_to_home_screen);
+			}
+		});
+		bridge.send('VKWebAppAddToHomeScreenInfo');
+	}, []);
+
 	return (
 		<Panel id={id}>
 			<PanelHeader>Ещё</PanelHeader>
@@ -40,7 +53,8 @@ export default ({id}) => {
 				>
 					Присоеденииться к Балансу
 				</Cell>
-				<Cell
+
+				{(addToHomeScreenSupported || addedToHomeScreen) &&<Cell
 					expandable
 					before={<Icon28AddCircleOutline/>}
 					onClick={() => {
@@ -48,7 +62,7 @@ export default ({id}) => {
 					}}
 				>
 					Добавить на главный экран
-				</Cell>
+				</Cell>}
 			</Group>
 			{false && <Group>
 				<Cell expandable before={<Icon28ListCheckOutline/>}>Список покупок</Cell>
