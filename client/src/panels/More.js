@@ -59,7 +59,7 @@ export default ({id}) => {
 					Присоеденииться к Балансу
 				</Cell>
 
-				{(addToHomeScreenSupported || !addedToHomeScreen) && <Cell
+				{(addToHomeScreenSupported || addedToHomeScreen) && <Cell
 					expandable
 					before={<Icon28AddCircleOutline/>}
 					onClick={() => {
