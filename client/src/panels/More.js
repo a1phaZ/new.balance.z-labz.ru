@@ -14,9 +14,13 @@ export default ({id}) => {
 	useEffect(() => {
 		bridge.subscribe(({detail: {type, data}}) => {
 			if (type === 'VKWebAppAddToHomeScreenInfoResult') {
-				console.log(data);
 				setAddToHomeScreenSupported(data.is_feature_supported);
 				setAddedToHomeScreen(data.is_added_to_home_screen);
+			}
+			if (type === 'VKWebAppAddToHomeScreenResult') {
+				if (data.result) {
+					bridge.send('VKWebAppAddToHomeScreenInfo');
+				}
 			}
 		});
 		bridge.send('VKWebAppAddToHomeScreenInfo');
@@ -60,7 +64,6 @@ export default ({id}) => {
 					before={<Icon28AddCircleOutline/>}
 					onClick={() => {
 						bridge.send('VKWebAppAddToHomeScreen');
-						bridge.send('VKWebAppAddToHomeScreenInfo');
 					}}
 				>
 					Добавить на главный экран
