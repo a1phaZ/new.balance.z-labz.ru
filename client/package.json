@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "1.0.0",
-  "homepage": "https://a1phaZ.github.io/new.balance.z-labz.ru/",
+  "homepage": "./",
   "description": "",
   "main": "index.js",
   "scripts": {
