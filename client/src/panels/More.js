@@ -9,18 +9,21 @@ import Icon28ListCheckOutline from '@vkontakte/icons/dist/28/list_check_outline'
 export default ({id}) => {
 	const userId = new URL(window.location.href).searchParams.get('vk_user_id');
 	const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
+	const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
 
 	useEffect(() => {
 		bridge.subscribe(({detail: {type, data}}) => {
-			if (type === 'VKWebAppAddToHomeScreenInfo') {
+			if (type === 'VKWebAppAddToHomeScreenResult') {
+				console.log(data);
 				setAddToHomeScreenSupported(data.is_feature_supported);
+				setAddedToHomeScreen(data.is_added_to_home_screen);
 			}
-			if (type === 'VKWebAppGetGroupInfo') {
+			if (type === 'VKWebAppGetGroupResult') {
 				console.log(data);
 			}
 		});
 		bridge.send('VKWebAppAddToHomeScreenInfo');
-		bridge.send("VKWebAppGetGroupInfo", {"group_id": 1});
+		bridge.send("VKWebAppGetGroupInfo", {"group_id": 166562603});
 	}, []);
 
 	return (
@@ -56,7 +59,7 @@ export default ({id}) => {
 					Присоеденииться к Балансу
 				</Cell>
 
-				{addToHomeScreenSupported && <Cell
+				{(addToHomeScreenSupported || !addedToHomeScreen) && <Cell
 					expandable
 					before={<Icon28AddCircleOutline/>}
 					onClick={() => {
