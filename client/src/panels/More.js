@@ -18,12 +18,8 @@ export default ({id}) => {
 				setAddToHomeScreenSupported(data.is_feature_supported);
 				setAddedToHomeScreen(data.is_added_to_home_screen);
 			}
-			if (type === 'VKWebAppGetGroupInfoResult') {
-				console.log(data);
-			}
 		});
 		bridge.send('VKWebAppAddToHomeScreenInfo');
-		bridge.send("VKWebAppGetGroupInfo", {"group_id": 166562603});
 	}, []);
 
 	return (
@@ -59,11 +55,12 @@ export default ({id}) => {
 					Присоеденииться к Балансу
 				</Cell>
 
-				{(addToHomeScreenSupported || addedToHomeScreen) && <Cell
+				{(addToHomeScreenSupported || !addedToHomeScreen) && <Cell
 					expandable
 					before={<Icon28AddCircleOutline/>}
 					onClick={() => {
-						bridge.send('VKWebAppAddToHomeScreen')
+						bridge.send('VKWebAppAddToHomeScreen');
+						bridge.send('VKWebAppAddToHomeScreenInfo');
 					}}
 				>
 					Добавить на главный экран
