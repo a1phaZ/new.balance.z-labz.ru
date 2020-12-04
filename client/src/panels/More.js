@@ -20,7 +20,13 @@ export default ({id}) => {
 				>
 					Поделиться
 				</Cell>
-				<Cell expandable before={<Icon28Users3Outline />}>Сообщество Баланса</Cell>
+				<Cell
+					expandable
+					before={<Icon28Users3Outline />}
+					onClick={() => {bridge.send('VKWebAppAddToCommunity')}}
+				>
+					Сообщество Баланса
+				</Cell>
 				<Cell expandable before={<Icon28AddCircleOutline />}>Добавить на главный экран</Cell>
 			</Group>
 			{false && <Group>
