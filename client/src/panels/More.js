@@ -23,11 +23,17 @@ export default ({id}) => {
 				<Cell
 					expandable
 					before={<Icon28Users3Outline />}
-					onClick={() => {bridge.send('VKWebAppAddToCommunity')}}
+					onClick={() => {bridge.send('VKWebAppJoinGroup', {group_id: 195358095})}}
 				>
-					Сообщество Баланса
+					Присоеденииться к Балансу
 				</Cell>
-				<Cell expandable before={<Icon28AddCircleOutline />}>Добавить на главный экран</Cell>
+				<Cell
+					expandable
+					before={<Icon28AddCircleOutline />}
+					onClick={() => {bridge.send('VKWebAppAddToHomeScreen')}}
+				>
+					Добавить на главный экран
+				</Cell>
 			</Group>
 			{false && <Group>
 				<Cell expandable before={<Icon28ListCheckOutline/>}>Список покупок</Cell>
