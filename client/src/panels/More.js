@@ -56,7 +56,7 @@ export default ({id}) => {
 						bridge.send('VKWebAppJoinGroup', {group_id: 195358095})
 					}}
 				>
-					Присоедениться к Балансу
+					Присоединиться к Балансу
 				</Cell>
 
 				{addToHomeScreenSupported && !addedToHomeScreen && <Cell
