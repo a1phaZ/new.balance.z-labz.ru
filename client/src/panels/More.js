@@ -18,6 +18,7 @@ export default ({id}) => {
 				setAddedToHomeScreen(data.is_added_to_home_screen);
 			}
 			if (type === 'VKWebAppAddToHomeScreenResult') {
+				console.log(data);
 				if (data.result) {
 					bridge.send('VKWebAppAddToHomeScreenInfo');
 				}
