@@ -213,7 +213,7 @@ const App = () => {
 				selected={state.activeView === 'more' && state.activePanel === 'index'}
 				data-story={'more'}
 				data-panel={'index'}
-				text={'Еще'}
+				text={'Ещё'}
 			>
 				<Icon28More/>
 			</TabbarItem>
