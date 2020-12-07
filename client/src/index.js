@@ -10,9 +10,9 @@ ReactDOM.render(
   <StateProvider>
     <App />
   </StateProvider>, document.getElementById("root"));
-// if (new URL(window.location.href).searchParams.get('vk_user_id') === process.env.REACT_APP_ID.toString()) {
-//   import("./eruda").then(() => {}); //runtime download
-// }
+if (new URL(window.location.href).searchParams.get('vk_user_id') === process.env.REACT_APP_ID.toString()) {
+  import("./eruda").then(() => {}); //runtime download
+}
 
 // console.log(new URL(window.location.href).searchParams.get('vk_user_id'));
-import("./eruda").then(({ default: eruda }) => {}); //runtime download
+//import("./eruda").then(({ default: eruda }) => {}); //runtime download
