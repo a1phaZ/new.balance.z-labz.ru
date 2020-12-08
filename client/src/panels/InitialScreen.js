@@ -1,9 +1,9 @@
 import React from 'react';
-import {Button, Panel, Placeholder, Spinner} from "@vkontakte/vkui";
+import {Button, FixedLayout, Panel, Placeholder, PromoBanner, Spinner} from "@vkontakte/vkui";
 import {SET_ACTIVE_VIEW} from "../state/actions";
 import Icon36Done from '@vkontakte/icons/dist/36/done';
 
-export default ({id, dispatch, loading}) => {
+export default ({id, dispatch, loading, bannerData, setBannerData}) => {
 	return (
 		<Panel id={id}>
 			<Placeholder
@@ -22,6 +22,9 @@ export default ({id, dispatch, loading}) => {
 			>
 				{loading ? 'Подготавливаем приложение к запуску' : 'Приложение готово'}
 			</Placeholder>
+			<FixedLayout vertical={"bottom"}>
+				{bannerData && <PromoBanner bannerData={bannerData} onClose={() => setBannerData(null)}/>}
+			</FixedLayout>
 		</Panel>
 	)
 }

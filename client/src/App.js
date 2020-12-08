@@ -51,16 +51,21 @@ const App = () => {
 	const [needFetch, setNeedFetch] = useState(true);
 	const [state, dispatch] = useContext(State);
 	const [lastBackAction, setLastBackAction] = useState(0);
+	const [bannerData, setBannerData] = useState(null);
 
 	useEffect(() => {
 		bridge.subscribe(({detail: {type, data}}) => {
 			if (type === 'VKWebAppUpdateConfig') {
 				dispatch({type: SET_COLOR_SCHEME, payload: {scheme: data.scheme}})
 			}
+			if (type === 'VKWebAppGetAdsResult') {
+				setBannerData(data);
+			}
 		});
 
 // Init VK  Mini App
 		bridge.send("VKWebAppInit", {});
+		bridge.send('VKWebAppGetAds', {});
 	}, [dispatch]);
 
 	const alert = (
@@ -224,7 +229,7 @@ const App = () => {
 		<ConfigProvider scheme={state.scheme}>
 			<Epic activeStory={state.activeView} tabbar={state.activeView !== 'init' && state.activePanel !== 'init' && tabBar}>
 				<View id={'init'} activePanel={state.activePanel}>
-					<InitialScreen id={'init'} dispatch={dispatch} loading={state.popout}/>
+					<InitialScreen id={'init'} dispatch={dispatch} loading={state.popout} bannerData={bannerData} setBannerData={setBannerData}/>
 				</View>
 				<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}
