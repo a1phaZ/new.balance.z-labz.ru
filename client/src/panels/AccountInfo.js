@@ -47,6 +47,20 @@ export default ({id, account, dispatch, onRefresh, context}) => {
 
 	const accountItemsList = filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
 
+	/**
+	 * Преобразование в другую структура массива данных
+	 * TODO Need refactor code
+	 */
+	const indexAr = filteredItems.sort(sort);
+	console.log(indexAr.reduce((prev, curr) => {
+		if (prev[curr.date]) {
+			prev[curr.date] = [...prev[curr.date], curr];
+		} else {
+			prev[curr.date] = [curr];
+		}
+		return prev;
+	}, []), 'arr')
+
 	const toggleContext = () => {
 		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});
 	}
