@@ -45,7 +45,7 @@ export default ({id, account, dispatch, onRefresh, context}) => {
 	});
 	const [filteredItems, setFilteredItems] = useState(() => items || []);
 
-	const indexAr = filteredItems.sort(sort).reverse().reduce((prev, curr) => {
+	const indexAr = filteredItems.sort(sort).reduce((prev, curr) => {
 		const index = +new Date(curr.date);
 		if (prev[index]) {
 			prev[index] = [...prev[index], curr];
@@ -64,20 +64,19 @@ export default ({id, account, dispatch, onRefresh, context}) => {
 		indexAr[key].outcome = 0;
 		items.forEach(item => {
 			date = item.date;
-			accountItemsListArray.splice(0, 0, item);
+			accountItemsListArray.splice(0,0, item);
 			if (item.income) {
 				indexAr[key].income += item.sum;
 			} else {
 				indexAr[key].outcome += item.sum;
 			}
-
 		})
 		indexAr[key].income = indexAr[key].income.toFixed(2);
 		indexAr[key].outcome = indexAr[key].outcome.toFixed(2);
-		accountItemsListArray.splice(0, 0, {titleDate: date, income: indexAr[key].income, outcome: indexAr[key].outcome})
+		accountItemsListArray.splice(0,0,{date: date, income: indexAr[key].income, outcome: indexAr[key].outcome, caption: true})
 	})
 
-	const accountItemsList = accountItemsListArray.map(mapRichCell(dispatch));
+	const accountItemsList = accountItemsListArray.sort(sort).map(mapRichCell(dispatch));
 
 	const toggleContext = () => {
 		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});

@@ -8,24 +8,16 @@ import Color from "../components/Color";
 
 export default function mapRichCell(dispatch) {
 	return (item, index) => {
-		if (item?.titleDate && item?.income && item?.outcome) {
+		if (item?.caption) {
 			return (
 				<Caption level="2" weight="semibold" caps
 								 key={index}>
-					{format(new Date(item?.titleDate), 'dd MMMM yyyy ', {locale: ruLocale})}
-					[
-					<Color value={item?.income} color={'green'} />
-					|
-					<Color value={item?.outcome} color={'red'} />
-					]
-				</Caption>
-			)
-		}
-		if (item?.titleDate && !item?.income && !item?.outcome){
-			return (
-				<Caption level="2" weight="semibold" caps
-								 key={index}>
-					{format(new Date(item?.titleDate), 'dd MMMM yyyy ', {locale: ruLocale})}
+					{format(new Date(item?.date), 'dd MMMM yyyy ', {locale: ruLocale})}
+					{item?.income && item?.outcome ? ' [ ' : null}
+					<Color value={item?.income} color={'green'}/>
+					{item?.income && item?.outcome ? ' | ' : null}
+					<Color value={item?.outcome} color={'red'}/>
+					{item?.income && item?.outcome ? ' ]' : null}
 				</Caption>
 			)
 		}
