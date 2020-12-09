@@ -103,7 +103,10 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 					quantity: state.quantity,
 					income: state.income,
 					tags: state.tags.filter(tag => !!tag.length),
-					itemFrom: state.account || editedItem?.itemFrom || id
+					itemFrom: state.account || editedItem?.itemFrom || id,
+					params: {
+						date: state.date
+					}
 				});
 			}}
 		>
