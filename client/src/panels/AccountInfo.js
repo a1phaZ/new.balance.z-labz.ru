@@ -36,7 +36,7 @@ import sort from "../handlers/sort";
 import MonthSwitch from "../components/MonthSwitch";
 import SearchForm from "../components/SearchForm";
 
-export default ({id, account, dispatch, onRefresh, context}) => {
+export default ({id, account, dispatch, onRefresh, context, date}) => {
 	const [isOpened, setIsOpened] = useState(() => context);
 	const [{response}, doApiFetch] = useApi(`/money-box/${account?._id}`);
 	const [items, setItems] = useState(() => {
@@ -96,7 +96,10 @@ export default ({id, account, dispatch, onRefresh, context}) => {
 					action: async () => {
 						toggleContext();
 						await doApiFetch({
-							method: 'DELETE'
+							method: 'DELETE',
+							params: {
+								date: date
+							}
 						});
 					}
 				}

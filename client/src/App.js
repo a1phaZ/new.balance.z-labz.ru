@@ -237,11 +237,11 @@ const App = () => {
 				</View>
 				<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<AccountInfo id={'account'} account={state.accounts.find(item => item._id === state.account?._id)}
-											 dispatch={dispatch} onRefresh={onRefresh} context={state.contextHistory}/>
+											 dispatch={dispatch} onRefresh={onRefresh} context={state.contextHistory} date={state.currentDate}/>
 					<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
 									 date={state.currentDate}/>
 					<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
-											dispatch={dispatch} context={state.contextHistory}/>
+											dispatch={dispatch} context={state.contextHistory} date={state.currentDate}/>
 				</View>
 				<View id={'stats'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>

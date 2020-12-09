@@ -37,7 +37,7 @@ import reduce from "../handlers/reduce";
 import currency from "../handlers/currency";
 import SearchForm from "../components/SearchForm";
 
-export default ({id, budget, dispatch, context}) => {
+export default ({id, budget, dispatch, context, date}) => {
 	const [isOpened, setIsOpened] = useState(() => context);
 	const [{response}, doApiFetch] = useApi(`/budget/${budget?._id}`);
 	const [items, setItems] = useState(() => budget?.items);
@@ -81,7 +81,10 @@ export default ({id, budget, dispatch, context}) => {
 					action: async () => {
 						toggleContext();
 						await doApiFetch({
-							method: 'DELETE'
+							method: 'DELETE',
+							params: {
+								date: date
+							}
 						});
 
 					}
