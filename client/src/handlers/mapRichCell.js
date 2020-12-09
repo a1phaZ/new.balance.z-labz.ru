@@ -4,13 +4,29 @@ import {format} from "date-fns";
 import ruLocale from "date-fns/locale/ru";
 import currency from "./currency";
 import {SET_EDITED_ITEM, SET_MODAL} from "../state/actions";
+import Color from "../components/Color";
 
 export default function mapRichCell(dispatch) {
 	return (item, index) => {
-		if (item?.titleDate) {
+		if (item?.titleDate && item?.income && item?.outcome) {
 			return (
 				<Caption level="2" weight="semibold" caps
-								 key={index}>{format(new Date(item?.titleDate), 'dd MMMM yyyy', {locale: ruLocale})}</Caption>
+								 key={index}>
+					{format(new Date(item?.titleDate), 'dd MMMM yyyy ', {locale: ruLocale})}
+					[
+					<Color value={item?.income} color={'green'} />
+					|
+					<Color value={item?.outcome} color={'red'} />
+					]
+				</Caption>
+			)
+		}
+		if (item?.titleDate && !item?.income && !item?.outcome){
+			return (
+				<Caption level="2" weight="semibold" caps
+								 key={index}>
+					{format(new Date(item?.titleDate), 'dd MMMM yyyy ', {locale: ruLocale})}
+				</Caption>
 			)
 		}
 		return (

@@ -18,7 +18,8 @@ import {
 import currency from "../handlers/currency";
 import Group from "@vkontakte/vkui/dist/components/Group/Group";
 import {
-	SET_ACCOUNTS, SET_BUDGETS,
+	SET_ACCOUNTS,
+	SET_BUDGETS,
 	SET_EDITED_ITEM,
 	SET_HISTORY_BACK,
 	SET_MODAL,
@@ -32,7 +33,6 @@ import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
 import mapRichCell from "../handlers/mapRichCell";
 import InfoSnackbar from "../components/InfoSnackbar";
 import sort from "../handlers/sort";
-import reduce from "../handlers/reduce";
 import MonthSwitch from "../components/MonthSwitch";
 import SearchForm from "../components/SearchForm";
 
@@ -45,21 +45,39 @@ export default ({id, account, dispatch, onRefresh, context}) => {
 	});
 	const [filteredItems, setFilteredItems] = useState(() => items || []);
 
-	const accountItemsList = filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
-
-	/**
-	 * Преобразование в другую структура массива данных
-	 * TODO Need refactor code
-	 */
-	const indexAr = filteredItems.sort(sort);
-	console.log(indexAr.reduce((prev, curr) => {
-		if (prev[curr.date]) {
-			prev[curr.date] = [...prev[curr.date], curr];
+	const indexAr = filteredItems.sort(sort).reverse().reduce((prev, curr) => {
+		const index = +new Date(curr.date);
+		if (prev[index]) {
+			prev[index] = [...prev[index], curr];
 		} else {
-			prev[curr.date] = [curr];
+			prev[index] = [curr];
 		}
 		return prev;
-	}, []), 'arr')
+	}, {});
+
+	let accountItemsListArray = [];
+
+	Object.keys(indexAr).forEach(key => {
+		const items = indexAr[key];
+		let date = '';
+		indexAr[key].income = 0;
+		indexAr[key].outcome = 0;
+		items.forEach(item => {
+			date = item.date;
+			accountItemsListArray.splice(0, 0, item);
+			if (item.income) {
+				indexAr[key].income += item.sum;
+			} else {
+				indexAr[key].outcome += item.sum;
+			}
+
+		})
+		indexAr[key].income = indexAr[key].income.toFixed(2);
+		indexAr[key].outcome = indexAr[key].outcome.toFixed(2);
+		accountItemsListArray.splice(0, 0, {titleDate: date, income: indexAr[key].income, outcome: indexAr[key].outcome})
+	})
+
+	const accountItemsList = accountItemsListArray.map(mapRichCell(dispatch));
 
 	const toggleContext = () => {
 		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});
