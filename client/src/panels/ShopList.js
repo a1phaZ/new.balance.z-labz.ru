@@ -67,24 +67,7 @@ const reducer = (state, action) => {
 	}
 }
 
-const temp = [
-	{
-		id: 1,
-		title: 'test 1',
-		done: false
-	},
-	{
-		id: 2,
-		title: 'test 2',
-		done: false
-	},
-	{
-		id: 3,
-		title: 'test 3',
-		done: true
-	}
-]
-export default ({ id, dispatch, closeModalWithoutSaving }) => {
+export default ({ id, dispatch, closeModalWithoutSaving, shopListFromServer }) => {
 
 	const [state, dispatchList] = useReducer(reducer, initialState);
 	const [list, setList] = useState(state.list);
@@ -110,8 +93,8 @@ export default ({ id, dispatch, closeModalWithoutSaving }) => {
 	console.log(state);
 
 	useEffect(() => {
-		dispatchList({type: 'INITIAL_LIST', payload: {list: temp}});
-	}, []);
+		dispatchList({type: 'INITIAL_LIST', payload: {list: shopListFromServer}});
+	}, [shopListFromServer]);
 
 	useEffect(() => {
 		if (!closeModalWithoutSaving) return;

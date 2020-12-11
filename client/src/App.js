@@ -46,6 +46,24 @@ import './style.css';
 import More from "./panels/More";
 import ShopList from "./panels/ShopList";
 
+const temp = [
+	{
+		id: 1,
+		title: 'test 1',
+		done: false
+	},
+	{
+		id: 2,
+		title: 'test 2',
+		done: false
+	},
+	{
+		id: 3,
+		title: 'test 3',
+		done: true
+	}
+]
+
 const App = () => {
 	const os = platform();
 	const [{response, isLoading}, doApiFetch] = useApi('/state');
@@ -250,7 +268,7 @@ const App = () => {
 				</View>
 				<View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<More id={'index'} dispatch={dispatch}/>
-					<ShopList id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving}/>
+					<ShopList id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving} shopListFromServer={temp}/>
 				</View>
 			</Epic>
 		</ConfigProvider>
