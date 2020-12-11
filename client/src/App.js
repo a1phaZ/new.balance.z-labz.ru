@@ -7,7 +7,7 @@ import {State} from './state';
 import {
 	SET_ACCOUNTS,
 	SET_ACTIVE_VIEW,
-	SET_BUDGETS,
+	SET_BUDGETS, SET_CLOSE_MODAL_WITHOUT_SAVING,
 	SET_COLOR_SCHEME, SET_EDITED_ITEM,
 	SET_HISTORY_BACK,
 	SET_MODAL,
@@ -44,6 +44,7 @@ import InitialScreen from "./panels/InitialScreen";
 
 import './style.css';
 import More from "./panels/More";
+import ShopList from "./panels/ShopList";
 
 const App = () => {
 	const os = platform();
@@ -132,6 +133,7 @@ const App = () => {
 	}, []);
 
 	const modalBack = (() => {
+		dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: true}})
 		dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 		dispatch({type: SET_MODAL, payload: {modal: null}});
 	})
@@ -215,7 +217,7 @@ const App = () => {
 			</TabbarItem>
 			<TabbarItem
 				onClick={onStoryChange}
-				selected={state.activeView === 'more' && state.activePanel === 'index'}
+				selected={state.activeView === 'more'}
 				data-story={'more'}
 				data-panel={'index'}
 				text={'Ещё'}
@@ -247,7 +249,8 @@ const App = () => {
 					<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>
 				</View>
 				<View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-					<More id={'index'} />
+					<More id={'index'} dispatch={dispatch}/>
+					<ShopList id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving}/>
 				</View>
 			</Epic>
 		</ConfigProvider>

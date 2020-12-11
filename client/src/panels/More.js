@@ -5,8 +5,9 @@ import Icon28ShareExternalOutline from '@vkontakte/icons/dist/28/share_external_
 import Icon28Users3Outline from '@vkontakte/icons/dist/28/users_3_outline';
 import Icon28AddCircleOutline from '@vkontakte/icons/dist/28/add_circle_outline';
 import Icon28ListCheckOutline from '@vkontakte/icons/dist/28/list_check_outline';
+import {SET_ACTIVE_VIEW} from "../state/actions";
 
-export default ({id}) => {
+export default ({id, dispatch}) => {
 	const userId = new URL(window.location.href).searchParams.get('vk_user_id');
 	const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
 	const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
@@ -69,9 +70,13 @@ export default ({id}) => {
 					Добавить на главный экран
 				</Cell>}
 			</Group>
-			{false && <Group>
-				<Cell expandable before={<Icon28ListCheckOutline/>}>Список покупок</Cell>
-			</Group>}
+			<Group>
+				<Cell
+					expandable
+					before={<Icon28ListCheckOutline/>}
+					onClick={() => {dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'more', panel: 'shop-list'}})}}
+				>Список покупок</Cell>
+			</Group>
 		</Panel>
 	)
 }
