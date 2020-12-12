@@ -71,6 +71,7 @@ const App = () => {
 	const [state, dispatch] = useContext(State);
 	const [lastBackAction, setLastBackAction] = useState(0);
 	const [bannerData, setBannerData] = useState(null);
+	const [shopListItemTitle, setShopListItemTitle] = useState('');
 
 	useEffect(() => {
 		bridge.subscribe(({detail: {type, data}}) => {
@@ -154,6 +155,7 @@ const App = () => {
 		dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: true}})
 		dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 		dispatch({type: SET_MODAL, payload: {modal: null}});
+		setShopListItemTitle('');
 	})
 
 	const modal = (
@@ -181,7 +183,8 @@ const App = () => {
 				</ModalPageHeader>
 			}>
 				<AddMoney accounts={state.accounts} id={state.account?._id}
-									editedItem={state.editedItem} dispatch={dispatch} budget={state.budget} panel={state.activePanel}/>
+									editedItem={state.editedItem} dispatch={dispatch} budget={state.budget} panel={state.activePanel}
+									shopListItemTitle={shopListItemTitle} setShopListItemTitle={setShopListItemTitle}/>
 			</ModalPage>
 
 			<ModalPage id={'add-budget'} header={
@@ -247,9 +250,11 @@ const App = () => {
 
 	return (
 		<ConfigProvider scheme={state.scheme}>
-			<Epic activeStory={state.activeView} tabbar={state.activeView !== 'init' && state.activePanel !== 'init' && tabBar}>
+			<Epic activeStory={state.activeView}
+						tabbar={state.activeView !== 'init' && state.activePanel !== 'init' && tabBar}>
 				<View id={'init'} activePanel={state.activePanel}>
-					<InitialScreen id={'init'} dispatch={dispatch} loading={state.popout} bannerData={bannerData} setBannerData={setBannerData}/>
+					<InitialScreen id={'init'} dispatch={dispatch} loading={state.popout} bannerData={bannerData}
+												 setBannerData={setBannerData}/>
 				</View>
 				<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}
@@ -257,7 +262,8 @@ const App = () => {
 				</View>
 				<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<AccountInfo id={'account'} account={state.accounts.find(item => item._id === state.account?._id)}
-											 dispatch={dispatch} onRefresh={onRefresh} context={state.contextHistory} date={state.currentDate}/>
+											 dispatch={dispatch} onRefresh={onRefresh} context={state.contextHistory}
+											 date={state.currentDate}/>
 					<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
 									 date={state.currentDate}/>
 					<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
@@ -268,7 +274,8 @@ const App = () => {
 				</View>
 				<View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<More id={'index'} dispatch={dispatch}/>
-					<ShopList id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving} shopListFromServer={temp}/>
+					<ShopList id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving}
+										shopListFromServer={temp} setShopListItemTitle={setShopListItemTitle}/>
 				</View>
 			</Epic>
 		</ConfigProvider>

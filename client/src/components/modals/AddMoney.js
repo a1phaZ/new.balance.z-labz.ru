@@ -41,7 +41,7 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({accounts, id = null, editedItem = null, dispatch, budget, panel=''}) => {
+export default ({accounts, id = null, editedItem = null, dispatch, budget, panel='', shopListItemTitle, setShopListItemTitle}) => {
 	const [apiStr] = useState(() => {
 		return !editedItem ? '/item' : `/item/${editedItem._id}`;
 	})
@@ -52,10 +52,15 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 	});
 
 	useEffect(() => {
+		if (!shopListItemTitle) return;
+		dispatchForm({type: 'CHANGE_STATE', payload: {title: shopListItemTitle}})
+	}, [shopListItemTitle]);
+
+	useEffect(() => {
 		if (!editedItem) return;
 		editedItem.date = format(new Date(editedItem.date), 'yyyy-MM-dd');
 		dispatchForm({type: 'CHANGE_STATE', payload: {...editedItem}});
-	}, [editedItem, dispatch]);
+	}, [editedItem]);
 
 	useEffect(() => {
 		if (!budget?.title) return;
@@ -66,7 +71,7 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 				tags: editedItem?.tags || budget?.title.toLowerCase().split(' ')
 			}
 		})
-	}, [budget, dispatch, panel, editedItem]);
+	}, [budget, panel, editedItem]);
 
 	useEffect(() => {
 		if (!response) return;
@@ -108,6 +113,7 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 						date: state.date
 					}
 				});
+				setShopListItemTitle('');
 			}}
 		>
 			<Select top={'Счет'}
