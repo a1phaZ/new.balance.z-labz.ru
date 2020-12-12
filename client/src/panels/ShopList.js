@@ -1,6 +1,7 @@
 import React, { useReducer, useEffect, useState } from 'react';
 import {Cell, List, Panel, PanelHeader, WriteBar, WriteBarIcon} from "@vkontakte/vkui";
 import {SET_CLOSE_MODAL_WITHOUT_SAVING, SET_MODAL} from "../state/actions";
+import InfoSnackbar from "../components/InfoSnackbar";
 
 const initialState = {
 	list: [],
@@ -67,7 +68,7 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({ id, dispatch, closeModalWithoutSaving, shopListFromServer }) => {
+export default ({ id, dispatch, closeModalWithoutSaving, shopListFromServer, setShopListItemTitle }) => {
 
 	const [state, dispatchList] = useReducer(reducer, initialState);
 	const [list, setList] = useState(state.list);
@@ -79,6 +80,7 @@ export default ({ id, dispatch, closeModalWithoutSaving, shopListFromServer }) =
 				checked={item.done}
 				disabled={item.done}
 				onChange={() => {
+					setShopListItemTitle(state.list[list.findIndex(i => i.id === item.id)].title);
 					dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: false}});
 					dispatchList({type: 'SET_ID', payload: {id: item.id}})
 					dispatchList({type: 'SET_DONE', payload: {id: item.id}})
@@ -89,8 +91,6 @@ export default ({ id, dispatch, closeModalWithoutSaving, shopListFromServer }) =
 			</Cell>
 		)
 	});
-
-	console.log(state);
 
 	useEffect(() => {
 		dispatchList({type: 'INITIAL_LIST', payload: {list: shopListFromServer}});
@@ -123,6 +123,7 @@ export default ({ id, dispatch, closeModalWithoutSaving, shopListFromServer }) =
 						mode="send"
 						onClick={() => {
 							dispatchList({type: 'SET_ITEM_TO_LIST'});
+
 						}}
 						disabled={state.item.title.length === 0}
 					/>
@@ -135,6 +136,7 @@ export default ({ id, dispatch, closeModalWithoutSaving, shopListFromServer }) =
 			{/*<FixedLayout vertical={'bottom'}>*/}
 			{/*	*/}
 			{/*</FixedLayout>*/}
+			<InfoSnackbar/>
 		</Panel>
 	)
 }
