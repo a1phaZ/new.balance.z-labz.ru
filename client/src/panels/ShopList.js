@@ -75,7 +75,7 @@ export default ({ id, dispatch, closeModalWithoutSaving, shopListFromServer, set
 	const shopList = list.map((item) => {
 		return (
 			<Cell
-				key={item.id}
+				key={item._id}
 				selectable
 				checked={item.done}
 				disabled={item.done}
