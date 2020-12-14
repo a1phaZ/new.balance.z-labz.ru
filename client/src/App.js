@@ -67,12 +67,7 @@ const App = () => {
 				dispatch({type: SET_COLOR_SCHEME, payload: {scheme: data.scheme}})
 			}
 			if (type === 'VKWebAppGetAdsResult') {
-				console.log(data);
 				setBannerData(data);
-			}
-			if (type === 'VKWebAppGetAdsFailed') {
-				console.log(data);
-				// setBannerData(data);
 			}
 			if (type === 'VKWebAppAddToHomeScreenInfoResult') {
 				setAddToHomeScreenSupported(data.is_feature_supported);
