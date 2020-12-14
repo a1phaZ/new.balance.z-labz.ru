@@ -42,6 +42,7 @@ export default ({id, budget, dispatch, context, date}) => {
 	const [{response}, doApiFetch] = useApi(`/budget/${budget?._id}`);
 	const [items, setItems] = useState(() => budget?.items);
 	const [filteredItems, setFilteredItems] = useState(() => items);
+	const [searchStr, setSearchStr] = useState('');
 
 	useEffect(() => {
 		setItems(budget?.items);
@@ -61,6 +62,14 @@ export default ({id, budget, dispatch, context, date}) => {
 	useEffect(() => {
 		setIsOpened(context);
 	},[context]);
+
+	useEffect(() => {
+		if (searchStr === '') {
+			setFilteredItems(items);
+		} else {
+			setFilteredItems(budget.items.filter(({title}) => title.toLowerCase().indexOf(searchStr.toLowerCase()) > -1));
+		}
+	}, [searchStr, budget, items]);
 
 	const toggleContext = () => {
 		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});
@@ -103,11 +112,7 @@ export default ({id, budget, dispatch, context, date}) => {
 	const itemsList = filteredItems && filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
 
 	const onSearch = (str) => {
-		if (str === '') {
-			setFilteredItems(items);
-		} else {
-			setFilteredItems(budget.items.filter(({title}) => title.toLowerCase().indexOf(str.toLowerCase()) > -1));
-		}
+		setSearchStr(str);
 	}
 
 	return (

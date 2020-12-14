@@ -12,6 +12,7 @@ export default ({id, accounts, onRefresh}) => {
 			.filter(({income}) => !income)
 			.sort((a, b) => a.title.localeCompare(b.title))
 	});
+	const [searchStr, setSearchStr] = useState('');
 	const [filteredItems, setFilteredItems] = useState(() => operations);
 	const reducer = (prev, curr) => {
 		if (prev[prev.length - 1]?.title === curr.title) {
@@ -37,10 +38,10 @@ export default ({id, accounts, onRefresh}) => {
 			.sort((a, b) => a.title.localeCompare(b.title));
 		setOperations(items);
 		setFilteredItems(items);
-	}, [accounts])
+	}, [accounts]);
 
-	const onSearch = (str) => {
-		if (str === '') {
+	useEffect(() => {
+		if (searchStr === '') {
 			setFilteredItems(accounts
 				.map(item => item.operations)
 				.flat()
@@ -53,8 +54,12 @@ export default ({id, accounts, onRefresh}) => {
 				.flat()
 				.filter(({income}) => !income)
 				.sort((a, b) => a.title.localeCompare(b.title))
-				.filter(({title}) => title.toLowerCase().indexOf(str.toLowerCase()) > -1));
+				.filter(({title}) => title.toLowerCase().indexOf(searchStr.toLowerCase()) > -1));
 		}
+	}, [searchStr, accounts]);
+
+	const onSearch = (str) => {
+		setSearchStr(str);
 	}
 
 	return (
