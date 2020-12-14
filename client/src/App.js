@@ -58,6 +58,8 @@ const App = () => {
 	const [bannerData, setBannerData] = useState(null);
 	const [shopListItemTitle, setShopListItemTitle] = useState('');
 	const [shopList, setShopList] = useLocalStorage('shopList', []);
+	const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
+	const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
 
 	useEffect(() => {
 		bridge.subscribe(({detail: {type, data}}) => {
@@ -67,11 +69,21 @@ const App = () => {
 			if (type === 'VKWebAppGetAdsResult') {
 				setBannerData(data);
 			}
+			if (type === 'VKWebAppAddToHomeScreenInfoResult') {
+				setAddToHomeScreenSupported(data.is_feature_supported);
+				setAddedToHomeScreen(data.is_added_to_home_screen);
+			}
+			if (type === 'VKWebAppAddToHomeScreenResult') {
+				if (data.result) {
+					setAddedToHomeScreen(data.result);
+				}
+			}
 		});
 
 // Init VK  Mini App
 		bridge.send("VKWebAppInit", {});
 		bridge.send('VKWebAppGetAds', {});
+		bridge.send('VKWebAppAddToHomeScreenInfo');
 	}, [dispatch]);
 
 	const alert = (
@@ -260,9 +272,11 @@ const App = () => {
 					<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>
 				</View>
 				<View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-					<More id={'index'} dispatch={dispatch}/>
+					<More id={'index'} dispatch={dispatch} addToHomeScreenSupported={addToHomeScreenSupported}
+								addedToHomeScreen={addedToHomeScreen}/>
 					<ShopListPanel id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving}
-										shopListFromServer={shopList} setShopListItemTitle={setShopListItemTitle} setShopList={setShopList}/>
+												 shopListFromServer={shopList} setShopListItemTitle={setShopListItemTitle}
+												 setShopList={setShopList}/>
 				</View>
 			</Epic>
 		</ConfigProvider>

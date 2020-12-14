@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect} from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import {Cell, FixedLayout, Group, Header, Panel, PanelHeader, PromoBanner} from "@vkontakte/vkui";
 import Icon28ShareExternalOutline from '@vkontakte/icons/dist/28/share_external_outline';
@@ -7,25 +7,25 @@ import Icon28AddCircleOutline from '@vkontakte/icons/dist/28/add_circle_outline'
 import Icon28ListCheckOutline from '@vkontakte/icons/dist/28/list_check_outline';
 import {SET_ACTIVE_VIEW} from "../state/actions";
 
-export default ({id, dispatch, bannerData, setBannerData}) => {
+export default ({id, dispatch, bannerData, setBannerData, addToHomeScreenSupported, addedToHomeScreen}) => {
 	const userId = new URL(window.location.href).searchParams.get('vk_user_id');
-	const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
-	const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
+	// const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
+	// const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
 
 	useEffect(() => {
-		bridge.subscribe(({detail: {type, data}}) => {
-			if (type === 'VKWebAppAddToHomeScreenInfoResult') {
-				setAddToHomeScreenSupported(data.is_feature_supported);
-				setAddedToHomeScreen(data.is_added_to_home_screen);
-			}
-			if (type === 'VKWebAppAddToHomeScreenResult') {
-				if (data.result) {
-					setAddedToHomeScreen(data.result);
-				}
-			}
-		});
+		// bridge.subscribe(({detail: {type, data}}) => {
+		// 	if (type === 'VKWebAppAddToHomeScreenInfoResult') {
+		// 		setAddToHomeScreenSupported(data.is_feature_supported);
+		// 		setAddedToHomeScreen(data.is_added_to_home_screen);
+		// 	}
+		// 	if (type === 'VKWebAppAddToHomeScreenResult') {
+		// 		if (data.result) {
+		// 			setAddedToHomeScreen(data.result);
+		// 		}
+		// 	}
+		// });
 		bridge.send('VKWebAppGetAds', {});
-		bridge.send('VKWebAppAddToHomeScreenInfo');
+		// bridge.send('VKWebAppAddToHomeScreenInfo');
 	}, []);
 
 	return (
@@ -75,7 +75,9 @@ export default ({id, dispatch, bannerData, setBannerData}) => {
 				<Cell
 					expandable
 					before={<Icon28ListCheckOutline/>}
-					onClick={() => {dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'more', panel: 'shop-list'}})}}
+					onClick={() => {
+						dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'more', panel: 'shop-list'}})
+					}}
 				>Список покупок</Cell>
 			</Group>
 			<FixedLayout vertical={"bottom"}>
