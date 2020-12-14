@@ -69,7 +69,7 @@ const App = () => {
 			if (type === 'VKWebAppGetAdsResult') {
 				setBannerData(data);
 			}
-			if (type === 'VKWebAppGetAdsError') {
+			if (type === 'VKWebAppGetAdsFailed') {
 				console.log(data);
 				// setBannerData(data);
 			}
