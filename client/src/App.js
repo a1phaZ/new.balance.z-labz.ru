@@ -251,7 +251,8 @@ const App = () => {
 											 dispatch={dispatch} onRefresh={onRefresh} context={state.contextHistory}
 											 date={state.currentDate}/>
 					<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
-									 date={state.currentDate}/>
+									 date={state.currentDate} bannerData={bannerData}
+									 setBannerData={setBannerData}/>
 					<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
 											dispatch={dispatch} context={state.contextHistory} date={state.currentDate}/>
 				</View>

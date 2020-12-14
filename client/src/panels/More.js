@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import {Cell, Group, Header, Panel, PanelHeader} from "@vkontakte/vkui";
+import {Cell, FixedLayout, Group, Header, Panel, PanelHeader, PromoBanner} from "@vkontakte/vkui";
 import Icon28ShareExternalOutline from '@vkontakte/icons/dist/28/share_external_outline';
 import Icon28Users3Outline from '@vkontakte/icons/dist/28/users_3_outline';
 import Icon28AddCircleOutline from '@vkontakte/icons/dist/28/add_circle_outline';
 import Icon28ListCheckOutline from '@vkontakte/icons/dist/28/list_check_outline';
 import {SET_ACTIVE_VIEW} from "../state/actions";
 
-export default ({id, dispatch}) => {
+export default ({id, dispatch, bannerData, setBannerData}) => {
 	const userId = new URL(window.location.href).searchParams.get('vk_user_id');
 	const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
 	const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
@@ -24,6 +24,7 @@ export default ({id, dispatch}) => {
 				}
 			}
 		});
+		bridge.send('VKWebAppGetAds', {});
 		bridge.send('VKWebAppAddToHomeScreenInfo');
 	}, []);
 
@@ -77,6 +78,9 @@ export default ({id, dispatch}) => {
 					onClick={() => {dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'more', panel: 'shop-list'}})}}
 				>Список покупок</Cell>
 			</Group>
+			<FixedLayout vertical={"bottom"}>
+				{bannerData && <PromoBanner bannerData={bannerData} onClose={() => setBannerData(null)}/>}
+			</FixedLayout>
 		</Panel>
 	)
 }
