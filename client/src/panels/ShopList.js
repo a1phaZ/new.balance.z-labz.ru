@@ -1,5 +1,5 @@
 import React, {useEffect, useReducer} from 'react';
-import {Cell, FormLayout, Input, List, Panel, PanelHeader} from "@vkontakte/vkui";
+import {Cell, Footer, FormLayout, Input, List, Panel, PanelHeader} from "@vkontakte/vkui";
 import {SET_CLOSE_MODAL_WITHOUT_SAVING, SET_MODAL} from "../state/actions";
 import InfoSnackbar from "../components/InfoSnackbar";
 import regexp from "../handlers/regexp";
@@ -70,6 +70,19 @@ const reducer = (state, action) => {
 				list
 			}
 		}
+		case 'DELETE_ITEM': {
+			const {list} = state;
+			const {id} = action.payload;
+			const index = list.findIndex((item) => item.id === id);
+			list.splice(index, 1);
+			if (list.length === 0) {
+				localStorage.removeItem('shoplist');
+			}
+			return {
+				...state,
+				list
+			}
+		}
 		default:
 			return state;
 	}
@@ -78,29 +91,45 @@ const reducer = (state, action) => {
 export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setShopListItemTitle, setShopList}) => {
 
 	const [state, dispatchList] = useReducer(reducer, initialState);
-	const shopList = state.list.map((item) => {
-		return (
-			<Cell
-				key={item.id}
-				selectable
-				checked={item.done}
-				disabled={item.done}
-				onChange={() => {
-					setShopListItemTitle(shopListFromServer[shopListFromServer.findIndex(i => i.id === item.id)].title);
-					dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: false}});
-					dispatchList({type: 'SET_ID', payload: {id: item.id}});
-					dispatchList({type: 'SET_DONE', payload: {id: item.id}});
-					dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
-				}}
-			>
-				{item.title}
-			</Cell>
-		)
-	});
+	const shopList =
+		shopListFromServer.length
+			?
+			state.list.map((item) => {
+				return (
+					<Cell
+						key={item.id}
+						selectable={!item.done}
+						removable={item.done}
+						checked={item.done}
+						// disabled={item.done}
+						onChange={() => {
+							setShopListItemTitle(shopListFromServer[shopListFromServer.findIndex(i => i.id === item.id)].title);
+							dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: false}});
+							dispatchList({type: 'SET_ID', payload: {id: item.id}});
+							dispatchList({type: 'SET_DONE', payload: {id: item.id}});
+							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
+						}}
+						onRemove={() => {
+							dispatchList({type: 'DELETE_ITEM', payload: {id: item.id}});
+							setShopList(state.list);
+						}}
+					>
+						{item.title}
+					</Cell>
+				)
+			})
+			:
+			<Footer>Список покупок пуст</Footer>
+	;
 
 	useEffect(() => {
 		dispatchList({type: 'INITIAL_LIST', payload: {list: shopListFromServer}});
 	}, [shopListFromServer]);
+
+	useEffect(() => {
+		if (state.list.length === 0) return;
+		setShopList(state.list);
+	}, [state.list, setShopList]);
 
 	useEffect(() => {
 		if (!closeModalWithoutSaving) return;
@@ -108,11 +137,6 @@ export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setS
 
 		dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: false}});
 	}, [closeModalWithoutSaving, dispatch, dispatchList, state, setShopList]);
-
-	useEffect(() => {
-		if (state.list.length === 0) return;
-		setShopList(state.list);
-	}, [state.list, setShopList]);
 
 	return (
 		<Panel id={id}>
