@@ -7,8 +7,10 @@ import {State} from './state';
 import {
 	SET_ACCOUNTS,
 	SET_ACTIVE_VIEW,
-	SET_BUDGETS, SET_CLOSE_MODAL_WITHOUT_SAVING,
-	SET_COLOR_SCHEME, SET_EDITED_ITEM,
+	SET_BUDGETS,
+	SET_CLOSE_MODAL_WITHOUT_SAVING,
+	SET_COLOR_SCHEME,
+	SET_EDITED_ITEM,
 	SET_HISTORY_BACK,
 	SET_MODAL,
 	SET_POPOUT
@@ -44,7 +46,7 @@ import InitialScreen from "./panels/InitialScreen";
 
 import './style.css';
 import More from "./panels/More";
-import ShopList from "./panels/ShopList";
+import ShopListPanel from "./panels/ShopListPanel";
 import useLocalStorage from "./handlers/useLocalStorage";
 
 const App = () => {
@@ -242,7 +244,7 @@ const App = () => {
 				</View>
 				<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}
-								onRefresh={onRefresh} isFetching={isLoading}/>
+								onRefresh={onRefresh} isFetching={isLoading} shopList={shopList}/>
 				</View>
 				<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<AccountInfo id={'account'} account={state.accounts.find(item => item._id === state.account?._id)}
@@ -258,7 +260,7 @@ const App = () => {
 				</View>
 				<View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<More id={'index'} dispatch={dispatch}/>
-					<ShopList id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving}
+					<ShopListPanel id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving}
 										shopListFromServer={shopList} setShopListItemTitle={setShopListItemTitle} setShopList={setShopList}/>
 				</View>
 			</Epic>
