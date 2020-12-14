@@ -13,6 +13,7 @@ export default ({id, dispatch, bannerData, setBannerData, addToHomeScreenSupport
 	// const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
 
 	useEffect(() => {
+		console.log('create');
 		// bridge.subscribe(({detail: {type, data}}) => {
 		// 	if (type === 'VKWebAppAddToHomeScreenInfoResult') {
 		// 		setAddToHomeScreenSupported(data.is_feature_supported);

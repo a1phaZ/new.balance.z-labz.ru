@@ -69,6 +69,10 @@ const App = () => {
 			if (type === 'VKWebAppGetAdsResult') {
 				setBannerData(data);
 			}
+			if (type === 'VKWebAppGetAdsError') {
+				console.log(data);
+				// setBannerData(data);
+			}
 			if (type === 'VKWebAppAddToHomeScreenInfoResult') {
 				setAddToHomeScreenSupported(data.is_feature_supported);
 				setAddedToHomeScreen(data.is_added_to_home_screen);
