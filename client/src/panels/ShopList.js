@@ -1,7 +1,9 @@
-import React, { useReducer, useEffect, useState } from 'react';
-import {Cell, List, Panel, PanelHeader, WriteBar, WriteBarIcon} from "@vkontakte/vkui";
+import React, {useEffect, useReducer} from 'react';
+import {Cell, FormLayout, Input, List, Panel, PanelHeader} from "@vkontakte/vkui";
 import {SET_CLOSE_MODAL_WITHOUT_SAVING, SET_MODAL} from "../state/actions";
 import InfoSnackbar from "../components/InfoSnackbar";
+import regexp from "../handlers/regexp";
+import validate from "../handlers/validate";
 
 const initialState = {
 	list: [],
@@ -10,7 +12,10 @@ const initialState = {
 		title: '',
 		done: false
 	},
-	id: null
+	id: null,
+	validate: {
+		title: {}
+	}
 }
 
 const reducer = (state, action) => {
@@ -20,21 +25,23 @@ const reducer = (state, action) => {
 				...state,
 				list: action.payload.list,
 				item: {
-					id: action.payload.list.length+1,
+					id: action.payload.list.length + 1,
 					title: '',
 					done: false
 				}
 			}
 		}
 		case 'SET_TITLE': {
+			const {payload: {validateForm, title}} = action;
 			const item = {
 				id: state.item.id,
-				title: action.payload.title,
+				title: title,
 				done: false
 			}
 			return {
 				...state,
-				item
+				item,
+				validate: {...state.validate, ...validateForm}
 			}
 		}
 		case 'SET_ID': {
@@ -48,7 +55,7 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				list: newList,
-				item: { title: '', done: false, id: newList.length+1 }
+				item: {title: '', done: false, id: newList.length + 1}
 			}
 		}
 		case 'SET_DONE': {
@@ -68,22 +75,21 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({ id, dispatch, closeModalWithoutSaving, shopListFromServer, setShopListItemTitle }) => {
+export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setShopListItemTitle, setShopList}) => {
 
 	const [state, dispatchList] = useReducer(reducer, initialState);
-	const [list, setList] = useState(state.list);
-	const shopList = list.map((item) => {
+	const shopList = state.list.map((item) => {
 		return (
 			<Cell
-				key={item._id}
+				key={item.id}
 				selectable
 				checked={item.done}
 				disabled={item.done}
 				onChange={() => {
-					setShopListItemTitle(state.list[list.findIndex(i => i.id === item.id)].title);
+					setShopListItemTitle(shopListFromServer[shopListFromServer.findIndex(i => i.id === item.id)].title);
 					dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: false}});
-					dispatchList({type: 'SET_ID', payload: {id: item.id}})
-					dispatchList({type: 'SET_DONE', payload: {id: item.id}})
+					dispatchList({type: 'SET_ID', payload: {id: item.id}});
+					dispatchList({type: 'SET_DONE', payload: {id: item.id}});
 					dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
 				}}
 			>
@@ -99,43 +105,47 @@ export default ({ id, dispatch, closeModalWithoutSaving, shopListFromServer, set
 	useEffect(() => {
 		if (!closeModalWithoutSaving) return;
 		dispatchList({type: 'SET_DONE', payload: {id: state.id}});
+
 		dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: false}});
-	}, [closeModalWithoutSaving, dispatch, dispatchList, state]);
+	}, [closeModalWithoutSaving, dispatch, dispatchList, state, setShopList]);
 
 	useEffect(() => {
-		setList(state.list);
-	}, [state.list]);
+		if (state.list.length === 0) return;
+		setShopList(state.list);
+	}, [state.list, setShopList]);
 
 	return (
-		<Panel id={id} >
-			<PanelHeader >
+		<Panel id={id}>
+			<PanelHeader>
 				Список покупок
 			</PanelHeader>
-			<WriteBar
-				value={state.item.title}
+			<FormLayout
 				onSubmit={(e) => {
 					e.preventDefault();
-					console.log('submit');
+					dispatchList({type: 'SET_ITEM_TO_LIST'});
 				}}
-				onChange={(e) => dispatchList({type: 'SET_TITLE', payload: {title: e.currentTarget.value}})}
-				after={
-					<WriteBarIcon
-						mode="send"
-						onClick={() => {
-							dispatchList({type: 'SET_ITEM_TO_LIST'});
-
-						}}
-						disabled={state.item.title.length === 0}
-					/>
-				}
-				placeholder={'Название'}
-			/>
+			>
+				<Input type={'text'}
+							 placeholder={'Продукт, услуга, товар'}
+							 value={state.item.title}
+							 top={'Название'}
+							 required={true}
+							 maxLength={20}
+							 status={state.validate?.title?.status}
+							 bottom={state.validate?.title?.message ? state.validate?.title?.message : `${state.item.title.length} из 20`}
+							 onChange={(e) => {
+								 dispatchList({
+									 type: 'SET_TITLE',
+									 payload: {
+										 title: regexp(e.currentTarget.value),
+										 validateForm: {title: validate(e)}
+									 }
+								 })
+							 }}/>
+			</FormLayout>
 			<List>
 				{shopList}
 			</List>
-			{/*<FixedLayout vertical={'bottom'}>*/}
-			{/*	*/}
-			{/*</FixedLayout>*/}
 			<InfoSnackbar/>
 		</Panel>
 	)

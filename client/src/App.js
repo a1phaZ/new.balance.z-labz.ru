@@ -45,24 +45,7 @@ import InitialScreen from "./panels/InitialScreen";
 import './style.css';
 import More from "./panels/More";
 import ShopList from "./panels/ShopList";
-
-const temp = [
-	{
-		id: 1,
-		title: 'test 1',
-		done: false
-	},
-	{
-		id: 2,
-		title: 'test 2',
-		done: false
-	},
-	{
-		id: 3,
-		title: 'test 3',
-		done: true
-	}
-]
+import useLocalStorage from "./handlers/useLocalStorage";
 
 const App = () => {
 	const os = platform();
@@ -72,6 +55,7 @@ const App = () => {
 	const [lastBackAction, setLastBackAction] = useState(0);
 	const [bannerData, setBannerData] = useState(null);
 	const [shopListItemTitle, setShopListItemTitle] = useState('');
+	const [shopList, setShopList] = useLocalStorage('shopList', []);
 
 	useEffect(() => {
 		bridge.subscribe(({detail: {type, data}}) => {
@@ -275,7 +259,7 @@ const App = () => {
 				<View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<More id={'index'} dispatch={dispatch}/>
 					<ShopList id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving}
-										shopListFromServer={temp} setShopListItemTitle={setShopListItemTitle}/>
+										shopListFromServer={shopList} setShopListItemTitle={setShopListItemTitle} setShopList={setShopList}/>
 				</View>
 			</Epic>
 		</ConfigProvider>
