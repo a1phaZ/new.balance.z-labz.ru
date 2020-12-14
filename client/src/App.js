@@ -67,6 +67,7 @@ const App = () => {
 				dispatch({type: SET_COLOR_SCHEME, payload: {scheme: data.scheme}})
 			}
 			if (type === 'VKWebAppGetAdsResult') {
+				console.log(data);
 				setBannerData(data);
 			}
 			if (type === 'VKWebAppGetAdsFailed') {
@@ -277,7 +278,8 @@ const App = () => {
 				</View>
 				<View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<More id={'index'} dispatch={dispatch} addToHomeScreenSupported={addToHomeScreenSupported}
-								addedToHomeScreen={addedToHomeScreen}/>
+								addedToHomeScreen={addedToHomeScreen} bannerData={bannerData}
+								setBannerData={setBannerData}/>
 					<ShopListPanel id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving}
 												 shopListFromServer={shopList} setShopListItemTitle={setShopListItemTitle}
 												 setShopList={setShopList}/>
