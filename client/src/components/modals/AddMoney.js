@@ -1,11 +1,23 @@
 import React, {useEffect, useReducer, useState} from 'react';
 import {format} from 'date-fns';
-import {Button, Checkbox, Counter, Div, FormLayout, Input, Radio, Select, Textarea} from "@vkontakte/vkui";
+import {
+	Button,
+	Checkbox,
+	Counter,
+	Div,
+	FormLayout,
+	FormLayoutGroup,
+	Input,
+	Radio,
+	Select,
+	Textarea
+} from "@vkontakte/vkui";
 import currency from "../../handlers/currency";
 import useApi from "../../handlers/useApi";
 import validate from "../../handlers/validate";
 import regexp from "../../handlers/regexp";
 import {SET_ACCOUNTS, SET_BUDGETS} from "../../state/actions";
+import Icon24AddSquareOutline from '@vkontakte/icons/dist/24/add_square_outline';
 
 const initialState = {
 	account: '',
@@ -41,12 +53,14 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({accounts, id = null, editedItem = null, dispatch, budget, panel='', shopListItemTitle, setShopListItemTitle}) => {
+export default ({accounts, id = null, editedItem = null, dispatch, budget, panel = '', shopListItemTitle, setShopListItemTitle}) => {
 	const [apiStr] = useState(() => {
 		return !editedItem ? '/item' : `/item/${editedItem._id}`;
 	})
 	const [{response}, doApiFetch] = useApi(apiStr);
 	const [state, dispatchForm] = useReducer(reducer, initialState);
+	const [descriptionShow, setDescriptionShow] = useState(() => !!state.description);
+	console.log(descriptionShow, state.description);
 	const accountList = accounts.map(item => {
 		return (<option key={item._id} value={item._id}>{item.title} ({currency(item.sum)})</option>)
 	});
@@ -180,26 +194,44 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 			>
 				Доход
 			</Radio>
-			{
-				!state.income
-				&&
-				<Textarea top={'Описание'}
-									placeholder={'Описание товара(продукта, услуги)'}
-									value={state.description}
-									maxLength={70}
-									status={state.validate?.description?.status}
-									bottom={state.validate?.description?.message ? state.validate?.description?.message : `${state.description.length} из 70`}
-									onChange={(e) => {
-										dispatchForm({
-											type: 'CHANGE_STATE',
-											payload: {
-												description: regexp(e.currentTarget.value),
-												validateForm: {description: validate(e)}
-											}
-										})
-									}}
-				/>
-			}
+			<FormLayoutGroup top={'Описание'}>
+				{
+					!state.income
+					&&
+					<Button
+						type={'button'}
+						mode="secondary"
+						before={<Icon24AddSquareOutline/>}
+						size="l"
+						disabled={state.description || descriptionShow}
+						// style={state.description ? {display: 'none'} : {}}
+						onClick={() => {
+							setDescriptionShow(true);
+						}}
+					>
+						Добавить описание
+					</Button>
+				}
+				{
+					(descriptionShow || state.description) &&
+					<Textarea top={'Описание'}
+										placeholder={'Описание товара(продукта, услуги)'}
+										value={state.description}
+										maxLength={70}
+										status={state.validate?.description?.status}
+										bottom={state.validate?.description?.message ? state.validate?.description?.message : `${state.description.length} из 70`}
+										onChange={(e) => {
+											dispatchForm({
+												type: 'CHANGE_STATE',
+												payload: {
+													description: regexp(e.currentTarget.value),
+													validateForm: {description: validate(e)}
+												}
+											})
+										}}
+					/>
+				}
+			</FormLayoutGroup>
 			<Input type={'text'}
 						 top={'Теги'}
 						 value={state.tags.join(' ')}
@@ -270,7 +302,10 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 						 onChange={(e) => {
 							 dispatchForm({
 								 type: 'CHANGE_STATE',
-								 payload: {quantity: e.currentTarget.value.replace(/[^\d.]*/, ''), validateForm: {quantity: validate(e)}}
+								 payload: {
+									 quantity: e.currentTarget.value.replace(/[^\d.]*/, ''),
+									 validateForm: {quantity: validate(e)}
+								 }
 							 })
 						 }}
 			/>
