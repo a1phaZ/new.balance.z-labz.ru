@@ -60,7 +60,6 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 	const [{response}, doApiFetch] = useApi(apiStr);
 	const [state, dispatchForm] = useReducer(reducer, initialState);
 	const [descriptionShow, setDescriptionShow] = useState(() => !!state.description);
-	console.log(descriptionShow, state.description);
 	const accountList = accounts.map(item => {
 		return (<option key={item._id} value={item._id}>{item.title} ({currency(item.sum)})</option>)
 	});
@@ -191,6 +190,7 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 						 onClick={() => {
 							 dispatchForm({type: 'CHANGE_STATE', payload: {income: true}})
 						 }}
+						 disabled={!!shopListItemTitle}
 			>
 				Доход
 			</Radio>
