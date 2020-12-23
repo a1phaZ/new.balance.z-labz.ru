@@ -45,6 +45,7 @@ ItemSchema.pre('save', function (next) {
 	this.month = new Date(this.date).getMonth();
 	this.year = new Date(this.date).getFullYear();
 	this.sum = this.price * this.quantity;
+	this.sum = this.sum.toFixed(2);
 	next();
 });
 
