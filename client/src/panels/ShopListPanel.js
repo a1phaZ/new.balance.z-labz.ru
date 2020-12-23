@@ -21,11 +21,12 @@ const initialState = {
 const reducer = (state, action) => {
 	switch (action.type) {
 		case 'INITIAL_LIST': {
+			const index = action.payload.list[action.payload.list.length-1] ? action.payload.list[action.payload.list.length-1].id : 1;
 			return {
 				...state,
 				list: action.payload.list,
 				item: {
-					id: action.payload.list.length + 1,
+					id: index + 1,
 					title: '',
 					done: false
 				}
@@ -52,10 +53,11 @@ const reducer = (state, action) => {
 		}
 		case 'SET_ITEM_TO_LIST': {
 			const newList = [...state.list, state.item];
+			const index = newList[newList.length-1] ? newList[newList.length-1].id : 1;
 			return {
 				...state,
 				list: newList,
-				item: {title: '', done: false, id: newList.length + 1}
+				item: {title: '', done: false, id: index + 1}
 			}
 		}
 		case 'SET_DONE': {
