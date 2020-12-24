@@ -43,6 +43,7 @@ export default ({id, account, dispatch, onRefresh, context, date}) => {
 		if (!account) return [];
 		return account?.operations;
 	});
+	const [searchStr, setSearchStr] = useState('');
 	const [filteredItems, setFilteredItems] = useState(() => items || []);
 
 	const indexAr = filteredItems.sort(sort).reduce((prev, curr) => {
@@ -133,12 +134,16 @@ export default ({id, account, dispatch, onRefresh, context, date}) => {
 		setIsOpened(context);
 	}, [context]);
 
-	const onSearch = (str) => {
-		if (str === '') {
+	useEffect(() => {
+		if (searchStr === '') {
 			setFilteredItems(items);
 		} else {
-			setFilteredItems(account?.operations.filter(({title}) => title.toLowerCase().indexOf(str.toLowerCase()) > -1));
+			setFilteredItems(account?.operations.filter(({title}) => title.toLowerCase().indexOf(searchStr.toLowerCase()) > -1));
 		}
+	}, [searchStr, account, items]);
+
+	const onSearch = (str) => {
+		setSearchStr(str);
 	}
 
 	return (
