@@ -13,6 +13,7 @@ export default function mapRichCell(dispatch) {
 				<Caption level="2" weight="semibold" caps
 								 key={index}>
 					{format(new Date(item?.date), 'dd MMMM yyyy ', {locale: ruLocale})}
+					<br/>
 					{item?.income && item?.outcome ? ' [ ' : null}
 					<Color value={item?.income} color={'green'}/>
 					{item?.income && item?.outcome ? ' | ' : null}
