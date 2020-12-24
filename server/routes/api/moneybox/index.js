@@ -78,7 +78,7 @@ router.post('/', async (req, res, next) => {
 		operations: !!sum ? [item._id] : []
 	});
 
-	moneyBox.$sum = sum.toFixed(2) || 0;
+	moneyBox.$sum = sum || 0;
 	moneyBox.$income = income;
 
 	await moneyBox

@@ -15,6 +15,7 @@ const MoneyBoxSchema = new Schema({
 
 MoneyBoxSchema.pre('save', function (next) {
 	this.sum = this.$income ? this.sum + this.$sum : this.sum - this.$sum;
+	this.sum = this.sum.toFixed(2);
 	next();
 });
 
