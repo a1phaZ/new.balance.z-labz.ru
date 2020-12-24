@@ -1,6 +1,6 @@
 import React, {useEffect, useReducer} from 'react';
-import {Cell, Footer, FormLayout, Input, List, Panel, PanelHeader} from "@vkontakte/vkui";
-import {SET_CLOSE_MODAL_WITHOUT_SAVING, SET_MODAL} from "../state/actions";
+import {Cell, Footer, FormLayout, Input, List, Panel, PanelHeader, PanelHeaderBack} from "@vkontakte/vkui";
+import {SET_CLOSE_MODAL_WITHOUT_SAVING, SET_HISTORY_BACK, SET_MODAL} from "../state/actions";
 import InfoSnackbar from "../components/InfoSnackbar";
 import regexp from "../handlers/regexp";
 import validate from "../handlers/validate";
@@ -21,7 +21,7 @@ const initialState = {
 const reducer = (state, action) => {
 	switch (action.type) {
 		case 'INITIAL_LIST': {
-			const index = action.payload.list[action.payload.list.length-1] ? action.payload.list[action.payload.list.length-1].id : 1;
+			const index = action.payload.list[action.payload.list.length - 1] ? action.payload.list[action.payload.list.length - 1].id : 1;
 			return {
 				...state,
 				list: action.payload.list,
@@ -53,7 +53,7 @@ const reducer = (state, action) => {
 		}
 		case 'SET_ITEM_TO_LIST': {
 			const newList = [...state.list, state.item];
-			const index = newList[newList.length-1] ? newList[newList.length-1].id : 1;
+			const index = newList[newList.length - 1] ? newList[newList.length - 1].id : 1;
 			return {
 				...state,
 				list: newList,
@@ -142,7 +142,13 @@ export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setS
 
 	return (
 		<Panel id={id}>
-			<PanelHeader>
+			<PanelHeader
+				left={
+					<PanelHeaderBack onClick={() => {
+						dispatch({type: SET_HISTORY_BACK});
+					}}/>
+				}
+			>
 				Список покупок
 			</PanelHeader>
 			<FormLayout
