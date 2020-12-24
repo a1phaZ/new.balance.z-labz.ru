@@ -78,7 +78,7 @@ const reducer = (state, action) => {
 			const index = list.findIndex((item) => item.id === id);
 			list.splice(index, 1);
 			if (list.length === 0) {
-				localStorage.removeItem('shoplist');
+				localStorage.removeItem('shopList');
 			}
 			return {
 				...state,
