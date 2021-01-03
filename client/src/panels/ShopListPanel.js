@@ -57,7 +57,10 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				list: newList,
-				item: {title: '', done: false, id: index + 1}
+				item: {title: '', done: false, id: index + 1},
+				validate: {
+					title: {}
+				}
 			}
 		}
 		case 'SET_DONE': {
