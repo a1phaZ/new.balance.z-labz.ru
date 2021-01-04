@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import {Cell, FixedLayout, Group, Header, Panel, PanelHeader, PromoBanner} from "@vkontakte/vkui";
 import Icon28ShareExternalOutline from '@vkontakte/icons/dist/28/share_external_outline';
@@ -8,6 +8,7 @@ import Icon28ListCheckOutline from '@vkontakte/icons/dist/28/list_check_outline'
 import {SET_ACTIVE_VIEW} from "../state/actions";
 
 export default ({id, dispatch, bannerData, setBannerData, addToHomeScreenSupported, addedToHomeScreen}) => {
+	const [lastClickTime, setLastClickTime] = useState(0);
 	const userId = new URL(window.location.href).searchParams.get('vk_user_id');
 
 	useEffect(() => {
@@ -41,7 +42,10 @@ export default ({id, dispatch, bannerData, setBannerData, addToHomeScreenSupport
 						<Icon28ShareExternalOutline/>
 					}
 					onClick={() => {
-						bridge.send("VKWebAppShare", {link: `https://vk.com/zlabz_balance#ref=${userId}`})
+						if (+new Date() - lastClickTime > 1000) {
+							bridge.send("VKWebAppShare", {link: `https://vk.com/zlabz_balance#ref=${userId}`})
+							setLastClickTime(+new Date())
+						}
 					}}
 				>
 					Поделиться
@@ -50,7 +54,10 @@ export default ({id, dispatch, bannerData, setBannerData, addToHomeScreenSupport
 					expandable
 					before={<Icon28Users3Outline/>}
 					onClick={() => {
-						bridge.send('VKWebAppJoinGroup', {group_id: 195358095})
+						if (+new Date() - lastClickTime > 1000) {
+							bridge.send('VKWebAppJoinGroup', {group_id: 195358095})
+							setLastClickTime(+new Date())
+						}
 					}}
 				>
 					Присоединиться к Балансу
