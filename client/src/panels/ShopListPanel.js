@@ -1,9 +1,22 @@
-import React, {useEffect, useReducer} from 'react';
-import {Cell, Footer, FormLayout, Input, List, Panel, PanelHeader, PanelHeaderBack} from "@vkontakte/vkui";
-import {SET_CLOSE_MODAL_WITHOUT_SAVING, SET_HISTORY_BACK, SET_MODAL} from "../state/actions";
+import React, {useEffect, useReducer, useState} from 'react';
+import {
+	Cell,
+	Footer,
+	FormLayout,
+	Input,
+	List,
+	Panel,
+	PanelHeader,
+	PanelHeaderBack,
+	PanelHeaderContent, PanelHeaderContext
+} from "@vkontakte/vkui";
+import {SET_CLOSE_MODAL_WITHOUT_SAVING, SET_HISTORY_BACK, SET_MODAL, SET_TOGGLE_CONTEXT} from "../state/actions";
 import InfoSnackbar from "../components/InfoSnackbar";
 import regexp from "../handlers/regexp";
 import validate from "../handlers/validate";
+import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
+import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
+import Icon28DoneOutline from '@vkontakte/icons/dist/28/done_outline';
 
 const initialState = {
 	list: [],
@@ -93,18 +106,21 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setShopListItemTitle, setShopList}) => {
+export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setShopListItemTitle, setShopList, context}) => {
 
 	const [state, dispatchList] = useReducer(reducer, initialState);
+	const [isOpened, setIsOpened] = useState(() => context);
+	const [deleteMode, setDeleteMode] = useState(false);
 	const shopList =
 		shopListFromServer.length
 			?
 			state.list.map((item) => {
+				const canDelete = deleteMode || item.done;
 				return (
 					<Cell
 						key={item.id}
-						selectable={!item.done}
-						removable={item.done}
+						selectable={!canDelete}
+						removable={canDelete}
 						checked={item.done}
 						// disabled={item.done}
 						onChange={() => {
@@ -126,6 +142,14 @@ export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setS
 			:
 			<Footer>Список покупок пуст</Footer>
 	;
+
+	const toggleContext = () => {
+		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});
+	}
+
+	useEffect(() => {
+		setIsOpened(context);
+	}, [context]);
 
 	useEffect(() => {
 		dispatchList({type: 'INITIAL_LIST', payload: {list: shopListFromServer}});
@@ -152,8 +176,43 @@ export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setS
 					}}/>
 				}
 			>
-				Список покупок
+				<PanelHeaderContent
+					aside={<Icon16Dropdown style={{transform: `rotate(${isOpened ? '180deg' : '0'})`}}/>}
+					onClick={toggleContext}
+				>
+					Список покупок
+				</PanelHeaderContent>
 			</PanelHeader>
+			<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
+				<List>
+					{
+						!deleteMode
+						&&
+						<Cell
+							before={<Icon28DeleteOutline />}
+							onClick={() => {
+								toggleContext();
+								setDeleteMode(true);
+							}}
+						>
+							Режим удаления
+						</Cell>
+					}
+					{
+						deleteMode
+						&&
+							<Cell
+								before={<Icon28DoneOutline />}
+								onClick={() => {
+									toggleContext();
+									setDeleteMode(false);
+								}}
+							>
+								Режим выполнения
+							</Cell>
+					}
+				</List>
+			</PanelHeaderContext>
 			<FormLayout
 				onSubmit={(e) => {
 					e.preventDefault();
@@ -161,6 +220,7 @@ export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setS
 				}}
 			>
 				<Input type={'text'}
+							 disabled={deleteMode}
 							 placeholder={'Продукт, услуга, товар'}
 							 value={state.item.title}
 							 top={'Название'}

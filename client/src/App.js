@@ -277,7 +277,7 @@ const App = () => {
 								setBannerData={setBannerData}/>
 					<ShopListPanel id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving}
 												 shopListFromServer={shopList} setShopListItemTitle={setShopListItemTitle}
-												 setShopList={setShopList}/>
+												 setShopList={setShopList} context={state.contextHistory}/>
 				</View>
 			</Epic>
 		</ConfigProvider>
