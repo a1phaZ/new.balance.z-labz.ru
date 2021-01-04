@@ -130,7 +130,8 @@ const reducer = (state, action) => {
 					activePanel: 'home',
 					history: [],
 					canClose: true,
-					editedItem: null
+					editedItem: null,
+					successMessage: null
 				}
 			} else {
 				const canClose = (backEl.view === 'home' && backEl.panel === 'home');
@@ -142,7 +143,8 @@ const reducer = (state, action) => {
 					activePanel: backEl.panel,
 					history: [...newHistory],
 					editedItem: null,
-					canClose: canClose
+					canClose: canClose,
+					successMessage: null
 				}
 			}
 
