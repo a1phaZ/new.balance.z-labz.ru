@@ -63,7 +63,8 @@ const reducer = (state, action) => {
 						activePanel: action.payload.panel,
 						history: [...history, {view: action.payload.view, panel: action.payload.panel}],
 						canClose: false,
-						contextHistory: false
+						contextHistory: false,
+						successMessage: null
 					}
 				}
 			} else {
@@ -73,7 +74,8 @@ const reducer = (state, action) => {
 					activePanel: action.payload.panel,
 					history: [...history, {view: action.payload.view, panel: action.payload.panel}],
 					canClose: true,
-					contextHistory: false
+					contextHistory: false,
+					successMessage: null
 				}
 			}
 		}
