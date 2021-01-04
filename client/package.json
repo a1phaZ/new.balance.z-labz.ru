@@ -9,6 +9,7 @@
     "build": "react-scripts build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
+    "predeploy.vk": "npm run build",
     "deploy.vk": "vk-miniapps-deploy"
   },
   "keywords": [],
