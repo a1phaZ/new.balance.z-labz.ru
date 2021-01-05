@@ -22,11 +22,25 @@ export default function mapRichCell(dispatch) {
 				</Caption>
 			)
 		}
+
+		const tags = item?.tags.filter(tag => !!tag.length).map(
+			(tag, index) =>
+				<span key={index} style={{
+					marginRight: '5px',
+					marginBottom: '5px',
+					maxWidth: '100%',
+					overflow: 'hidden',
+					overflowWrap: 'normal',
+					// background: 'var(--counter_secondary_background)',
+					// color: 'var(--counter_secondary_text)',
+					// padding: '5px'
+				}}><b>{tag}</b></span>
+		);
 		return (
 			<RichCell
 				key={index}
 				multiline
-				caption={format(new Date(item?.date), 'dd MMMM yyyy', {locale: ruLocale})}
+				caption={<><span>Теги: </span>{tags}</>}
 				after={item?.income ? currency(item?.sum) : currency(-1 * item?.sum)}
 				data-id={item?._id}
 				onClick={() => {
