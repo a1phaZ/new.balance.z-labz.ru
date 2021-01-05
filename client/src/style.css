@@ -12,7 +12,7 @@
     overflow: hidden;
 }
 
-.Tappable, .TabbarItem, input[type="date"], select {
+.Tappable, .TabbarItem, input[type="date"], select, .Cell__remove, .Cell__remove-marker {
     cursor: pointer;
 }
 
