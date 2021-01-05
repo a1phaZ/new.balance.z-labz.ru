@@ -6,6 +6,7 @@ import Icon28Users3Outline from '@vkontakte/icons/dist/28/users_3_outline';
 import Icon28AddCircleOutline from '@vkontakte/icons/dist/28/add_circle_outline';
 import Icon28ListCheckOutline from '@vkontakte/icons/dist/28/list_check_outline';
 import {SET_ACTIVE_VIEW} from "../state/actions";
+import InfoSnackbar from "../components/InfoSnackbar";
 
 export default ({id, dispatch, bannerData, setBannerData, addToHomeScreenSupported, addedToHomeScreen}) => {
 	const [lastClickTime, setLastClickTime] = useState(0);
@@ -74,6 +75,7 @@ export default ({id, dispatch, bannerData, setBannerData, addToHomeScreenSupport
 				</Cell>}
 			</Group>
 			<FixedLayout vertical={"bottom"}>
+				<InfoSnackbar/>
 				{bannerData && <PromoBanner bannerData={bannerData} onClose={() => setBannerData(null)}/>}
 			</FixedLayout>
 		</Panel>
