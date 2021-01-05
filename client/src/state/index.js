@@ -64,7 +64,8 @@ const reducer = (state, action) => {
 						history: [...history, {view: action.payload.view, panel: action.payload.panel}],
 						canClose: false,
 						contextHistory: false,
-						successMessage: null
+						successMessage: null,
+						error: null
 					}
 				}
 			} else {
@@ -75,7 +76,8 @@ const reducer = (state, action) => {
 					history: [...history, {view: action.payload.view, panel: action.payload.panel}],
 					canClose: true,
 					contextHistory: false,
-					successMessage: null
+					successMessage: null,
+					error: null
 				}
 			}
 		}
@@ -131,7 +133,8 @@ const reducer = (state, action) => {
 					history: [],
 					canClose: true,
 					editedItem: null,
-					successMessage: null
+					successMessage: null,
+					error: null
 				}
 			} else {
 				const canClose = (backEl.view === 'home' && backEl.panel === 'home');
@@ -144,7 +147,8 @@ const reducer = (state, action) => {
 					history: [...newHistory],
 					editedItem: null,
 					canClose: canClose,
-					successMessage: null
+					successMessage: null,
+					error: null
 				}
 			}
 
