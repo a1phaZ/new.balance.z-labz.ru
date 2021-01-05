@@ -4,7 +4,7 @@ import useApi from "../../handlers/useApi";
 import validate from "../../handlers/validate";
 import currency from "../../handlers/currency";
 import regexp from "../../handlers/regexp";
-import {SET_ACCOUNTS, SET_BUDGETS} from "../../state/actions";
+import {SET_ACCOUNTS, SET_BUDGETS, SET_EDITED_ITEM} from "../../state/actions";
 
 const initialState = {
 	title: '',
@@ -45,6 +45,7 @@ export default ({dispatch, editedItem = null}) => {
 		if (!response) return;
 		dispatch({type: SET_ACCOUNTS, payload: {accounts: response?.accounts ? response?.accounts : []}});
 		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
+		dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 	}, [response, dispatch]);
 
 	return (
