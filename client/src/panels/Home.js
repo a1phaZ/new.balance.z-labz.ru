@@ -12,7 +12,6 @@ import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_bad
 import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 import InfoSnackbar from "../components/InfoSnackbar";
 import MonthSwitch from "../components/MonthSwitch";
-import ShopList from "../components/ShopList";
 
 const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList}) => {
 	const sumOfAll = accounts.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
@@ -24,7 +23,7 @@ const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList}
 				dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'more', panel: 'shop-list'}})
 			}}
 		>
-			Сформировать список покупок
+			{shopList.length === 0 ? 'Сформировать список покупок' : 'Перейти к списку покупок'}
 		</Button>
 	)
 	return (
@@ -50,7 +49,7 @@ const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList}
 					</>
 				}
 			>Баланс</PanelHeader>
-			<MonthSwitch onRefresh={onRefresh} />
+			<MonthSwitch onRefresh={onRefresh}/>
 			<PullToRefresh onRefresh={onRefresh} isFetching={isFetching}>
 				<List>
 					<Group
@@ -73,7 +72,7 @@ const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList}
 					<Group
 						header={<Header mode={'secondary'}>Список покупок</Header>}
 					>
-						<ShopList list={shopList} dispatch={dispatch}/>
+						{/*<ShopList list={shopList} dispatch={dispatch}/>*/}
 						<Footer>
 							{
 								shopList.length === 0 ?
@@ -81,10 +80,13 @@ const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList}
 										{
 											`Ваш список покупок пуст`
 										}
-										{shopListButton}
-									</>:
-									`В Вашем списке покупок ${shopList.length} элементов. ${shopListDone} выполнено.`
+									</> :
+									<>
+										{`В Вашем списке покупок ${shopList.length} элементов. ${shopListDone} выполнено.`}
+									</>
 							}
+							<br/>
+							{shopListButton}
 						</Footer>
 					</Group>
 				</List>
