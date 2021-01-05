@@ -29,7 +29,7 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({dispatch, editedItem = null}) => {
+export default ({dispatch, editedItem = null, date}) => {
 	const [stateForm, dispatchForm] = useReducer(reducer, initialState);
 	const [apiStr] = useState(() => {
 		return !editedItem ? '/budget' : `/budget/${editedItem._id}`;
@@ -55,7 +55,10 @@ export default ({dispatch, editedItem = null}) => {
 				await doApiFetch({
 					method: !editedItem ? 'POST' : 'PATCH',
 					title: stateForm.title,
-					sum: stateForm.startSum
+					sum: stateForm.startSum,
+					params: {
+						date: new Date(date)
+					}
 				});
 			}}
 		>

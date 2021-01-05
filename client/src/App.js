@@ -193,7 +193,7 @@ const App = () => {
 					{state.editedItem ? 'Редактировать' : 'Добавить бюджет'}
 				</ModalPageHeader>
 			}>
-				<AddBudget editedItem={state.editedItem} dispatch={dispatch}/>
+				<AddBudget editedItem={state.editedItem} dispatch={dispatch} date={state.currentDate}/>
 			</ModalPage>
 		</ModalRoot>
 	)

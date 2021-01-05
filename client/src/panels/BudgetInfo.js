@@ -36,6 +36,7 @@ import sort from "../handlers/sort";
 import reduce from "../handlers/reduce";
 import currency from "../handlers/currency";
 import SearchForm from "../components/SearchForm";
+import {differenceInMonths} from 'date-fns';
 
 export default ({id, budget, dispatch, context, date}) => {
 	const [isOpened, setIsOpened] = useState(() => context);
@@ -61,7 +62,7 @@ export default ({id, budget, dispatch, context, date}) => {
 
 	useEffect(() => {
 		setIsOpened(context);
-	},[context]);
+	}, [context]);
 
 	useEffect(() => {
 		if (searchStr === '') {
@@ -122,14 +123,16 @@ export default ({id, budget, dispatch, context, date}) => {
 					<PanelHeaderBack onClick={() => {
 						dispatch({type: SET_HISTORY_BACK});
 					}}/>
-					<PanelHeaderButton
-						onClick={() => {
-							dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
-							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
-						}}
-					>
-						<Icon28MarketAddBadgeOutline/>
-					</PanelHeaderButton>
+					{differenceInMonths(new Date(), new Date(date)) === 0 &&
+						<PanelHeaderButton
+							onClick={() => {
+								dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
+								dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
+							}}
+						>
+							<Icon28MarketAddBadgeOutline/>
+						</PanelHeaderButton>
+					}
 				</>
 			}
 			>
