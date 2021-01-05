@@ -60,6 +60,9 @@ const App = () => {
 	const [shopList, setShopList] = useLocalStorage('shopList', []);
 	const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
 	const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
+	const [isMember, setIsMember] = useState(false);
+
+	console.log('isMember', isMember);
 
 	useEffect(() => {
 		bridge.subscribe(({detail: {type, data}}) => {
@@ -77,6 +80,12 @@ const App = () => {
 				if (data.result) {
 					setAddedToHomeScreen(data.result);
 				}
+			}
+			if (type === 'VKWebAppGetGroupInfoResult') {
+				setIsMember(data.is_member);
+			}
+			if (type === 'VKWebAppGetGroupInfoFailed') {
+				console.log(data);
 			}
 		});
 
