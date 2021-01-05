@@ -68,6 +68,10 @@ router.post('/', async (req, res, next) => {
 		query: {vk_user_id}
 	} = req;
 
+	const yearNumber = new Date(date).getUTCFullYear();
+	const monthNumber = new Date(date).getUTCMonth();
+	const dayNumber = new Date(date).getUTCDate();
+
 	if (title === '' || title === null) {
 		return next(createError(400, 'Название не должно быть пустым'));
 	}
@@ -77,7 +81,7 @@ router.post('/', async (req, res, next) => {
 	if (!parseFloat(quantity)) {
 		return next(createError(400, 'Ошибка преобразования кол-ва'));
 	}
-	if (isFuture(new Date(date))) {
+	if (isFuture(new Date(yearNumber, monthNumber, dayNumber))) {
 		return next(createError(400,  'Дата в будущем'));
 	}
 	if (!isValid(new Date(date))) {
@@ -150,6 +154,10 @@ router.patch('/:id', async (req, res, next) => {
 		query: {vk_user_id}
 	} = req;
 
+	const yearNumber = new Date(date).getUTCFullYear();
+	const monthNumber = new Date(date).getUTCMonth();
+	const dayNumber = new Date(date).getUTCDate();
+
 	if (!(ObjectId.isValid(id) && (new ObjectId(id)).toString() === id)) {
 		return next(createError(400,  'Ошибка идентификатора объекта'));
 	}
@@ -159,7 +167,7 @@ router.patch('/:id', async (req, res, next) => {
 	if (!parseFloat(quantity)) {
 		return next(createError(400, 'Ошибка преобразования кол-ва'));
 	}
-	if (isFuture(new Date(date))) {
+	if (isFuture(new Date(yearNumber, monthNumber, dayNumber))) {
 		return next(createError(400,  'Дата в будущем'));
 	}
 	if (!isValid(new Date(date))) {
