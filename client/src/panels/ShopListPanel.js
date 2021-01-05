@@ -122,7 +122,7 @@ export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setS
 						selectable={!deleteMode}
 						removable={deleteMode}
 						checked={item.done}
-						// disabled={item.done}
+						disabled={deleteMode ? false : item.done}
 						onChange={() => {
 							setShopListItemTitle(shopListFromServer[shopListFromServer.findIndex(i => i.id === item.id)].title);
 							dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: false}});
