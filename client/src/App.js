@@ -78,6 +78,12 @@ const App = () => {
 					setAddedToHomeScreen(data.result);
 				}
 			}
+			if (type === 'VKWebAppJoinGroupResult') {
+				console.log(data);
+			}
+			if (type === 'VKWebAppJoinGroupFailed') {
+				console.log(data);
+			}
 		});
 
 // Init VK  Mini App
