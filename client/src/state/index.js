@@ -14,6 +14,7 @@ import {
 	SET_SUCCESS_MESSAGE,
 	SET_COLOR_SCHEME, SET_TOGGLE_CONTEXT, SET_CLOSE_MODAL_WITHOUT_SAVING
 } from './actions';
+import {smoothScrollToTop} from "../handlers/smoothScrollToTop";
 
 const initialState = {
 	accounts: [],
@@ -48,6 +49,9 @@ const reducer = (state, action) => {
 		}
 		case SET_ACTIVE_VIEW: {
 			window.history.pushState(null, null);
+
+			window.scrollTo(0, 30);
+			smoothScrollToTop();
 
 			let history = state.history;
 			if (history.length !== 0) {
