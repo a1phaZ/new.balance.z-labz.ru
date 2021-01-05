@@ -40,7 +40,7 @@ export default function mapRichCell(dispatch) {
 			<RichCell
 				key={index}
 				multiline
-				caption={<><span>Теги: </span>{tags}</>}
+				caption={item?.tags.length !== 0 && <><span>Теги: </span>{tags}</>}
 				after={item?.income ? currency(item?.sum) : currency(-1 * item?.sum)}
 				data-id={item?._id}
 				onClick={() => {
