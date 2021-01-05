@@ -15,3 +15,7 @@
 .Tappable, .TabbarItem {
     cursor: pointer;
 }
+
+div[disabled], button[disabled] {
+    cursor: default;
+}
