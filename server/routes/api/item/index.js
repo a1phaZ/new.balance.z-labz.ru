@@ -191,6 +191,8 @@ router.patch('/:id', async (req, res, next) => {
 		$set: {
 			date,
 			title,
+			month: new Date(date).getMonth(),
+			year: new Date(date).getFullYear(),
 			description,
 			price: parseFloat(price),
 			quantity: parseFloat(quantity),

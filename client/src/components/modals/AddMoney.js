@@ -53,7 +53,7 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({accounts, id = null, editedItem = null, dispatch, budget, panel = '', shopListItemTitle, setShopListItemTitle}) => {
+export default ({accounts, id = null, editedItem = null, dispatch, budget, panel = '', shopListItemTitle, setShopListItemTitle, date}) => {
 	const [apiStr] = useState(() => {
 		return !editedItem ? '/item' : `/item/${editedItem._id}`;
 	})
@@ -123,7 +123,7 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 					tags: state.tags.filter(tag => !!tag.length),
 					itemFrom: state.account || editedItem?.itemFrom || id,
 					params: {
-						date: state.date
+						date: new Date(date)
 					}
 				});
 				setShopListItemTitle('');

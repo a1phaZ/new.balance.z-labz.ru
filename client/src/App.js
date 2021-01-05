@@ -182,7 +182,7 @@ const App = () => {
 			}>
 				<AddMoney accounts={state.accounts} id={state.account?._id}
 									editedItem={state.editedItem} dispatch={dispatch} budget={state.budget} panel={state.activePanel}
-									shopListItemTitle={shopListItemTitle} setShopListItemTitle={setShopListItemTitle}/>
+									shopListItemTitle={shopListItemTitle} setShopListItemTitle={setShopListItemTitle} date={state.currentDate}/>
 			</ModalPage>
 
 			<ModalPage id={'add-budget'} header={
