@@ -13,7 +13,6 @@ export default ({id, dispatch, bannerData, setBannerData, addToHomeScreenSupport
 
 	useEffect(() => {
 		bridge.send('VKWebAppGetAds', {});
-		bridge.send('VKWebAppGetGroupInfo', {group_id: 195358095});
 	}, []);
 
 	return (
