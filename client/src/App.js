@@ -13,7 +13,7 @@ import {
 	SET_EDITED_ITEM,
 	SET_HISTORY_BACK,
 	SET_MODAL,
-	SET_POPOUT
+	SET_POPOUT, SET_SUCCESS_MESSAGE
 } from "./state/actions";
 import {
 	Alert,
@@ -79,10 +79,13 @@ const App = () => {
 				}
 			}
 			if (type === 'VKWebAppJoinGroupResult') {
-				console.log(data);
+				if (data.result) {
+					dispatch({type: SET_SUCCESS_MESSAGE, payload: {message: 'Спасибо, что Вы с нами ❤️'}})
+				}
+				// console.log(data);
 			}
 			if (type === 'VKWebAppJoinGroupFailed') {
-				console.log(data);
+				// console.log(data);
 			}
 		});
 
