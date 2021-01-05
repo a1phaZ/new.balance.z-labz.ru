@@ -115,12 +115,12 @@ export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setS
 		shopListFromServer.length
 			?
 			state.list.map((item) => {
-				const canDelete = deleteMode || item.done;
+				// const canDelete = deleteMode || item.done;
 				return (
 					<Cell
 						key={item.id}
-						selectable={!canDelete}
-						removable={canDelete}
+						selectable={!deleteMode}
+						removable={deleteMode}
 						checked={item.done}
 						// disabled={item.done}
 						onChange={() => {
