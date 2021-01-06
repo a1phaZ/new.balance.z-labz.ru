@@ -71,10 +71,6 @@ router.post('/', async (req, res, next) => {
 	const d = new Date(date);
 	d.setTime( d.getTime() + tzOffset*60*1000 );
 
-	console.log(tzOffset);
-	console.log(date, d.getTimezoneOffset());
-	console.log(d);
-
 	if (title === '' || title === null) {
 		return next(createError(400, 'Название не должно быть пустым'));
 	}
