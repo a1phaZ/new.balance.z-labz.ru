@@ -123,7 +123,8 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 					tags: state.tags.filter(tag => !!tag.length),
 					itemFrom: state.account || editedItem?.itemFrom || id,
 					params: {
-						date: new Date(date)
+						date: new Date(date),
+						tzOffset: new Date().getTimezoneOffset()
 					}
 				});
 				setShopListItemTitle('');
