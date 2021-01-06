@@ -237,8 +237,8 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 						 value={state.tags.join(' ')}
 						 placeholder={'Теги через пробел'}
 						 status={state.validate?.tags?.status}
-						 maxLength={100}
-						 bottom={state.validate?.tags?.message ? state.validate?.tags?.message : `${state.tags.join(' ').length} из 100 символов`}
+						 maxLength={50}
+						 bottom={state.validate?.tags?.message ? state.validate?.tags?.message : `${state.tags.join(' ').length} из 50 символов`}
 						 onChange={(e) => {
 							 dispatchForm({
 								 type: 'CHANGE_STATE',
