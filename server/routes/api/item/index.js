@@ -71,7 +71,7 @@ router.post('/', async (req, res, next) => {
 	const d = new Date(date);
 	d.setTime( d.getTime() + d.getTimezoneOffset()*60*1000 );
 
-	console.log(date);
+	console.log(date, d.getTimezoneOffset());
 	console.log(d);
 
 	if (title === '' || title === null) {
