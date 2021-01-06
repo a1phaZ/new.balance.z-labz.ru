@@ -195,10 +195,9 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 			>
 				Доход
 			</Radio>
-			<FormLayoutGroup top={'Описание'}>
-				{
-					!state.income
-					&&
+			{!state.income
+			&&
+				<FormLayoutGroup top={'Описание'}>
 					<Button
 						type={'button'}
 						mode="secondary"
@@ -212,27 +211,27 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 					>
 						Добавить описание
 					</Button>
+					{
+						(descriptionShow || state.description) &&
+						<Textarea top={'Описание'}
+											placeholder={'Описание товара(продукта, услуги)'}
+											value={state.description}
+											maxLength={70}
+											status={state.validate?.description?.status}
+											bottom={state.validate?.description?.message ? state.validate?.description?.message : `${state.description.length} из 70`}
+											onChange={(e) => {
+												dispatchForm({
+													type: 'CHANGE_STATE',
+													payload: {
+														description: regexp(e.currentTarget.value),
+														validateForm: {description: validate(e)}
+													}
+												})
+											}}
+						/>
+					}
+				</FormLayoutGroup>
 				}
-				{
-					(descriptionShow || state.description) &&
-					<Textarea top={'Описание'}
-										placeholder={'Описание товара(продукта, услуги)'}
-										value={state.description}
-										maxLength={70}
-										status={state.validate?.description?.status}
-										bottom={state.validate?.description?.message ? state.validate?.description?.message : `${state.description.length} из 70`}
-										onChange={(e) => {
-											dispatchForm({
-												type: 'CHANGE_STATE',
-												payload: {
-													description: regexp(e.currentTarget.value),
-													validateForm: {description: validate(e)}
-												}
-											})
-										}}
-					/>
-				}
-			</FormLayoutGroup>
 			<Input type={'text'}
 						 top={'Теги'}
 						 value={state.tags.join(' ')}
