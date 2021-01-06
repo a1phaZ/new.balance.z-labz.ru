@@ -10,7 +10,7 @@ import {
 	PanelHeaderBack,
 	PanelHeaderContent, PanelHeaderContext
 } from "@vkontakte/vkui";
-import {SET_CLOSE_MODAL_WITHOUT_SAVING, SET_HISTORY_BACK, SET_MODAL, SET_TOGGLE_CONTEXT} from "../state/actions";
+import {SET_HISTORY_BACK, SET_MODAL, SET_TOGGLE_CONTEXT} from "../state/actions";
 import InfoSnackbar from "../components/InfoSnackbar";
 import regexp from "../handlers/regexp";
 import validate from "../handlers/validate";
@@ -106,7 +106,7 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setShopListItemTitle, setShopList, context}) => {
+export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShopList, context, success}) => {
 
 	const [state, dispatchList] = useReducer(reducer, initialState);
 	const [isOpened, setIsOpened] = useState(() => context);
@@ -115,7 +115,6 @@ export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setS
 		shopListFromServer.length
 			?
 			state.list.map((item) => {
-				// const canDelete = deleteMode || item.done;
 				return (
 					<Cell
 						key={item.id}
@@ -125,9 +124,7 @@ export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setS
 						disabled={deleteMode ? false : item.done}
 						onChange={() => {
 							setShopListItemTitle(shopListFromServer[shopListFromServer.findIndex(i => i.id === item.id)].title);
-							dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: false}});
 							dispatchList({type: 'SET_ID', payload: {id: item.id}});
-							dispatchList({type: 'SET_DONE', payload: {id: item.id}});
 							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
 						}}
 						onRemove={() => {
@@ -161,11 +158,9 @@ export default ({id, dispatch, closeModalWithoutSaving, shopListFromServer, setS
 	}, [state.list, setShopList]);
 
 	useEffect(() => {
-		if (!closeModalWithoutSaving) return;
+		if (!success) return;
 		dispatchList({type: 'SET_DONE', payload: {id: state.id}});
-
-		dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: false}});
-	}, [closeModalWithoutSaving, dispatch, dispatchList, state, setShopList]);
+	}, [success, state.id]);
 
 	return (
 		<Panel id={id}>

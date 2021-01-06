@@ -12,7 +12,7 @@ import {
 	SET_MODAL,
 	SET_POPOUT,
 	SET_SUCCESS_MESSAGE,
-	SET_COLOR_SCHEME, SET_TOGGLE_CONTEXT, SET_CLOSE_MODAL_WITHOUT_SAVING
+	SET_COLOR_SCHEME, SET_TOGGLE_CONTEXT
 } from './actions';
 import {smoothScrollToTop} from "../handlers/smoothScrollToTop";
 
@@ -35,8 +35,7 @@ const initialState = {
 	contextHistory: false,
 	canClose: true,
 	scheme: 'client_light',
-	modalOpenTime: +new Date(),
-	closeModalWithoutSaving: false
+	modalOpenTime: +new Date()
 }
 
 const reducer = (state, action) => {
@@ -275,13 +274,6 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				currentDate: new Date(action.payload.date)
-			}
-		}
-		case SET_CLOSE_MODAL_WITHOUT_SAVING: {
-			const {closeModalWithoutSaving} = action.payload
-			return {
-				...state,
-				closeModalWithoutSaving: closeModalWithoutSaving
 			}
 		}
 		default:

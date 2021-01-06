@@ -8,7 +8,6 @@ import {
 	SET_ACCOUNTS,
 	SET_ACTIVE_VIEW,
 	SET_BUDGETS,
-	SET_CLOSE_MODAL_WITHOUT_SAVING,
 	SET_COLOR_SCHEME,
 	SET_EDITED_ITEM,
 	SET_HISTORY_BACK,
@@ -159,7 +158,6 @@ const App = () => {
 	}, []);
 
 	const modalBack = (() => {
-		dispatch({type: SET_CLOSE_MODAL_WITHOUT_SAVING, payload: {closeModalWithoutSaving: true}})
 		dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 		dispatch({type: SET_MODAL, payload: {modal: null}});
 		setShopListItemTitle('');
@@ -284,9 +282,8 @@ const App = () => {
 					<More id={'index'} dispatch={dispatch} addToHomeScreenSupported={addToHomeScreenSupported}
 								addedToHomeScreen={addedToHomeScreen} bannerData={bannerData}
 								setBannerData={setBannerData}/>
-					<ShopListPanel id={'shop-list'} dispatch={dispatch} closeModalWithoutSaving={state.closeModalWithoutSaving}
-												 shopListFromServer={shopList} setShopListItemTitle={setShopListItemTitle}
-												 setShopList={setShopList} context={state.contextHistory}/>
+					<ShopListPanel id={'shop-list'} dispatch={dispatch} shopListFromServer={shopList} setShopListItemTitle={setShopListItemTitle}
+												 setShopList={setShopList} context={state.contextHistory} success={state.successMessage} error={state.error}/>
 				</View>
 			</Epic>
 		</ConfigProvider>
