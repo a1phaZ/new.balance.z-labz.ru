@@ -26,6 +26,7 @@ export default function mapRichCell(dispatch) {
 		const tags = item?.tags.filter(tag => !!tag.length).map(
 			(tag, index) =>
 				<span key={index} style={{
+					marginLeft: '5px',
 					marginRight: '5px',
 					marginBottom: '5px',
 					maxWidth: '100%',
@@ -40,7 +41,7 @@ export default function mapRichCell(dispatch) {
 			<RichCell
 				key={index}
 				multiline
-				caption={item?.tags.length !== 0 && <><span>Теги: </span>{tags}</>}
+				caption={item?.tags.length !== 0 && <div style={{display: 'flex', flexWrap: 'wrap'}}><span>Теги:</span> {tags}</div>}
 				after={item?.income ? currency(item?.sum) : currency(-1 * item?.sum)}
 				data-id={item?._id}
 				onClick={() => {
