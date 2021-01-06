@@ -87,6 +87,10 @@ const reducer = (state, action) => {
 		}
 		case SET_HISTORY_BACK: {
 			window.history.pushState(null, null);
+
+			window.scrollTo(0, 30);
+			smoothScrollToTop();
+
 			const backEl = state.history[state.history.length - 2];
 			let popoutHistory = state.popoutHistory || [];
 			let modalsHistory = state.modalsHistory || [];
