@@ -189,6 +189,7 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 						 defaultChecked={state.income ? true : null}
 						 onClick={() => {
 							 dispatchForm({type: 'CHANGE_STATE', payload: {income: true}})
+							 setDescriptionShow(false);
 						 }}
 						 disabled={!!shopListItemTitle}
 			>
