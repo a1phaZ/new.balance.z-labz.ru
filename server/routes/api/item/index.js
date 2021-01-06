@@ -68,9 +68,16 @@ router.post('/', async (req, res, next) => {
 		query: {vk_user_id}
 	} = req;
 
-	const d = new Date(date);
-	d.setTime( d.getTime() + d.getTimezoneOffset()*60*1000 );
+	if (!isValid(new Date(req.query.date))) {
+		return next(createError(400,  'Дата невалидна'));
+	}
 
+	const paramDate = new Date(req.query.date);
+	const d = new Date(date);
+	const tzOffset = paramDate.getTimezoneOffset();
+	d.setTime( d.getTime() + tzOffset*60*1000 );
+
+	console.log(paramDate);
 	console.log(date, d.getTimezoneOffset());
 	console.log(d);
 
