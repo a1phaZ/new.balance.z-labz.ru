@@ -65,19 +65,12 @@ router.post('/', async (req, res, next) => {
 			tags,
 			itemFrom
 		},
-		query: {vk_user_id}
+		query: {vk_user_id, tzOffset = 0}
 	} = req;
 
-	if (!isValid(new Date(req.query.date))) {
-		return next(createError(400,  'Дата невалидна'));
-	}
-
-	const paramDate = new Date(req.query.date);
 	const d = new Date(date);
-	const tzOffset = paramDate.getTimezoneOffset();
 	d.setTime( d.getTime() + tzOffset*60*1000 );
 
-	console.log(paramDate);
 	console.log(date, d.getTimezoneOffset());
 	console.log(d);
 
@@ -160,11 +153,11 @@ router.patch('/:id', async (req, res, next) => {
 			tags,
 			itemFrom
 		},
-		query: {vk_user_id}
+		query: {vk_user_id, tzOffset = 0}
 	} = req;
 
 	const d = new Date(date);
-	d.setTime( d.getTime() + d.getTimezoneOffset()*60*1000 );
+	d.setTime( d.getTime() + tzOffset*60*1000 );
 
 	if (!(ObjectId.isValid(id) && (new ObjectId(id)).toString() === id)) {
 		return next(createError(400,  'Ошибка идентификатора объекта'));
