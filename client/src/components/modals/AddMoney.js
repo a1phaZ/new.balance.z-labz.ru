@@ -72,6 +72,9 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 	useEffect(() => {
 		if (!editedItem) return;
 		editedItem.date = format(new Date(editedItem.date), 'yyyy-MM-dd');
+		if (editedItem.boxPrice) {
+			editedItem.price = editedItem.sum;
+		}
 		dispatchForm({type: 'CHANGE_STATE', payload: {...editedItem}});
 	}, [editedItem]);
 
@@ -122,6 +125,7 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 					income: state.income,
 					tags: state.tags.filter(tag => !!tag.length),
 					itemFrom: state.account || editedItem?.itemFrom || id,
+					boxPrice: state.boxPrice,
 					params: {
 						date: new Date(date),
 						tzOffset: new Date().getTimezoneOffset()
@@ -280,8 +284,8 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 			{
 				!state.income
 				&&
-				<Checkbox value={state.boxPrice}
-									onClick={() => {
+				<Checkbox checked={state.boxPrice}
+									onChange={() => {
 										dispatchForm({type: 'CHANGE_STATE', payload: {boxPrice: !state.boxPrice}})
 									}}
 				>

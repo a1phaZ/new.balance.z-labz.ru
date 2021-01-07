@@ -33,6 +33,7 @@ const ItemSchema = new Schema({
 		default: 0,
 		min: [0, 'Значение суммы должно быть больше либо равно 0']
 	},
+	boxPrice: { type: Boolean, default: false },
 	income: {type: Boolean, default: false},
 	tags: {type: Array, default: []},
 	itemFrom: {

@@ -63,7 +63,8 @@ router.post('/', async (req, res, next) => {
 			quantity,
 			income = false,
 			tags,
-			itemFrom
+			itemFrom,
+			boxPrice = false
 		},
 		query: {vk_user_id, tzOffset = 0}
 	} = req;
@@ -102,7 +103,8 @@ router.post('/', async (req, res, next) => {
 		quantity: parseFloat(quantity),
 		income,
 		tags,
-		itemFrom
+		itemFrom,
+		boxPrice
 	});
 
 	await item.save()
@@ -148,7 +150,8 @@ router.patch('/:id', async (req, res, next) => {
 			quantity,
 			income = false,
 			tags,
-			itemFrom
+			itemFrom,
+			boxPrice = false
 		},
 		query: {vk_user_id, tzOffset = 0}
 	} = req;
@@ -205,7 +208,8 @@ router.patch('/:id', async (req, res, next) => {
 			income,
 			sum: parseFloat(price) * parseFloat(quantity),
 			tags,
-			itemFrom
+			itemFrom,
+			boxPrice
 		}
 	}, {new: true})
 		.then(async (doc) => {
