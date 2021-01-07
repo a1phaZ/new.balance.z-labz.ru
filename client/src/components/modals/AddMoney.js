@@ -73,7 +73,7 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 		if (!editedItem) return;
 		editedItem.date = format(new Date(editedItem.date), 'yyyy-MM-dd');
 		if (editedItem.boxPrice) {
-			editedItem.price = editedItem.sum;
+			editedItem.price = Number(editedItem.sum).toFixed(2);
 		}
 		dispatchForm({type: 'CHANGE_STATE', payload: {...editedItem}});
 	}, [editedItem]);
@@ -120,7 +120,7 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 					date: state.date,
 					title: state.title,
 					description: state.description,
-					price: state.boxPrice ? (state.price / state.quantity).toFixed(4) : state.price,
+					price: state.boxPrice ? (state.price / state.quantity).toFixed(4) : Number(state.price).toFixed(2),
 					quantity: state.quantity,
 					income: state.income,
 					tags: state.tags.filter(tag => !!tag.length),
