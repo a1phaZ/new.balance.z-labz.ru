@@ -125,7 +125,7 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 						onChange={() => {
 							setShopListItemTitle(shopListFromServer[shopListFromServer.findIndex(i => i.id === item.id)].title);
 							dispatchList({type: 'SET_ID', payload: {id: item.id}});
-							dispatch({type: SET_SUCCESS_MESSAGE, payload: null});
+							dispatch({type: SET_SUCCESS_MESSAGE, payload: {message: null}});
 							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
 						}}
 						onRemove={() => {
