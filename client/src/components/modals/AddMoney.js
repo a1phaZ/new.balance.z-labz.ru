@@ -65,6 +65,11 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 	});
 
 	useEffect(() => {
+		if (descriptionShow) return;
+		setDescriptionShow(!!state.description);
+	}, [state.description, descriptionShow]);
+
+	useEffect(() => {
 		if (!shopListItemTitle) return;
 		dispatchForm({type: 'CHANGE_STATE', payload: {title: shopListItemTitle}})
 	}, [shopListItemTitle]);
@@ -120,7 +125,7 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 					method: !editedItem ? 'POST' : 'PATCH',
 					date: state.date,
 					title: state.title,
-					description: state.description,
+					description: state.income ? '' : state.description,
 					price: state.boxPrice ? (state.price / state.quantity).toFixed(4) : Number(state.price).toFixed(2),
 					quantity: state.quantity,
 					income: state.income,
