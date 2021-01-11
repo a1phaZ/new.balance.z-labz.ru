@@ -90,6 +90,9 @@ const App = () => {
 
 // Init VK  Mini App
 		bridge.send("VKWebAppInit", {});
+		bridge.send("VKWebAppShowNativeAds", {ad_format:"preloader"})
+			.then(data => console.log(data.result))
+			.catch(error => console.log(error));
 		bridge.send('VKWebAppGetAds', {});
 		bridge.send('VKWebAppAddToHomeScreenInfo');
 	}, [dispatch]);
