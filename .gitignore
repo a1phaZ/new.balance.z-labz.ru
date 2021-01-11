@@ -7,3 +7,4 @@
 /client/.env
 /yarn.lock
 /client/package.json.back
+/client/bundle.zip
