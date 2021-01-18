@@ -5,28 +5,28 @@ import Home from './panels/Home';
 import useApi from "./handlers/useApi";
 import {State} from './state';
 import {
-	SET_ACCOUNTS,
-	SET_ACTIVE_VIEW,
-	SET_BUDGETS,
-	SET_COLOR_SCHEME,
-	SET_EDITED_ITEM,
-	SET_HISTORY_BACK,
-	SET_MODAL,
-	SET_POPOUT, SET_SUCCESS_MESSAGE
+    SET_ACCOUNTS,
+    SET_ACTIVE_VIEW,
+    SET_BUDGETS,
+    SET_COLOR_SCHEME,
+    SET_EDITED_ITEM,
+    SET_HISTORY_BACK,
+    SET_MODAL,
+    SET_POPOUT, SET_SUCCESS_MESSAGE
 } from "./state/actions";
 import {
-	Alert,
-	ANDROID,
-	ConfigProvider,
-	Epic,
-	IOS,
-	ModalPage,
-	ModalPageHeader,
-	ModalRoot,
-	PanelHeaderButton,
-	platform,
-	Tabbar,
-	TabbarItem
+    Alert,
+    ANDROID,
+    ConfigProvider,
+    Epic,
+    IOS,
+    ModalPage,
+    ModalPageHeader,
+    ModalRoot,
+    PanelHeaderButton,
+    platform,
+    Tabbar,
+    TabbarItem
 } from "@vkontakte/vkui";
 import bridge from "@vkontakte/vk-bridge";
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
@@ -47,251 +47,258 @@ import './style.css';
 import More from "./panels/More";
 import ShopListPanel from "./panels/ShopListPanel";
 import useLocalStorage from "./handlers/useLocalStorage";
+import AppStats from "./panels/AppStats";
 
 const App = () => {
-	const os = platform();
-	const [{response, isLoading}, doApiFetch] = useApi('/state');
-	const [needFetch, setNeedFetch] = useState(true);
-	const [state, dispatch] = useContext(State);
-	const [lastBackAction, setLastBackAction] = useState(0);
-	const [bannerData, setBannerData] = useState(null);
-	const [shopListItemTitle, setShopListItemTitle] = useState('');
-	const [shopList, setShopList] = useLocalStorage('shopList', []);
-	const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
-	const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
+    const os = platform();
+    const [{response, isLoading}, doApiFetch] = useApi('/state');
+    const [needFetch, setNeedFetch] = useState(true);
+    const [state, dispatch] = useContext(State);
+    const [lastBackAction, setLastBackAction] = useState(0);
+    const [bannerData, setBannerData] = useState(null);
+    const [shopListItemTitle, setShopListItemTitle] = useState('');
+    const [shopList, setShopList] = useLocalStorage('shopList', []);
+    const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
+    const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
 
-	useEffect(() => {
-		bridge.subscribe(({detail: {type, data}}) => {
-			if (type === 'VKWebAppUpdateConfig') {
-				dispatch({type: SET_COLOR_SCHEME, payload: {scheme: data.scheme}})
-			}
-			if (type === 'VKWebAppGetAdsResult') {
-				setBannerData(data);
-			}
-			if (type === 'VKWebAppAddToHomeScreenInfoResult') {
-				setAddToHomeScreenSupported(data.is_feature_supported);
-				setAddedToHomeScreen(data.is_added_to_home_screen);
-			}
-			if (type === 'VKWebAppAddToHomeScreenResult') {
-				if (data.result) {
-					setAddedToHomeScreen(data.result);
-				}
-			}
-			if (type === 'VKWebAppJoinGroupResult') {
-				if (data.result) {
-					dispatch({type: SET_SUCCESS_MESSAGE, payload: {message: 'Спасибо, что Вы с нами ❤️'}})
-				}
-				// console.log(data);
-			}
-			if (type === 'VKWebAppJoinGroupFailed') {
-				// console.log(data);
-			}
-		});
+    useEffect(() => {
+        bridge.subscribe(({detail: {type, data}}) => {
+            if (type === 'VKWebAppUpdateConfig') {
+                dispatch({type: SET_COLOR_SCHEME, payload: {scheme: data.scheme}})
+            }
+            if (type === 'VKWebAppGetAdsResult') {
+                setBannerData(data);
+            }
+            if (type === 'VKWebAppAddToHomeScreenInfoResult') {
+                setAddToHomeScreenSupported(data.is_feature_supported);
+                setAddedToHomeScreen(data.is_added_to_home_screen);
+            }
+            if (type === 'VKWebAppAddToHomeScreenResult') {
+                if (data.result) {
+                    setAddedToHomeScreen(data.result);
+                }
+            }
+            if (type === 'VKWebAppJoinGroupResult') {
+                if (data.result) {
+                    dispatch({type: SET_SUCCESS_MESSAGE, payload: {message: 'Спасибо, что Вы с нами ❤️'}})
+                }
+                // console.log(data);
+            }
+            if (type === 'VKWebAppJoinGroupFailed') {
+                // console.log(data);
+            }
+        });
 
 // Init VK  Mini App
-		bridge.send("VKWebAppInit", {});
-		// Native ads on Android/IOS
-		// bridge.send("VKWebAppShowNativeAds", {ad_format:"preloader"})
-		// 	.then(data => console.log(data.result))
-		// 	.catch(error => console.log(error));
-		bridge.send('VKWebAppGetAds', {});
-		bridge.send('VKWebAppAddToHomeScreenInfo');
-	}, [dispatch]);
+        bridge.send("VKWebAppInit", {});
+        // Native ads on Android/IOS
+        // bridge.send("VKWebAppShowNativeAds", {ad_format:"preloader"})
+        // 	.then(data => console.log(data.result))
+        // 	.catch(error => console.log(error));
+        bridge.send('VKWebAppGetAds', {});
+        bridge.send('VKWebAppAddToHomeScreenInfo');
+    }, [dispatch]);
 
-	const alert = (
-		<Alert
-			actions={[
-				{
-					title: 'Отмена',
-					autoclose: true,
-					mode: "cancel"
-				},
-				{
-					title: 'Выйти',
-					mode: 'destructive',
-					autoclose: true,
-					action: async () => {
-						await bridge.send('VKWebAppClose', {status: 'success'});
-					}
-				}
-			]}
-			onClose={() => {
-				dispatch({type: SET_POPOUT, payload: {popout: null}})
-			}}
-		>
-			<h2>Выйти из приложения?</h2>
-			<p>Вы действительно хотите выйти?</p>
-		</Alert>
-	)
+    const alert = (
+        <Alert
+            actions={[
+                {
+                    title: 'Отмена',
+                    autoclose: true,
+                    mode: "cancel"
+                },
+                {
+                    title: 'Выйти',
+                    mode: 'destructive',
+                    autoclose: true,
+                    action: async () => {
+                        await bridge.send('VKWebAppClose', {status: 'success'});
+                    }
+                }
+            ]}
+            onClose={() => {
+                dispatch({type: SET_POPOUT, payload: {popout: null}})
+            }}
+        >
+            <h2>Выйти из приложения?</h2>
+            <p>Вы действительно хотите выйти?</p>
+        </Alert>
+    )
 
-	useEffect(() => {
-		if (!needFetch) return;
-		doApiFetch({
-			params: {
-				date: new Date(state.currentDate)
-			}
-		});
-		setNeedFetch(false);
-	}, [needFetch, doApiFetch, state.currentDate]);
+    useEffect(() => {
+        if (!needFetch) return;
+        doApiFetch({
+            params: {
+                date: new Date(state.currentDate)
+            }
+        });
+        setNeedFetch(false);
+    }, [needFetch, doApiFetch, state.currentDate]);
 
-	useEffect(() => {
-		if (!response) return;
-		dispatch({type: SET_ACCOUNTS, payload: {accounts: response?.accounts ? response?.accounts : []}});
-		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
-	}, [response, dispatch]);
+    useEffect(() => {
+        if (!response) return;
+        dispatch({type: SET_ACCOUNTS, payload: {accounts: response?.accounts ? response?.accounts : []}});
+        dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
+    }, [response, dispatch]);
 
-	useEffect(() => {
-			window.onpopstate = () => {
-				let timeNow = +new Date();
-				if (state.canClose) {
-					dispatch({type: SET_POPOUT, payload: {popout: alert, alert: true}});
-				} else {
-					if (timeNow - lastBackAction > 500) {
-						setLastBackAction(timeNow);
-						dispatch({type: SET_HISTORY_BACK});
-					} else {
-						window.history.pushState(null, null);
-					}
-				}
-			}
-		}, [dispatch, state.history, state.modal, lastBackAction, state.canClose, alert]
-	);
+    useEffect(() => {
+            window.onpopstate = () => {
+                let timeNow = +new Date();
+                if (state.canClose) {
+                    dispatch({type: SET_POPOUT, payload: {popout: alert, alert: true}});
+                } else {
+                    if (timeNow - lastBackAction > 500) {
+                        setLastBackAction(timeNow);
+                        dispatch({type: SET_HISTORY_BACK});
+                    } else {
+                        window.history.pushState(null, null);
+                    }
+                }
+            }
+        }, [dispatch, state.history, state.modal, lastBackAction, state.canClose, alert]
+    );
 
-	const onRefresh = useCallback(() => {
-		setNeedFetch(true);
-	}, []);
+    const onRefresh = useCallback(() => {
+        setNeedFetch(true);
+    }, []);
 
-	const modalBack = (() => {
-		dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
-		dispatch({type: SET_MODAL, payload: {modal: null}});
-		setShopListItemTitle('');
-	})
+    const modalBack = (() => {
+        dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
+        dispatch({type: SET_MODAL, payload: {modal: null}});
+        setShopListItemTitle('');
+    })
 
-	const modal = (
-		<ModalRoot
-			activeModal={state.modal}
-			onClose={modalBack}
-		>
-			<ModalPage id={'add-account'} header={
-				<ModalPageHeader
-					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
-					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
-				>
-					Добавить счет
-				</ModalPageHeader>
-			}>
-				<AddAccount dispatch={dispatch}/>
-			</ModalPage>
+    const modal = (
+        <ModalRoot
+            activeModal={state.modal}
+            onClose={modalBack}
+        >
+            <ModalPage id={'add-account'} header={
+                <ModalPageHeader
+                    left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
+                    right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
+                >
+                    Добавить счет
+                </ModalPageHeader>
+            }>
+                <AddAccount dispatch={dispatch}/>
+            </ModalPage>
 
-			<ModalPage id={'add-money'} header={
-				<ModalPageHeader
-					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
-					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
-				>
-					{state.editedItem ? 'Редактировать' : 'Добавить запись'}
-				</ModalPageHeader>
-			}>
-				<AddMoney accounts={state.accounts} id={state.account?._id}
-									editedItem={state.editedItem} dispatch={dispatch} budget={state.budget} panel={state.activePanel}
-									shopListItemTitle={shopListItemTitle} setShopListItemTitle={setShopListItemTitle} date={state.currentDate}/>
-			</ModalPage>
+            <ModalPage id={'add-money'} header={
+                <ModalPageHeader
+                    left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
+                    right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
+                >
+                    {state.editedItem ? 'Редактировать' : 'Добавить запись'}
+                </ModalPageHeader>
+            }>
+                <AddMoney accounts={state.accounts} id={state.account?._id}
+                          editedItem={state.editedItem} dispatch={dispatch} budget={state.budget}
+                          panel={state.activePanel}
+                          shopListItemTitle={shopListItemTitle} setShopListItemTitle={setShopListItemTitle}
+                          date={state.currentDate}/>
+            </ModalPage>
 
-			<ModalPage id={'add-budget'} header={
-				<ModalPageHeader
-					left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
-					right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
-				>
-					{state.editedItem ? 'Редактировать' : 'Добавить бюджет'}
-				</ModalPageHeader>
-			}>
-				<AddBudget editedItem={state.editedItem} dispatch={dispatch} date={state.currentDate}/>
-			</ModalPage>
-		</ModalRoot>
-	)
+            <ModalPage id={'add-budget'} header={
+                <ModalPageHeader
+                    left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
+                    right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
+                >
+                    {state.editedItem ? 'Редактировать' : 'Добавить бюджет'}
+                </ModalPageHeader>
+            }>
+                <AddBudget editedItem={state.editedItem} dispatch={dispatch} date={state.currentDate}/>
+            </ModalPage>
+        </ModalRoot>
+    )
 
-	const onStoryChange = (e) => {
-		dispatch({
-			type: SET_ACTIVE_VIEW,
-			payload: {view: e.currentTarget.dataset.story, panel: e.currentTarget.dataset.panel}
-		})
-	}
+    const onStoryChange = (e) => {
+        dispatch({
+            type: SET_ACTIVE_VIEW,
+            payload: {view: e.currentTarget.dataset.story, panel: e.currentTarget.dataset.panel}
+        })
+    }
 
-	const tabBar = (
-		<Tabbar itemsLayout={'horizontal'}>
-			<TabbarItem
-				onClick={onStoryChange}
-				selected={state.activeView === 'home'}
-				data-story={'home'}
-				data-panel={'home'}
-				text={'Баланс'}
-			>
-				<Icon28HomeOutline/>
-			</TabbarItem>
-			<TabbarItem
-				onClick={onStoryChange}
-				selected={state.activeView === 'info' && (state.activePanel === 'budgets' || state.activePanel === 'budget')}
-				data-story={'info'}
-				data-panel={'budgets'}
-				text={'Бюджеты'}
-			>
-				<Icon28CoinsOutline/>
-			</TabbarItem>
-			<TabbarItem
-				onClick={onStoryChange}
-				selected={state.activeView === 'stats' && state.activePanel === 'stats'}
-				data-story={'stats'}
-				data-panel={'stats'}
-				text={'Сводка'}
-			>
-				<Icon28StatisticsOutline/>
-			</TabbarItem>
-			<TabbarItem
-				onClick={onStoryChange}
-				selected={state.activeView === 'more'}
-				data-story={'more'}
-				data-panel={'index'}
-				text={'Ещё'}
-			>
-				<Icon28More/>
-			</TabbarItem>
-		</Tabbar>
-	)
+    const tabBar = (
+        <Tabbar itemsLayout={'horizontal'}>
+            <TabbarItem
+                onClick={onStoryChange}
+                selected={state.activeView === 'home'}
+                data-story={'home'}
+                data-panel={'home'}
+                text={'Баланс'}
+            >
+                <Icon28HomeOutline/>
+            </TabbarItem>
+            <TabbarItem
+                onClick={onStoryChange}
+                selected={state.activeView === 'info' && (state.activePanel === 'budgets' || state.activePanel === 'budget')}
+                data-story={'info'}
+                data-panel={'budgets'}
+                text={'Бюджеты'}
+            >
+                <Icon28CoinsOutline/>
+            </TabbarItem>
+            <TabbarItem
+                onClick={onStoryChange}
+                selected={state.activeView === 'stats' && state.activePanel === 'stats'}
+                data-story={'stats'}
+                data-panel={'stats'}
+                text={'Сводка'}
+            >
+                <Icon28StatisticsOutline/>
+            </TabbarItem>
+            <TabbarItem
+                onClick={onStoryChange}
+                selected={state.activeView === 'more'}
+                data-story={'more'}
+                data-panel={'index'}
+                text={'Ещё'}
+            >
+                <Icon28More/>
+            </TabbarItem>
+        </Tabbar>
+    )
 
-	return (
-		<ConfigProvider scheme={state.scheme}>
-			<Epic activeStory={state.activeView}
-						tabbar={state.activeView !== 'init' && state.activePanel !== 'init' && tabBar}>
-				<View id={'init'} activePanel={state.activePanel}>
-					<InitialScreen id={'init'} dispatch={dispatch} loading={state.popout} bannerData={bannerData}
-												 setBannerData={setBannerData}/>
-				</View>
-				<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-					<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch} isLoading={isLoading}
-								onRefresh={onRefresh} isFetching={isLoading} shopList={shopList}/>
-				</View>
-				<View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-					<AccountInfo id={'account'} account={state.accounts.find(item => item._id === state.account?._id)}
-											 dispatch={dispatch} onRefresh={onRefresh} context={state.contextHistory}
-											 date={state.currentDate}/>
-					<Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
-									 date={state.currentDate} bannerData={bannerData}
-									 setBannerData={setBannerData}/>
-					<BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
-											dispatch={dispatch} context={state.contextHistory} date={state.currentDate}/>
-				</View>
-				<View id={'stats'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-					<Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>
-				</View>
-				<View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
-					<More id={'index'} dispatch={dispatch} addToHomeScreenSupported={addToHomeScreenSupported}
-								addedToHomeScreen={addedToHomeScreen} bannerData={bannerData}
-								setBannerData={setBannerData}/>
-					<ShopListPanel id={'shop-list'} dispatch={dispatch} shopListFromServer={shopList} setShopListItemTitle={setShopListItemTitle}
-												 setShopList={setShopList} context={state.contextHistory} success={state.successMessage} error={state.error}/>
-				</View>
-			</Epic>
-		</ConfigProvider>
-	);
+    return (
+        <ConfigProvider scheme={state.scheme}>
+            <Epic activeStory={state.activeView}
+                  tabbar={state.activeView !== 'init' && state.activePanel !== 'init' && tabBar}>
+                <View id={'init'} activePanel={state.activePanel}>
+                    <InitialScreen id={'init'} dispatch={dispatch} loading={state.popout} bannerData={bannerData}
+                                   setBannerData={setBannerData}/>
+                </View>
+                <View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
+                    <Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch}
+                          isLoading={isLoading}
+                          onRefresh={onRefresh} isFetching={isLoading} shopList={shopList}/>
+                </View>
+                <View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
+                    <AccountInfo id={'account'} account={state.accounts.find(item => item._id === state.account?._id)}
+                                 dispatch={dispatch} onRefresh={onRefresh} context={state.contextHistory}
+                                 date={state.currentDate}/>
+                    <Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
+                             date={state.currentDate} bannerData={bannerData}
+                             setBannerData={setBannerData}/>
+                    <BudgetInfo id={'budget'} budget={state.budgets.find(item => item._id === state.budget?._id)}
+                                dispatch={dispatch} context={state.contextHistory} date={state.currentDate}/>
+                </View>
+                <View id={'stats'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
+                    <Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}/>
+                </View>
+                <View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
+                    <More id={'index'} dispatch={dispatch} addToHomeScreenSupported={addToHomeScreenSupported}
+                          addedToHomeScreen={addedToHomeScreen} bannerData={bannerData}
+                          setBannerData={setBannerData}/>
+                    <ShopListPanel id={'shop-list'} dispatch={dispatch} shopListFromServer={shopList}
+                                   setShopListItemTitle={setShopListItemTitle}
+                                   setShopList={setShopList} context={state.contextHistory}
+                                   success={state.successMessage} error={state.error}/>
+                    <AppStats id={'stats'}/>
+                </View>
+            </Epic>
+        </ConfigProvider>
+    );
 }
 
 export default App;
