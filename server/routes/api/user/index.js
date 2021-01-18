@@ -3,6 +3,7 @@ const endOfDay = require('date-fns/endOfDay');
 const startOfDay = require('date-fns/startOfDay');
 const endOfMonth = require('date-fns/endOfMonth');
 const startOfMonth = require('date-fns/startOfMonth');
+const toJson = require("../../../handlers/toJson");
 const {createError} = require('../../../handlers/error');
 
 /**
@@ -96,7 +97,7 @@ const postUserInfo = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 const getAllUserRawSessionData = async (req, res, next) => {
-    await User.find()
+    return await User.find()
         .then(users => {
             const sessionData = users.map(user => {
                 {
@@ -105,7 +106,7 @@ const getAllUserRawSessionData = async (req, res, next) => {
                     }
                 }
             })
-            res.status(200).json(sessionData);
+            res.status(200).json(toJson.dataToJson(sessionData));
         })
         .catch(
             () => {
@@ -130,9 +131,12 @@ const getAllUserSessionDataFromTimestamp = async (req, res, next) => {
         }
     } = req;
     const dateRange = getDateRange(+ts, {day: day, month: month, ts: true});
-    await User.find({'sessionData.timeStamp': {$gte: dateRange.begin, $lte: dateRange.end}})
-        .then((users) => {
-            res.status(200).json(users);
+    return await User.find({'sessionData.timeStamp': {$gte: dateRange.begin, $lte: dateRange.end}})
+        .then(users => {
+            return toJson.dataToJson(users);
+        })
+        .then((data) => {
+            return res.status(200).json(data);
         })
         .catch((err) => {
             console.log(err);
@@ -156,8 +160,13 @@ const getNewUserFromTimestamp = async (req, res, next) => {
         }
     } = req;
     const dateRange = getDateRange(+ts, {day: day, month: month, ts: false});
-    await User.find({createdAt: {$gte: dateRange.begin, $lte: dateRange.end}})
-        .then(users => res.status(200).json(users))
+    return await User.find({createdAt: {$gte: dateRange.begin, $lte: dateRange.end}})
+        .then(users => {
+            return toJson.dataToJson(users);
+        })
+        .then((data) => {
+            return res.status(200).json(data);
+        })
         .catch(err => {
             console.log(err);
             next(createError(400, 'Что-то пошло не так'));
