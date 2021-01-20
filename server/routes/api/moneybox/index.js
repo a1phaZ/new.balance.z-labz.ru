@@ -100,6 +100,39 @@ router.post('/', async (req, res, next) => {
 		});
 }, getState);
 
+router.patch('/:id', async (req, res, next) => {
+	const {
+		query: {vk_user_id},
+		params: {id},
+		body: {title = ''}
+	} = req;
+
+	if (title === '' || title === null) {
+		return next(createError(400, 'Название не должно быть пустым'));
+	}
+	if (title.length > 20) {
+		return next(createError(400, 'Превышена допустимая длина названия'));
+	}
+	if (!(ObjectId.isValid(id) && (new ObjectId(id)).toString() === id)) {
+		return next(createError(400,  'Ошибка идентификатора объекта'));
+	}
+	await MoneyBox.findOneAndUpdate({userId: vk_user_id, _id: id}, {$set: {title: title}}, {new: true})
+		.then(box => {
+			if (!box) return Promise.reject(createError(404, 'Счет не найден'));
+			return box;
+		})
+		.then(() => {
+			req.message = 'Сохранено'
+			next();
+		})
+		.catch(err => {
+			if (err.errors) {
+				return next(createError(err.statusCode, getMongooseError(err)))
+			}
+			return next(createError(err.statusCode, err.message))
+		});
+}, getState);
+
 router.delete('/:id', async (req, res, next) => {
 	const {
 		query: {vk_user_id},
