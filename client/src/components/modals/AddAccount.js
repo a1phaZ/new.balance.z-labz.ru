@@ -1,10 +1,10 @@
-import React, {useEffect, useReducer} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import {Button, FormLayout, Input} from "@vkontakte/vkui";
 import currency from "../../handlers/currency";
 import useApi from "../../handlers/useApi";
 import validate from "../../handlers/validate";
 import regexp from "../../handlers/regexp";
-import {SET_ACCOUNTS, SET_BUDGETS} from "../../state/actions";
+import {SET_ACCOUNTS, SET_BUDGETS, SET_EDITED_ITEM} from "../../state/actions";
 
 const initialState = {
 	title: '',
@@ -17,14 +17,6 @@ const reducer = (state, action) => {
 	switch (action.type) {
 		case 'CHANGE_STATE':
 			const {payload} = action;
-			// if (payload.title === ' ' && state.title === '') {
-			// 	console.log(payload.title);
-			// 	return {
-			// 		...state,
-			// 		title: payload.title,
-			// 		titleValidation: payload.titleValidation
-			// 	}
-			// }
 			return {
 				...state,
 				...payload
@@ -34,9 +26,10 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({onRefresh, dispatch}) => {
+export default ({dispatch, editedItem}) => {
 	const [stateForm, dispatchForm] = useReducer(reducer, initialState);
-	const [{response}, doApiFetch] = useApi('/money-box');
+	const [apiStr] = useState(() => !editedItem ? '/money-box' : `/money-box/${editedItem._id}`);
+	const [{response}, doApiFetch] = useApi(apiStr);
 
 	useEffect(() => {
 		if (!response) return;
@@ -44,12 +37,22 @@ export default ({onRefresh, dispatch}) => {
 		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
 	}, [response, dispatch]);
 
+	useEffect(() => {
+		if (!editedItem) return;
+		dispatchForm({type: 'CHANGE_STATE', payload: {...editedItem}});
+	}, [editedItem]);
+
+	useEffect(() => {
+		if (!response) return;
+		dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
+	}, [response, dispatch]);
+
 	return (
 		<FormLayout
 			onSubmit={async e => {
 				e.preventDefault();
 				await doApiFetch({
-					method: 'POST',
+					method: !editedItem ? 'POST' : 'PATCH',
 					title: stateForm.title,
 					sum: stateForm.sum
 				});
@@ -63,6 +66,7 @@ export default ({onRefresh, dispatch}) => {
 						 onChange={e => dispatchForm({type: 'CHANGE_STATE', payload: {title: regexp(e.currentTarget.value), titleValidation: validate(e)}})}/>
 			<Input type={'number'} placeholder={currency(0)} top={'Баланс счета'} value={stateForm.sum}
 						 pattern={'[0-9]+([,\\.][0-9]+)?'}
+				   disabled={!!editedItem}
 						 required={true}
 						 status={stateForm.sumValidation.status}
 						 inputMode="decimal"

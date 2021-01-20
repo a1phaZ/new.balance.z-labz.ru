@@ -181,7 +181,7 @@ const App = () => {
                     Добавить счет
                 </ModalPageHeader>
             }>
-                <AddAccount dispatch={dispatch}/>
+                <AddAccount dispatch={dispatch} editedItem={state.editedItem}/>
             </ModalPage>
 
             <ModalPage id={'add-money'} header={
@@ -276,7 +276,7 @@ const App = () => {
                 <View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
                     <AccountInfo id={'account'} account={state.accounts.find(item => item._id === state.account?._id)}
                                  dispatch={dispatch} onRefresh={onRefresh} context={state.contextHistory}
-                                 date={state.currentDate}/>
+                                 date={state.currentDate} scheme={state.scheme}/>
                     <Budgets id={'budgets'} budgets={state.budgets} dispatch={dispatch} onRefresh={onRefresh}
                              date={state.currentDate} bannerData={bannerData}
                              setBannerData={setBannerData}/>

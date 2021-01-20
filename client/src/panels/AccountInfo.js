@@ -4,7 +4,7 @@ import {
 	Alert,
 	Cell,
 	Div,
-	Footer,
+	Footer, Gallery,
 	Header,
 	List,
 	Panel,
@@ -28,15 +28,15 @@ import {
 } from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
-
 import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
+import Icon28EditOutline from "@vkontakte/icons/dist/28/edit_outline";
 import mapRichCell from "../handlers/mapRichCell";
 import InfoSnackbar from "../components/InfoSnackbar";
 import sort from "../handlers/sort";
 import MonthSwitch from "../components/MonthSwitch";
 import SearchForm from "../components/SearchForm";
 
-export default ({id, account, dispatch, onRefresh, context, date}) => {
+export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 	const [isOpened, setIsOpened] = useState(() => context);
 	const [{response}, doApiFetch] = useApi(`/money-box/${account?._id}`);
 	const [items, setItems] = useState(() => {
@@ -146,6 +146,9 @@ export default ({id, account, dispatch, onRefresh, context, date}) => {
 		setSearchStr(str);
 	}
 
+	const incomeSum = account?.operations?.filter(item => !!item.income).reduce((acc, cur) => acc + cur.sum, 0);
+	const outcomeSum = account?.operations?.filter(item => !item.income).reduce((acc, cur) => acc + cur.sum, 0);
+
 	return (
 		<Panel id={id}>
 			<PanelHeader left={
@@ -179,6 +182,16 @@ export default ({id, account, dispatch, onRefresh, context, date}) => {
 					<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
 						<List>
 							<Cell
+								before={<Icon28EditOutline/>}
+								onClick={() => {
+									dispatch({type: SET_EDITED_ITEM, payload: {item: account}});
+									dispatch({type: SET_MODAL, payload: {modal: 'add-account'}});
+									toggleContext();
+								}}
+								>
+								Редактировать счет
+							</Cell>
+							<Cell
 								before={<Icon28DeleteOutline/>}
 								onClick={() => {
 									dispatch({type: SET_POPOUT, payload: {popout: alert, alert: true}})
@@ -196,9 +209,27 @@ export default ({id, account, dispatch, onRefresh, context, date}) => {
 						header={<Header mode="secondary">Информация по счету</Header>}
 						separator="show"
 					>
-						<Div>
-							<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(account?.sum)}</Title>
-						</Div>
+						<Gallery
+							slideWidth={'100%'}
+							bullets={scheme === 'client_light' ? 'dark' : 'light'}
+							style={{height: 'auto'}}
+						>
+							<Div>
+								<Title level={'3'} weight={'semibold'}>Остаток по счету</Title>
+								<Title level="1" weight="bold" style={{marginBottom: 16}}>{currency(account?.sum)}</Title>
+
+								<Title level={'3'} weight={'regular'}>Баланс (доходы-расходы) за месяц</Title>
+								<Title level="2" weight="semibold" style={{marginBottom: 16}}>{currency(incomeSum - outcomeSum)}</Title>
+							</Div>
+							<Div>
+								<Title level={'3'} weight={'regular'}>Доход за месяц</Title>
+								<Title level="2" weight="semibold" style={{marginBottom: 16}}>{currency(incomeSum || 0)}</Title>
+
+								<Title level={'3'} weight={'regular'}>Расход за месяц</Title>
+								<Title level="2" weight="semibold" style={{marginBottom: 16}}>{currency(-1*outcomeSum || 0)}</Title>
+							</Div>
+						</Gallery>
+
 
 						{account?.operations.length === 0 && <Footer>Операций по счету еще не было</Footer>}
 						<Div>
