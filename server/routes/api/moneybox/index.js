@@ -1,6 +1,7 @@
 const express = require('express');
+
 const router = express.Router();
-const {format} = require('date-fns');
+const {format, isFuture, isValid, isBefore} = require('date-fns');
 const MoneyBox = require('../../../models/moneybox');
 const Item = require('../../../models/item');
 const toJson = require("../../../handlers/toJson");
@@ -8,6 +9,7 @@ const {createError, getMongooseError} = require('../../../handlers/error');
 const mongoose = require('mongoose');
 const {getState} = require("../state");
 const { Types: {ObjectId}} = mongoose;
+const {itemSaveAndUpdateAccount} = require("../../../handlers/itemSaveAndUpdateAccount");
 
 const findByUserId = async (userId) => {
 	return await MoneyBox.find({userId: userId})
@@ -98,6 +100,89 @@ router.post('/', async (req, res, next) => {
 			}
 			return next(createError(err.statusCode, err.message))
 		});
+}, getState);
+
+router.post('/transfer', async (req, res, next) => {
+	const {
+		body: {
+			date,
+			title,
+			description = '',
+			price,
+			tags = [],
+			from,
+			to,
+			boxPrice = false
+		},
+		query: {vk_user_id, tzOffset = 0}
+	} = req;
+
+	const d = new Date(date);
+	d.setTime( d.getTime() + tzOffset*60*1000 );
+
+	if (title === '' || title === null) {
+		return next(createError(400, 'Название не должно быть пустым'));
+	}
+	if (!parseFloat(price)) {
+		return next(createError(400, 'Ошибка преобразования цены'));
+	}
+	if (isFuture(d)) {
+		return next(createError(400,  'Дата в будущем'));
+	}
+	if (!isValid(new Date(date))) {
+		return next(createError(400,  'Дата невалидна'));
+	}
+	if (isBefore(new Date(date), new Date(2015, 0, 1))) {
+		return next(createError(400,  'Ошибка диапазона даты'));
+	}
+	if (!from || !to) {
+		return next(createError(400, 'Отсутствует идентификатор счета'));
+	}
+	if (!(ObjectId.isValid(to) && (new ObjectId(to)).toString() === to)) {
+		return next(createError(400,  'Ошибка идентификатора счета'));
+	}
+	if (!(ObjectId.isValid(from) && (new ObjectId(from)).toString() === from)) {
+		return next(createError(400,  'Ошибка идентификатора счета'));
+	}
+
+	const itemTo = new Item({
+		date: format(date ? new Date(date) : new Date(), 'yyyy-MM-dd'),
+		userId: vk_user_id,
+		title,
+		description,
+		price: parseFloat(price),
+		quantity: 1,
+		income: true,
+		tags,
+		itemFrom: to,
+		boxPrice
+	});
+	const itemFrom = new Item({
+		date: format(date ? new Date(date) : new Date(), 'yyyy-MM-dd'),
+		userId: vk_user_id,
+		title,
+		description,
+		price: parseFloat(price),
+		quantity: 1,
+		income: false,
+		tags,
+		itemFrom: from,
+		boxPrice
+	});
+
+	const accountTo = await itemSaveAndUpdateAccount(itemTo, vk_user_id, to);
+	const accountFrom = await itemSaveAndUpdateAccount(itemFrom, vk_user_id, from);
+
+	if (accountFrom.statusCode) {
+		return next(accountFrom);
+	}
+	if (accountTo.statusCode) {
+		return next(accountTo);
+	}
+
+	req.message = 'Перевод совершен';
+	next();
+
 }, getState);
 
 router.patch('/:id', async (req, res, next) => {

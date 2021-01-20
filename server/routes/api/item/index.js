@@ -122,7 +122,7 @@ router.post('/', async (req, res, next) => {
 			box.$income = item.income;
 			return await box.save();
 		})
-		.then(async box => await MoneyBox.findById(box._id).populate('operations'))
+		// .then(async box => await MoneyBox.findById(box._id).populate('operations'))
 		.then(() => {
 			req.message = 'Запись сохранена';
 			next();
