@@ -218,15 +218,11 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 								<Title level={'3'} weight={'semibold'}>Остаток по счету</Title>
 								<Title level="1" weight="bold" style={{marginBottom: 16}}>{currency(account?.sum)}</Title>
 
-								<Title level={'3'} weight={'regular'}>Баланс (доходы-расходы) за месяц</Title>
-								<Title level="2" weight="semibold" style={{marginBottom: 16}}>{currency(incomeSum - outcomeSum)}</Title>
 							</Div>
 							<Div>
-								<Title level={'3'} weight={'regular'}>Доход за месяц</Title>
-								<Title level="2" weight="semibold" style={{marginBottom: 16}}>{currency(incomeSum || 0)}</Title>
-
-								<Title level={'3'} weight={'regular'}>Расход за месяц</Title>
-								<Title level="2" weight="semibold" style={{marginBottom: 16}}>{currency(-1*outcomeSum || 0)}</Title>
+								<Title level="3" weight="semibold" style={{marginBottom: 16}}>Доход: {currency(incomeSum || 0)}</Title>
+								<Title level="3" weight="semibold" style={{marginBottom: 16}}>Расход: {currency(-1*outcomeSum || 0)}</Title>
+								<Title level="3" weight="semibold" style={{marginBottom: 16}}>Баланс: {currency(incomeSum - outcomeSum)}</Title>
 							</Div>
 						</Gallery>
 
