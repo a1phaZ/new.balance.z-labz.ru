@@ -35,10 +35,12 @@ import InfoSnackbar from "../components/InfoSnackbar";
 import sort from "../handlers/sort";
 import MonthSwitch from "../components/MonthSwitch";
 import SearchForm from "../components/SearchForm";
+import Icon28MoneyTransfer from "@vkontakte/icons/dist/28/money_transfer";
 
 export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 	const [isOpened, setIsOpened] = useState(() => context);
 	const [{response}, doApiFetch] = useApi(`/money-box/${account?._id}`);
+	const [accountContext, setAccountContext] = useState(true);
 	const [items, setItems] = useState(() => {
 		if (!account) return [];
 		return account?.operations;
@@ -116,6 +118,58 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 		</Alert>
 	)
 
+	const accountContextView = (
+		<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
+			<List>
+				<Cell
+					before={<Icon28EditOutline/>}
+					onClick={() => {
+						dispatch({type: SET_EDITED_ITEM, payload: {item: account}});
+						dispatch({type: SET_MODAL, payload: {modal: 'add-account'}});
+						toggleContext();
+					}}
+				>
+					Редактировать счет
+				</Cell>
+				<Cell
+					before={<Icon28DeleteOutline/>}
+					onClick={() => {
+						dispatch({type: SET_POPOUT, payload: {popout: alert, alert: true}})
+					}}
+				>
+					Удалить счет {account?.title}
+				</Cell>
+			</List>
+		</PanelHeaderContext>
+	);
+	const itemContextView = (
+		<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
+			<List>
+				<Cell
+					before={<Icon28MarketAddBadgeOutline/>}
+					onClick={() => {
+						dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
+						dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
+						toggleContext();
+					}}
+				>
+					Добавить
+				</Cell>
+				<Cell
+					before={<Icon28MoneyTransfer/>}
+					onClick={() => {
+						dispatch({type: SET_MODAL, payload: {modal: 'transfer-money'}});
+						toggleContext();
+					}}
+				>
+					Перевести
+				</Cell>
+			</List>
+		</PanelHeaderContext>
+	)
+
+	const contextView = accountContext ? accountContextView : itemContextView;
+
 	useEffect(() => {
 		if (!account) return;
 		setItems(account?.operations);
@@ -159,8 +213,8 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 					}}/>
 					<PanelHeaderButton
 						onClick={() => {
-							dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
-							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
+							setAccountContext(false);
+							toggleContext();
 						}}
 					>
 						<Icon28MarketAddBadgeOutline/>
@@ -170,7 +224,10 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 			>
 				<PanelHeaderContent
 					aside={account && <Icon16Dropdown style={{transform: `rotate(${isOpened ? '180deg' : '0'})`}}/>}
-					onClick={toggleContext}
+					onClick={() => {
+						setAccountContext(true);
+						toggleContext();
+					}}
 				>
 					{account ? account?.title : 'Счет удалён'}
 				</PanelHeaderContent>
@@ -179,28 +236,7 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 				account
 				&&
 				<>
-					<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
-						<List>
-							<Cell
-								before={<Icon28EditOutline/>}
-								onClick={() => {
-									dispatch({type: SET_EDITED_ITEM, payload: {item: account}});
-									dispatch({type: SET_MODAL, payload: {modal: 'add-account'}});
-									toggleContext();
-								}}
-								>
-								Редактировать счет
-							</Cell>
-							<Cell
-								before={<Icon28DeleteOutline/>}
-								onClick={() => {
-									dispatch({type: SET_POPOUT, payload: {popout: alert, alert: true}})
-								}}
-							>
-								Удалить счет {account?.title}
-							</Cell>
-						</List>
-					</PanelHeaderContext>
+					{contextView}
 					<MonthSwitch onRefresh={onRefresh}/>
 
 					<SearchForm onSearch={onSearch}/>
