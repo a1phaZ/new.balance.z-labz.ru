@@ -41,6 +41,8 @@ export default ({accounts, dispatch}) => {
         dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
     }, [response, dispatch]);
 
+    const accountFrom = accounts.find((item) => item._id === state.from);
+
     return (
         <FormLayout
             onSubmit={(e) => {
@@ -121,7 +123,7 @@ export default ({accounts, dispatch}) => {
                    pattern={'[0-9]+([,\\.][0-9]+)?'}
                    top={'Цена'}
                    inputMode="decimal"
-                   max={99999999}
+                   max={accountFrom?.sum || 99999999}
                    min={0}
                    step={0.0001}
                    status={state.validate?.price?.status}
