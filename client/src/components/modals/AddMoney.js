@@ -18,6 +18,7 @@ import validate from "../../handlers/validate";
 import regexp from "../../handlers/regexp";
 import {SET_ACCOUNTS, SET_BUDGETS, SET_EDITED_ITEM} from "../../state/actions";
 import Icon24AddSquareOutline from '@vkontakte/icons/dist/24/add_square_outline';
+import AccountsOptionsList from "../AccountsOptionsList";
 
 const initialState = {
 	account: '',
@@ -60,9 +61,6 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 	const [{response}, doApiFetch] = useApi(apiStr);
 	const [state, dispatchForm] = useReducer(reducer, initialState);
 	const [descriptionShow, setDescriptionShow] = useState(() => !!state.description);
-	const accountList = accounts.map(item => {
-		return (<option key={item._id} value={item._id}>{item.title} ({currency(item.sum)})</option>)
-	});
 
 	useEffect(() => {
 		if (descriptionShow) return;
@@ -152,7 +150,7 @@ export default ({accounts, id = null, editedItem = null, dispatch, budget, panel
 							status={state.validate?.account?.status}
 							bottom={state.validate?.account?.message}
 			>
-				{accountList}
+				<AccountsOptionsList accounts={accounts} />
 			</Select>
 			<Input type={'date'}
 						 top={'Дата'}
