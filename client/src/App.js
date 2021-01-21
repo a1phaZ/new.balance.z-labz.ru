@@ -48,6 +48,7 @@ import More from "./panels/More";
 import ShopListPanel from "./panels/ShopListPanel";
 import useLocalStorage from "./handlers/useLocalStorage";
 import AppStats from "./panels/AppStats";
+import TransferMoney from "./components/modals/TransferMoney";
 
 const App = () => {
     const os = platform();
@@ -209,6 +210,16 @@ const App = () => {
             }>
                 <AddBudget editedItem={state.editedItem} dispatch={dispatch} date={state.currentDate}/>
             </ModalPage>
+            <ModalPage id={'transfer-money'} header={
+                <ModalPageHeader
+                    left={os === ANDROID && <PanelHeaderButton onClick={modalBack}><Icon24Cancel/></PanelHeaderButton>}
+                    right={<PanelHeaderButton onClick={modalBack}>{os === IOS ? 'Закрыть' : null}</PanelHeaderButton>}
+                >
+                    Перевести
+                </ModalPageHeader>
+            }>
+                <TransferMoney accounts={state.accounts} dispatch={dispatch}/>
+            </ModalPage>
         </ModalRoot>
     )
 
@@ -270,7 +281,7 @@ const App = () => {
                 </View>
                 <View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
                     <Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch}
-                          isLoading={isLoading}
+                          isLoading={isLoading} context={state.contextHistory}
                           onRefresh={onRefresh} isFetching={isLoading} shopList={shopList}/>
                 </View>
                 <View id={'info'} activePanel={state.activePanel} popout={state.popout} modal={modal}>

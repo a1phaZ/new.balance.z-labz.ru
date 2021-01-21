@@ -1,19 +1,35 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 import Div from '@vkontakte/vkui/dist/components/Div/Div';
-import {Button, Footer, Header, List, PanelHeaderButton, PullToRefresh, Title} from "@vkontakte/vkui";
+import {
+	Button, Cell,
+	Footer,
+	Header,
+	List,
+	PanelHeaderButton,
+	PanelHeaderContext,
+	PullToRefresh,
+	Title
+} from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import ListOfItems from "../components/ListOfItems";
-import {SET_ACCOUNT, SET_ACTIVE_VIEW, SET_MODAL} from "../state/actions";
+import {
+	SET_ACCOUNT,
+	SET_ACTIVE_VIEW,
+	SET_MODAL,
+	SET_TOGGLE_CONTEXT
+} from "../state/actions";
 import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
 import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
+import Icon28MoneyTransfer from '@vkontakte/icons/dist/28/money_transfer';
 import InfoSnackbar from "../components/InfoSnackbar";
 import MonthSwitch from "../components/MonthSwitch";
 
-const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList}) => {
+const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList, context}) => {
+	const [isOpened, setIsOpened] = useState(() => context);
 	const sumOfAll = accounts.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
 	const shopListDone = shopList.reduce((acc, curr) => curr.done ? acc + 1 : acc, 0);
 	const shopListButton = (
@@ -26,6 +42,14 @@ const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList}
 			{shopList.length === 0 ? 'Сформировать список покупок' : 'Перейти к списку покупок'}
 		</Button>
 	)
+
+	useEffect(() => {
+		setIsOpened(context);
+	}, [context]);
+
+	const toggleContext = () => {
+		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});
+	}
 	return (
 		<Panel id={id}>
 			<PanelHeader
@@ -40,15 +64,39 @@ const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList}
 						</PanelHeaderButton>
 						{accounts.length !== 0 && <PanelHeaderButton
 							onClick={() => {
-								dispatch({type: SET_ACCOUNT, payload: {id: null}});
-								dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
+								toggleContext();
 							}}
 						>
 							<Icon28MarketAddBadgeOutline/>
 						</PanelHeaderButton>}
 					</>
 				}
-			>Баланс</PanelHeader>
+			>
+				Баланс
+			</PanelHeader>
+			<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
+				<List>
+					<Cell
+						before={<Icon28MarketAddBadgeOutline/>}
+						onClick={() => {
+							dispatch({type: SET_ACCOUNT, payload: {id: null}});
+							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
+							toggleContext();
+						}}
+					>
+						Добавить
+					</Cell>
+					<Cell
+						before={<Icon28MoneyTransfer/>}
+						onClick={() => {
+							dispatch({type: SET_MODAL, payload: {modal: 'transfer-money'}});
+							toggleContext();
+						}}
+					>
+						Перевести
+					</Cell>
+				</List>
+			</PanelHeaderContext>
 			<MonthSwitch onRefresh={onRefresh}/>
 			<PullToRefresh onRefresh={onRefresh} isFetching={isFetching}>
 				<List>
