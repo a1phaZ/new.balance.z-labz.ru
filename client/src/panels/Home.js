@@ -57,6 +57,7 @@ const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList,
 					<>
 						<PanelHeaderButton
 							onClick={() => {
+								toggleContext();
 								dispatch({type: SET_MODAL, payload: {modal: 'add-account'}});
 							}}
 						>
