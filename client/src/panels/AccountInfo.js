@@ -247,7 +247,7 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 					>
 						<Gallery
 							slideWidth={'100%'}
-							bullets={scheme === 'client_light' ? 'dark' : 'light'}
+							bullets={scheme === 'client_light' || scheme === 'bright_light' ? 'dark' : 'light'}
 							style={{height: 'auto'}}
 						>
 							<Div>
