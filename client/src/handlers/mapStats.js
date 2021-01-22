@@ -9,7 +9,7 @@ export default () => {
 				disabled
 				key={index}
 				multiline
-				caption={`Кол-во: ${item?.quantity} | Ср. цена ${currency(item?.sum/item?.quantity)}`}
+				caption={`Кол-во: ${item?.quantity} | Ср. цена ${currency((item?.sum/item?.quantity).toFixed(3))}`}
 				after={currency(item?.sum)}
 				data-title={item?.title}
 			>
