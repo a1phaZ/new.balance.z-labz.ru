@@ -13,7 +13,7 @@ const initialState = {
     from: '',
     date: format(new Date(), 'yyyy-MM-dd'),
     title: '',
-    price: 0
+    price: ''
 }
 
 const reducer = (state, action) => {
@@ -42,6 +42,8 @@ export default ({accounts, dispatch}) => {
     }, [response, dispatch]);
 
     const accountFrom = accounts.find((item) => item._id === state.from);
+    const accountsFromList = accounts.filter(item => item._id !== state.to);
+    const accountsToList = accounts.filter(item => item._id !== state.from);
 
     return (
         <FormLayout
@@ -85,7 +87,7 @@ export default ({accounts, dispatch}) => {
                     status={state.validate?.from?.status}
                     bottom={state.validate?.from?.message}
             >
-                <AccountsOptionsList accounts={accounts} />
+                <AccountsOptionsList accounts={accountsFromList} />
             </Select>
             <Select top={'Счет зачисления'}
                     placeholder={'Выберите счет'}
@@ -99,10 +101,10 @@ export default ({accounts, dispatch}) => {
                     status={state.validate?.to?.status}
                     bottom={state.validate?.to?.message}
             >
-                <AccountsOptionsList accounts={accounts} />
+                <AccountsOptionsList accounts={accountsToList} />
             </Select>
             <Input type={'text'}
-                   placeholder={'Продукт, услуга, товар'}
+                   placeholder={'Название перевода'}
                    value={state.title}
                    top={'Название'}
                    required={true}
