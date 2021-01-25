@@ -38,17 +38,20 @@ export default function mapRichCell({dispatch, tagsShow = true}) {
 				}}><b>{tag}</b></span>
 		);
 		let caption;
+		let after;
 		if (tagsShow) {
 			caption = item?.tags.length !== 0 && <div style={{display: 'flex', flexWrap: 'wrap'}}><span>Теги:</span> {tags}</div>
+			after = item?.income ? currency(item?.sum) : currency(-1 * item?.sum)
 		} else {
 			caption = <div style={{display: 'flex', flexWrap: 'wrap'}}>{format(new Date(item?.date), 'dd MMMM yyyy ', {locale: ruLocale})}</div>
+			after = currency(item?.sum);
 		}
 		return (
 			<RichCell
 				key={index}
 				multiline
 				caption={caption}
-				after={item?.income ? currency(item?.sum) : currency(-1 * item?.sum)}
+				after={after}
 				data-id={item?._id}
 				onClick={() => {
 					dispatch({type: SET_EDITED_ITEM, payload: {item: item}});
