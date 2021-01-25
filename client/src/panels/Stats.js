@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
     Cell,
     Footer,
-    Group,
+    Group, Header,
     List,
     Panel,
     PanelHeader,
@@ -149,7 +149,10 @@ export default ({id, accounts, context, onRefresh, dispatch, setSelectedTagTitle
             </PanelHeaderContext>
             <MonthSwitch onRefresh={onRefresh}/>
             <SearchForm onSearch={onSearch}/>
-            <Group>
+            <Group
+              header={<Header mode="secondary">Сгруппировано по {groupedByStats === 'title' ? 'названию' : 'тэгам'}</Header>}
+              separator="show"
+            >
                 {groupedByStats === 'title' ? accountItemsList : tagsListItemView}
                 {accountItemsList.length === 0 && <Footer>Нет данных для отображения</Footer>}
             </Group>
