@@ -65,6 +65,7 @@ const App = () => {
     const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
     const [selectedTagTitle, setSelectedTagTitle] = useState('');
     const [tagsItemsList, setTagsItemsList] = useState([]);
+    const [groupedByStats, setGroupedByStats] = useState('title');
 
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
@@ -305,7 +306,7 @@ const App = () => {
                 </View>
                 <View id={'stats'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
                     <Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}
-                           context={state.contextHistory} setSelectedTagTitle={setSelectedTagTitle} />
+                           context={state.contextHistory} setSelectedTagTitle={setSelectedTagTitle} groupedByStats={groupedByStats} setGroupedByStats={setGroupedByStats}/>
                     <StatsDetails id={'details'} itemsList={tagsItemsList} dispatch={dispatch} title={selectedTagTitle}/>
                 </View>
                 <View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>

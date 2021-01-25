@@ -3,28 +3,33 @@ import {RichCell} from "@vkontakte/vkui";
 import currency from "./currency";
 import {SET_ACTIVE_VIEW} from "../state/actions";
 
-// export default (array) => {
-//     return array
-//         .map(item => {
-//             return item.operations
-//         })
-//         .flat()
-//         .map(operation => {
-//             return operation.tags
-//         })
-//         .flat()
-//         .sort((a, b) => a.localeCompare(b))
-//         .reduce((prev, curr) => {
-//             if (prev[prev.length - 1] === curr) {
-//                 return [...prev]
-//             } else {
-//                 return [...prev, curr]
-//             }
-//         }, [])
-// }
+export const getAllTags = (array) => {
+    return array
+        .map(item => {
+            return item.operations
+        })
+        .flat()
+        .map(operation => {
+            return operation.tags
+        })
+        .flat()
+        .sort((a, b) => a.localeCompare(b))
+        .reduce((prev, curr) => {
+            if (prev[prev.length - 1] === curr) {
+                return [...prev]
+            } else {
+                return [...prev, curr]
+            }
+        }, [])
+}
 
 export const getTagsListItemsFromAccount = (array) => {
     const tagsListItems = {};
+
+    if (!Array.isArray(array)) {
+        return array
+    }
+
     array.forEach((account) => {
         const {operations} = account;
         operations.forEach(operation => {
@@ -52,12 +57,14 @@ export const getTagsListItemsFromAccount = (array) => {
 export const getTagsListItemsView = (array, dispatch, setSelectedTagTitle) => {
     let tagsListItemView = [];
 
-    for (const [key, value] of Object.entries(getTagsListItemsFromAccount(array))) {
+    const tagsList = getTagsListItemsFromAccount(array);
+
+    for (const [key, value] of Object.entries(tagsList)) {
         const outSum = value.reduce((prev, curr) => {
-            if (!curr.income) {
+            if (curr.income) {
                 return prev + curr.sum
             } else {
-                return prev
+                return prev - curr.sum
             }
         }, 0);
         const view = (
