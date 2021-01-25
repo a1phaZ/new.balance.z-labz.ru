@@ -34,6 +34,7 @@ export const getTagsListItemsFromAccount = (array) => {
         const {operations} = account;
         operations.forEach(operation => {
             const {tags} = operation;
+            if (operation.income) return;
             if (tags.length === 0) {
                 if (!tagsListItems['Без тега']) {
                     tagsListItems['Без тега'] = [operation]
@@ -61,10 +62,10 @@ export const getTagsListItemsView = (array, dispatch, setSelectedTagTitle) => {
 
     for (const [key, value] of Object.entries(tagsList)) {
         const outSum = value.reduce((prev, curr) => {
-            if (curr.income) {
+            if (!curr.income) {
                 return prev + curr.sum
             } else {
-                return prev - curr.sum
+                return prev
             }
         }, 0);
         const view = (
