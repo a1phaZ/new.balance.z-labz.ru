@@ -79,7 +79,7 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 		accountItemsListArray.splice(0,0,{date: date, income: indexAr[key].income, outcome: indexAr[key].outcome, caption: true})
 	})
 
-	const accountItemsList = accountItemsListArray.sort(sort).map(mapRichCell(dispatch));
+	const accountItemsList = accountItemsListArray.sort(sort).map(mapRichCell({dispatch}));
 
 	const toggleContext = () => {
 		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});

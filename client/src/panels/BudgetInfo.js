@@ -110,7 +110,7 @@ export default ({id, budget, dispatch, context, date}) => {
 		</Alert>
 	)
 
-	const itemsList = filteredItems && filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell(dispatch));
+	const itemsList = filteredItems && filteredItems.sort(sort).reduce(reduce, []).map(mapRichCell({dispatch}));
 
 	const onSearch = (str) => {
 		setSearchStr(str);
