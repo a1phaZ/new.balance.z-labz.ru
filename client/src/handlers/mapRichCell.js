@@ -6,7 +6,7 @@ import currency from "./currency";
 import {SET_EDITED_ITEM, SET_MODAL} from "../state/actions";
 import Color from "../components/Color";
 
-export default function mapRichCell(dispatch) {
+export default function mapRichCell({dispatch, tagsShow = true}) {
 	return (item, index) => {
 		if (item?.caption) {
 			return (
@@ -37,11 +37,17 @@ export default function mapRichCell(dispatch) {
 					// padding: '5px'
 				}}><b>{tag}</b></span>
 		);
+		let caption;
+		if (tagsShow) {
+			caption = item?.tags.length !== 0 && <div style={{display: 'flex', flexWrap: 'wrap'}}><span>Теги:</span> {tags}</div>
+		} else {
+			caption = <div style={{display: 'flex', flexWrap: 'wrap'}}>{format(new Date(item?.date), 'dd MMMM yyyy ', {locale: ruLocale})}</div>
+		}
 		return (
 			<RichCell
 				key={index}
 				multiline
-				caption={item?.tags.length !== 0 && <div style={{display: 'flex', flexWrap: 'wrap'}}><span>Теги:</span> {tags}</div>}
+				caption={caption}
 				after={item?.income ? currency(item?.sum) : currency(-1 * item?.sum)}
 				data-id={item?._id}
 				onClick={() => {

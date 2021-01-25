@@ -50,6 +50,7 @@ import useLocalStorage from "./handlers/useLocalStorage";
 import AppStats from "./panels/AppStats";
 import TransferMoney from "./components/modals/TransferMoney";
 import StatsDetails from "./panels/StatsDetails";
+import {getTagsListItemsFromAccount} from "./handlers/getTagsListFromAccounts";
 
 const App = () => {
     const os = platform();
@@ -62,6 +63,7 @@ const App = () => {
     const [shopList, setShopList] = useLocalStorage('shopList', []);
     const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
     const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
+    const [selectedTagTitle, setSelectedTagTitle] = useState('');
     const [tagsItemsList, setTagsItemsList] = useState([]);
 
     useEffect(() => {
@@ -101,6 +103,11 @@ const App = () => {
         bridge.send('VKWebAppGetAds', {});
         bridge.send('VKWebAppAddToHomeScreenInfo');
     }, [dispatch]);
+
+    useEffect(() => {
+        const tagsListItem = getTagsListItemsFromAccount(state.accounts);
+        setTagsItemsList(tagsListItem[selectedTagTitle]);
+    }, [state.accounts, selectedTagTitle]);
 
     const alert = (
         <Alert
@@ -298,8 +305,8 @@ const App = () => {
                 </View>
                 <View id={'stats'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
                     <Stats id={'stats'} accounts={state.accounts} onRefresh={onRefresh} dispatch={dispatch}
-                           context={state.contextHistory} setTagsItemsList={setTagsItemsList}/>
-                    <StatsDetails id={'details'} itemsList={tagsItemsList} dispatch={dispatch}/>
+                           context={state.contextHistory} setSelectedTagTitle={setSelectedTagTitle} />
+                    <StatsDetails id={'details'} itemsList={tagsItemsList} dispatch={dispatch} title={selectedTagTitle}/>
                 </View>
                 <View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
                     <More id={'index'} dispatch={dispatch} addToHomeScreenSupported={addToHomeScreenSupported}

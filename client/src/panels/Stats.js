@@ -7,77 +7,18 @@ import {
     Panel,
     PanelHeader,
     PanelHeaderContent,
-    PanelHeaderContext, RichCell
+    PanelHeaderContext
 } from "@vkontakte/vkui";
 import MonthSwitch from "../components/MonthSwitch";
 import mapStats from "../handlers/mapStats";
 import SearchForm from "../components/SearchForm";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
-import {SET_ACTIVE_VIEW, SET_TOGGLE_CONTEXT} from "../state/actions";
+import {SET_TOGGLE_CONTEXT} from "../state/actions";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import Icon28MoneyTransfer from "@vkontakte/icons/dist/28/money_transfer";
-import currency from "../handlers/currency";
+import {getTagsListItemsView} from "../handlers/getTagsListFromAccounts";
 
-const getTagsListItemsFromAccount = (array) => {
-    const tagsListItems = {};
-    array.forEach((account) => {
-        const {operations} = account;
-        operations.forEach(operation => {
-            const {tags} = operation;
-            if (tags.length === 0) {
-                if (!tagsListItems['Без тега']) {
-                    tagsListItems['Без тега'] = [operation]
-                } else {
-                    tagsListItems['Без тега'] = [...tagsListItems['Без тега'], operation];
-                }
-            } else {
-                tags.forEach(tag => {
-                    if (!tagsListItems[tag]) {
-                        tagsListItems[tag] = [operation];
-                    } else {
-                        tagsListItems[tag] = [...tagsListItems[tag], operation];
-                    }
-                })
-            }
-        })
-    });
-    return tagsListItems
-}
-
-const getTagsListItemsView = (array, dispatch, setTagsItemsList) => {
-    let tagsListItemView = [];
-
-    const tagsListItemsfromAccount = getTagsListItemsFromAccount(array);
-
-    for (const [key, value] of Object.entries(getTagsListItemsFromAccount(array))) {
-        const outSum = value.reduce((prev, curr) => {
-            if (!curr.income) {
-                return prev + curr.sum
-            } else {
-                return prev
-            }
-        }, 0);
-        const view = (
-            <RichCell
-                key={key}
-                multiline
-                caption={`Кол-во: ${(value.length)}`}
-                after={currency(outSum)}
-                data-title={key}
-                onClick={(e) => {
-                    setTagsItemsList(tagsListItemsfromAccount[e.currentTarget.dataset.title]);
-                    dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'stats', panel: 'details'}});
-                }}
-            >
-                {key !== 'empty' ? key : 'Без тега'}
-            </RichCell>
-        )
-        tagsListItemView = [...tagsListItemView, view]
-    }
-    return tagsListItemView;
-}
-
-export default ({id, accounts, context, onRefresh, dispatch, setTagsItemsList}) => {
+export default ({id, accounts, context, onRefresh, dispatch, setSelectedTagTitle}) => {
     const [operations, setOperations] = useState(() => {
         return accounts
             .map(item => item.operations)
@@ -101,7 +42,7 @@ export default ({id, accounts, context, onRefresh, dispatch, setTagsItemsList}) 
         }
     }
 
-    const tagsListItemView = getTagsListItemsView(accounts, dispatch, setTagsItemsList);
+    const tagsListItemView = getTagsListItemsView(accounts, dispatch, setSelectedTagTitle);
 
     const accountItemsList = filteredItems
         .reduce(reducer, [])
