@@ -178,10 +178,11 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 
 	useEffect(() => {
 		if (!response) return;
-		dispatch({type: SET_HISTORY_BACK});
+		dispatch({type: SET_POPOUT, payload: {popout: null}});
 		dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
 		dispatch({type: SET_ACCOUNTS, payload: {accounts: response?.accounts ? response?.accounts : []}});
 		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
+		dispatch({type: SET_HISTORY_BACK});
 	}, [dispatch, response]);
 
 	useEffect(() => {
