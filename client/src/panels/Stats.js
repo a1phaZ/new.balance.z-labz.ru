@@ -127,6 +127,7 @@ export default ({id, accounts, context, onRefresh, dispatch, setSelectedTagTitle
             </PanelHeader>
             <PanelHeaderContext opened={isOpened} onClose={toggleContext}>
                 <List>
+                    <Header mode="secondary">Сгруппировано по {groupedByStats === 'title' ? 'названию' : 'тэгам'}</Header>
                     <Cell
                         before={<Icon28MarketAddBadgeOutline/>}
                         onClick={() => {
