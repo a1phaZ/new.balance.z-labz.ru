@@ -5,23 +5,20 @@ import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 import Div from '@vkontakte/vkui/dist/components/Div/Div';
 import {
-	Button, Cell,
+	Button,
+	Cell,
 	Footer,
 	Header,
 	List,
 	PanelHeaderButton,
 	PanelHeaderContext,
 	PullToRefresh,
-	Title
+	Title,
+	Tooltip
 } from "@vkontakte/vkui";
 import currency from "../handlers/currency";
 import ListOfItems from "../components/ListOfItems";
-import {
-	SET_ACCOUNT,
-	SET_ACTIVE_VIEW,
-	SET_MODAL,
-	SET_TOGGLE_CONTEXT
-} from "../state/actions";
+import {SET_ACCOUNT, SET_ACTIVE_VIEW, SET_MODAL, SET_TOGGLE_CONTEXT} from "../state/actions";
 import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
 import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 import Icon28MoneyTransfer from '@vkontakte/icons/dist/28/money_transfer';
@@ -30,6 +27,7 @@ import MonthSwitch from "../components/MonthSwitch";
 
 const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList, context}) => {
 	const [isOpened, setIsOpened] = useState(() => context);
+	const [isAccountTooltipClose, setIsAccountTooltipClose] = useState(false);
 	const sumOfAll = accounts.map(el => el.sum).reduce((acc, cur) => acc + cur, 0);
 	const shopListDone = shopList.reduce((acc, curr) => curr.done ? acc + 1 : acc, 0);
 	const shopListButton = (
@@ -55,14 +53,37 @@ const Home = ({id, accounts, budgets, dispatch, onRefresh, isFetching, shopList,
 			<PanelHeader
 				left={
 					<>
-						<PanelHeaderButton
-							onClick={() => {
-								toggleContext();
-								dispatch({type: SET_MODAL, payload: {modal: 'add-account'}});
-							}}
-						>
-							<Icon28ListAddOutline/>
-						</PanelHeaderButton>
+						{
+							accounts.length !== 0 || isAccountTooltipClose ?
+								<PanelHeaderButton
+									onClick={() => {
+										if (isOpened) {
+											toggleContext();
+										}
+										dispatch({type: SET_MODAL, payload: {modal: 'add-account'}});
+									}}
+								>
+									<Icon28ListAddOutline/>
+								</PanelHeaderButton> :
+								<Tooltip
+									text={'Начните учет финансов с добавления счета'}
+									onClose={
+										() => {
+											setIsAccountTooltipClose(true);
+											dispatch({type: SET_MODAL, payload: {modal: 'add-account'}});
+										}
+									}
+								>
+									<PanelHeaderButton
+										onClick={() => {
+											toggleContext();
+											dispatch({type: SET_MODAL, payload: {modal: 'add-account'}});
+										}}
+									>
+										<Icon28ListAddOutline/>
+									</PanelHeaderButton>
+								</Tooltip>
+						}
 						{accounts.length !== 0 && <PanelHeaderButton
 							onClick={() => {
 								toggleContext();
