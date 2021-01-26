@@ -18,7 +18,7 @@ import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_bad
 import Icon28MoneyTransfer from "@vkontakte/icons/dist/28/money_transfer";
 import {getTagsListItemsFromAccount, getTagsListItemsView} from "../handlers/getTagsListFromAccounts";
 
-export default ({id, accounts, context, onRefresh, dispatch, setSelectedTagTitle, groupedByStats, setGroupedByStats}) => {
+export default ({id, accounts, context, onRefresh, dispatch, setSelectedTagTitle, groupedByStats, setGroupedByStats, setSelectedItemTitle}) => {
     const [operations, setOperations] = useState(() => {
         return accounts
             .map(item => item.operations)
@@ -46,7 +46,7 @@ export default ({id, accounts, context, onRefresh, dispatch, setSelectedTagTitle
 
     const accountItemsList = filteredItems
         .reduce(reducer, [])
-        .map(mapStats());
+        .map(mapStats({dispatch, setSelectedItemTitle}));
 
     useEffect(() => {
         setIsOpened(context);
@@ -93,10 +93,9 @@ export default ({id, accounts, context, onRefresh, dispatch, setSelectedTagTitle
             if (groupedByStats === 'tags') {
                 const preparedTagsArray = getTagsListItemsFromAccount(accounts);
                 let filteredTags = {};
-                const searchStrLength = searchStr.length;
                 const keys = Object.keys(preparedTagsArray);
                 keys.forEach(key => {
-                    if (searchStr === key.slice(0, searchStrLength)) {
+                    if (key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1) {
                         filteredTags[key] = preparedTagsArray[key];
                     }
                 });

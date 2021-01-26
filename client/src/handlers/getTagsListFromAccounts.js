@@ -77,7 +77,7 @@ export const getTagsListItemsView = (array, dispatch, setSelectedTagTitle) => {
             data-title={key}
             onClick={(e) => {
                 setSelectedTagTitle(e.currentTarget.dataset.title);
-                dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'stats', panel: 'details'}});
+                dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'stats', panel: 'details-tags'}});
             }}
           >
               {key !== 'empty' ? key : 'Без тега'}
