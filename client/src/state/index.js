@@ -14,7 +14,7 @@ import {
 	SET_SUCCESS_MESSAGE,
 	SET_COLOR_SCHEME, SET_TOGGLE_CONTEXT
 } from './actions';
-import {smoothScrollToTop} from "../handlers/smoothScrollToTop";
+// import {smoothScrollToTop} from "../handlers/smoothScrollToTop";
 
 const initialState = {
 	accounts: [],
@@ -49,8 +49,9 @@ const reducer = (state, action) => {
 		case SET_ACTIVE_VIEW: {
 			window.history.pushState(null, null);
 
-			window.scrollTo(0, 30);
-			smoothScrollToTop();
+			// console.log(document.documentElement.scrollTop, document.body.scrollTop);
+			window.scrollTo(0, 0);
+			// smoothScrollToTop();
 
 			let history = state.history;
 			if (history.length !== 0) {
@@ -87,8 +88,8 @@ const reducer = (state, action) => {
 		case SET_HISTORY_BACK: {
 			window.history.pushState(null, null);
 
-			window.scrollTo(0, 30);
-			smoothScrollToTop();
+			window.scrollTo(0, 0);
+			// smoothScrollToTop();
 
 			const backEl = state.history[state.history.length - 2];
 			let popoutHistory = state.popoutHistory || [];
