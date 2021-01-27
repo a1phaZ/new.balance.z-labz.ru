@@ -44,7 +44,7 @@ export default function mapRichCell({dispatch, tagsShow = true}) {
 			after = item?.income ? currency(item?.sum) : currency(-1 * item?.sum)
 		} else {
 			caption = <div style={{display: 'flex', flexWrap: 'wrap'}}>{format(new Date(item?.date), 'dd MMMM yyyy ', {locale: ruLocale})}</div>
-			after = currency(item?.sum);
+			after = item?.income ? currency(item?.sum) : currency(-1 * item?.sum);
 		}
 		return (
 			<RichCell

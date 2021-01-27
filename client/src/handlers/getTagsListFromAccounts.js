@@ -34,7 +34,7 @@ export const getTagsListItemsFromAccount = (array) => {
         const {operations} = account;
         operations.forEach(operation => {
             const {tags} = operation;
-            if (operation.income) return;
+            // if (operation.income) return;
             if (tags.length === 0) {
                 if (!tagsListItems['Без тега']) {
                     tagsListItems['Без тега'] = [operation]

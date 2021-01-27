@@ -36,6 +36,7 @@ import sort from "../handlers/sort";
 import MonthSwitch from "../components/MonthSwitch";
 import SearchForm from "../components/SearchForm";
 import Icon28MoneyTransfer from "@vkontakte/icons/dist/28/money_transfer";
+import {ArrayToObjectWithDate, ObjectToArrayWithDate} from "../handlers/formatingArrayWithDate";
 
 export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 	const [isOpened, setIsOpened] = useState(() => context);
@@ -48,36 +49,9 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 	const [searchStr, setSearchStr] = useState('');
 	const [filteredItems, setFilteredItems] = useState(() => items || []);
 
-	const indexAr = filteredItems.sort(sort).reduce((prev, curr) => {
-		const index = +new Date(curr.date);
-		if (prev[index]) {
-			prev[index] = [...prev[index], curr];
-		} else {
-			prev[index] = [curr];
-		}
-		return prev;
-	}, {});
+	const indexAr = ArrayToObjectWithDate(filteredItems);
 
-	let accountItemsListArray = [];
-
-	Object.keys(indexAr).forEach(key => {
-		const items = indexAr[key];
-		let date = '';
-		indexAr[key].income = 0;
-		indexAr[key].outcome = 0;
-		items.forEach(item => {
-			date = item.date;
-			accountItemsListArray.splice(0,0, item);
-			if (item.income) {
-				indexAr[key].income += item.sum;
-			} else {
-				indexAr[key].outcome += item.sum;
-			}
-		})
-		indexAr[key].income = indexAr[key].income.toFixed(2);
-		indexAr[key].outcome = indexAr[key].outcome.toFixed(2);
-		accountItemsListArray.splice(0,0,{date: date, income: indexAr[key].income, outcome: indexAr[key].outcome, caption: true})
-	})
+	const accountItemsListArray = ObjectToArrayWithDate(indexAr);
 
 	const accountItemsList = accountItemsListArray.sort(sort).map(mapRichCell({dispatch}));
 
