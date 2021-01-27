@@ -324,7 +324,7 @@ const App = () => {
 					<StatsDetails id={'details-tags'} category={'tags'} itemsList={tagsItemsList} dispatch={dispatch}
 					              title={selectedTagTitle} showSearch={true}/>
 					<StatsDetails id={'details-items'} category={'items'} itemsList={itemsFromItemTitle}
-					              dispatch={dispatch} title={selectedItemTitle} showSearch={false}/>
+					              dispatch={dispatch} title={selectedItemTitle} showSearch={false} currentStateDate={state.currentDate}/>
 				</View>
 				<View id={'more'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<More id={'index'} dispatch={dispatch} addToHomeScreenSupported={addToHomeScreenSupported}

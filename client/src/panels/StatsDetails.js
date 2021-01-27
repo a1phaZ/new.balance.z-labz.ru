@@ -6,13 +6,30 @@ import InfoSnackbar from "../components/InfoSnackbar";
 import {SET_HISTORY_BACK} from "../state/actions";
 import SearchForm from "../components/SearchForm";
 import {ArrayToObjectWithDate, ObjectToArrayWithDate} from "../handlers/formatingArrayWithDate";
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
+import SearchDate from "../components/SearchDate";
 
-export default ({id, itemsList = [], dispatch, title, showSearch = true, category}) => {
+export default ({id, itemsList = [], dispatch, title, showSearch = true, category, currentStateDate}) => {
     const [filteredItems, setFilteredItems] = useState(() => itemsList);
     const [searchStr, setSearchStr] = useState('');
+    const [searchDate, setSearchDate] = useState(() => {
+      return {
+        startDate: startOfMonth(new Date(currentStateDate)),
+        endDate: endOfMonth(new Date(currentStateDate))
+      }
+    });
     const onSearch = (searchStr) => {
         setSearchStr(searchStr);
     }
+    const onDateChange = (date) => {
+      const {startDate, endDate} = date;
+      setSearchDate({
+        startDate: new Date(startDate),
+        endDate: new Date(endDate)
+      });
+    }
+    
   const indexAr = ArrayToObjectWithDate(filteredItems);
 
   const accountItemsListArray = ObjectToArrayWithDate(indexAr);
@@ -24,6 +41,12 @@ export default ({id, itemsList = [], dispatch, title, showSearch = true, categor
     if (category === 'items') {
       itemsListView = accountItemsListArray.sort(sort).map(mapRichCell({dispatch}));
     }
+    
+    useEffect(() => {
+      setFilteredItems(itemsList.filter(({date}) => {
+        return (+new Date(date) >= +new Date(searchDate.startDate) && +new Date(date) <= +new Date(searchDate.endDate));
+      }))
+    }, [searchDate, itemsList])
 
     useEffect(() => {
         if (searchStr === '') {
@@ -45,8 +68,10 @@ export default ({id, itemsList = [], dispatch, title, showSearch = true, categor
                 {title}
             </PanelHeader>
             {showSearch && <SearchForm onSearch={onSearch}/>}
+          {!showSearch && <SearchDate onDateChange={onDateChange} date={currentStateDate}/>}
             <Div>
               {itemsListView}
+              {+new Date(searchDate.startDate) > + new Date(searchDate.endDate) && <Footer>Дата начала периода больше даты конца периода.</Footer>}
               {itemsListView.length === 0 && <Footer>Нет данных для отображения</Footer>}
             </Div>
           <InfoSnackbar/>
