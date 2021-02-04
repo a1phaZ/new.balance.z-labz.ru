@@ -1,5 +1,6 @@
-import React, {useEffect, useReducer, useState} from 'react';
+import React, {useMemo, useEffect, useReducer, useState} from 'react';
 import {
+	Alert,
 	Cell,
 	Footer,
 	FormLayout,
@@ -10,13 +11,15 @@ import {
 	PanelHeaderBack,
 	PanelHeaderContent, PanelHeaderContext
 } from "@vkontakte/vkui";
-import {SET_HISTORY_BACK, SET_MODAL, SET_SUCCESS_MESSAGE, SET_TOGGLE_CONTEXT} from "../state/actions";
+import {SET_HISTORY_BACK, SET_MODAL, SET_POPOUT, SET_SUCCESS_MESSAGE, SET_TOGGLE_CONTEXT} from "../state/actions";
 import InfoSnackbar from "../components/InfoSnackbar";
 import regexp from "../handlers/regexp";
 import validate from "../handlers/validate";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
 import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
 import Icon28DoneOutline from '@vkontakte/icons/dist/28/done_outline';
+import useApi from "../handlers/useApi";
+import bridge from "@vkontakte/vk-bridge";
 
 const initialState = {
 	list: [],
@@ -65,7 +68,14 @@ const reducer = (state, action) => {
 			}
 		}
 		case 'SET_ITEM_TO_LIST': {
-			const newList = [...state.list, state.item];
+			const item = action?.payload?.item || state.item;
+			const itemIndex = state.list.findIndex((stateItem) => stateItem.title === item.title);
+			if (itemIndex !== -1) {
+				return {
+					...state
+				}
+			}
+			const newList = [...state.list, item];
 			const index = newList[newList.length - 1] ? newList[newList.length - 1].id : 1;
 			return {
 				...state,
@@ -108,28 +118,36 @@ const reducer = (state, action) => {
 
 export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShopList, context, success}) => {
 
+	console.log(success);
 	const [state, dispatchList] = useReducer(reducer, initialState);
 	const [isOpened, setIsOpened] = useState(() => context);
 	const [deleteMode, setDeleteMode] = useState(false);
+	const [hash, setHash] = useState(() => {
+		return window.location.hash.slice(1) || '';
+	});
+	const [path, setPath] = useState(() => {
+		return hash ? `shoplist/${hash}` : 'shoplist/add';
+	})
+	const [{response}, doApiFetch] = useApi(path);
 	const shopList =
 		shopListFromServer.length
 			?
-			state.list.map((item) => {
+			state.list.map((item, index) => {
 				return (
 					<Cell
-						key={item.id}
+						key={item.id || item._id || 1000+index}
 						selectable={!deleteMode}
 						removable={deleteMode}
 						checked={item.done}
 						disabled={deleteMode ? false : item.done}
 						onChange={() => {
-							setShopListItemTitle(shopListFromServer[shopListFromServer.findIndex(i => i.id === item.id)].title);
-							dispatchList({type: 'SET_ID', payload: {id: item.id}});
+							setShopListItemTitle(shopListFromServer[shopListFromServer.findIndex(i => i.id === item?.id || i._id === item?._id)].title);
+							dispatchList({type: 'SET_ID', payload: {id: item?.id || item?._id}});
 							dispatch({type: SET_SUCCESS_MESSAGE, payload: {message: null}});
 							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
 						}}
 						onRemove={() => {
-							dispatchList({type: 'DELETE_ITEM', payload: {id: item.id}});
+							dispatchList({type: 'DELETE_ITEM', payload: {id: item?.id || item?._id}});
 							setShopList(state.list);
 						}}
 					>
@@ -140,10 +158,57 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 			:
 			<Footer>Список покупок пуст</Footer>
 	;
+	const alert = useMemo(() => {
+		return (
+			<Alert
+				actions={[
+					{
+						title: 'Отмена',
+						autoclose: true,
+						mode: "cancel"
+						//TODO Обработать отмену, сбросить hash
+					},
+					{
+						title: 'Добавить',
+						autoclose: true,
+						action: async () => {
+							await doApiFetch({
+								method: 'GET'
+							})
+						}
+					}
+				]}
+				onClose={() => {
+					dispatch({type: SET_POPOUT, payload: {popout: null}})
+				}}
+			>
+				<h2>Обнаружена ссылка на список покупок</h2>
+				<p>Добавить к Вашему списку покупок?</p>
+			</Alert>
+		)
+	}, [dispatch, doApiFetch]);
 
 	const toggleContext = () => {
 		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});
 	}
+	
+	useEffect(() => {
+		if (!hash) return;
+		dispatch({type: SET_POPOUT, payload: {popout: alert, alert: true}});
+	}, [hash, alert, dispatch]);
+	
+	useEffect(() => {
+		if (!response) return;
+		if (response.id) {
+			//TODO Вызываем алерт чтобы поделиться. bridge метод
+		}
+		if (response.list) {
+			response.list.forEach(item => {
+				item.done = false;
+				dispatchList({type: 'SET_ITEM_TO_LIST', payload: {item}})
+			})
+		}
+	},[response, dispatchList]);
 
 	useEffect(() => {
 		setIsOpened(context);
@@ -207,6 +272,19 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 								Режим выполнения
 							</Cell>
 					}
+					<Cell
+						before={<Icon28DeleteOutline />}
+						onClick={() => {
+							toggleContext();
+							//TODO Убираем hash
+							doApiFetch({
+								method: 'POST',
+								list: state.list
+							})
+						}}
+					>
+						Поделиться списком
+					</Cell>
 				</List>
 			</PanelHeaderContext>
 			<FormLayout
