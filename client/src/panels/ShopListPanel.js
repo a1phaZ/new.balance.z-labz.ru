@@ -92,16 +92,12 @@ const reducer = (state, action) => {
 			}
 		}
 		case 'SET_DONE': {
-			console.log('set_done');
 			const list = state.list;
 			const {id} = action.payload;
 			const index = list.findIndex((item) => item.id === id);
-			console.log(list);
-			console.debug('index', index);
 			if (index !== -1) {
 				list[index].done = !list[index].done;
 			}
-			console.log(list);
 			return {
 				...state,
 				list
