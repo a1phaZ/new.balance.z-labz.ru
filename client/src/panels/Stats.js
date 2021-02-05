@@ -14,8 +14,9 @@ import mapStats from "../handlers/mapStats";
 import SearchForm from "../components/SearchForm";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
 import {SET_TOGGLE_CONTEXT} from "../state/actions";
-import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
-import Icon28MoneyTransfer from "@vkontakte/icons/dist/28/money_transfer";
+import Icon28NameTagOutline from '@vkontakte/icons/dist/28/name_tag_outline';
+import Icon28HashtagOutline from '@vkontakte/icons/dist/28/hashtag_outline';
+
 import {getTagsListItemsFromAccount, getTagsListItemsView} from "../handlers/getTagsListFromAccounts";
 
 export default ({id, accounts, context, onRefresh, dispatch, setSelectedTagTitle, groupedByStats, setGroupedByStats, setSelectedItemTitle}) => {
@@ -128,7 +129,7 @@ export default ({id, accounts, context, onRefresh, dispatch, setSelectedTagTitle
                 <List>
                     <Header mode="secondary">Сгруппировано по {groupedByStats === 'title' ? 'названию' : 'тэгам'}</Header>
                     <Cell
-                        before={<Icon28MarketAddBadgeOutline/>}
+                        before={<Icon28NameTagOutline/>}
                         onClick={() => {
                             setGroupedByStats('title')
                             toggleContext();
@@ -137,7 +138,7 @@ export default ({id, accounts, context, onRefresh, dispatch, setSelectedTagTitle
                         По названию
                     </Cell>
                     <Cell
-                        before={<Icon28MoneyTransfer/>}
+                        before={<Icon28HashtagOutline/>}
                         onClick={() => {
                             setGroupedByStats('tags')
                             toggleContext();
