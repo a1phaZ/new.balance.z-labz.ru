@@ -1,6 +1,8 @@
-import React, {useMemo, useEffect, useReducer, useState} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
+import bridge from "@vkontakte/vk-bridge";
 import {
-	Alert,
+	Banner,
+	Button,
 	Cell,
 	Footer,
 	FormLayout,
@@ -9,17 +11,18 @@ import {
 	Panel,
 	PanelHeader,
 	PanelHeaderBack,
-	PanelHeaderContent, PanelHeaderContext
+	PanelHeaderContent,
+	PanelHeaderContext
 } from "@vkontakte/vkui";
-import {SET_HISTORY_BACK, SET_MODAL, SET_POPOUT, SET_SUCCESS_MESSAGE, SET_TOGGLE_CONTEXT} from "../state/actions";
+import {SET_HISTORY_BACK, SET_MODAL, SET_SUCCESS_MESSAGE, SET_TOGGLE_CONTEXT} from "../state/actions";
 import InfoSnackbar from "../components/InfoSnackbar";
 import regexp from "../handlers/regexp";
 import validate from "../handlers/validate";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
 import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
 import Icon28DoneOutline from '@vkontakte/icons/dist/28/done_outline';
+import Icon28ShareExternalOutline from '@vkontakte/icons/dist/28/share_external_outline';
 import useApi from "../handlers/useApi";
-import bridge from "@vkontakte/vk-bridge";
 
 const initialState = {
 	list: [],
@@ -75,7 +78,9 @@ const reducer = (state, action) => {
 					...state
 				}
 			}
-			const newList = [...state.list, item];
+			const newIndex = state.list[state.list.length - 1] ? state.list[state.list.length - 1].id : 1
+			item.id = item.id || newIndex+1;
+			const newList = [...state.list, {id: item.id, title: item.title, done: item.done}];
 			const index = newList[newList.length - 1] ? newList[newList.length - 1].id : 1;
 			return {
 				...state,
@@ -87,12 +92,16 @@ const reducer = (state, action) => {
 			}
 		}
 		case 'SET_DONE': {
-			const {list} = state;
+			console.log('set_done');
+			const list = state.list;
 			const {id} = action.payload;
 			const index = list.findIndex((item) => item.id === id);
+			console.log(list);
+			console.debug('index', index);
 			if (index !== -1) {
 				list[index].done = !list[index].done;
 			}
+			console.log(list);
 			return {
 				...state,
 				list
@@ -116,14 +125,16 @@ const reducer = (state, action) => {
 	}
 }
 
-export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShopList, context, success}) => {
-
-	console.log(success);
+export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShopList, context, success, shopListId, setShopListId}) => {
 	const [state, dispatchList] = useReducer(reducer, initialState);
 	const [isOpened, setIsOpened] = useState(() => context);
 	const [deleteMode, setDeleteMode] = useState(false);
 	const [hash, setHash] = useState(() => {
-		return window.location.hash.slice(1) || '';
+		const id = window.location.hash.slice(1);
+		if (id === shopListId) {
+			return '';
+		}
+		return id;
 	});
 	const [path, setPath] = useState(() => {
 		return hash ? `shoplist/${hash}` : 'shoplist/add';
@@ -158,55 +169,52 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 			:
 			<Footer>Список покупок пуст</Footer>
 	;
-	const alert = useMemo(() => {
-		return (
-			<Alert
-				actions={[
-					{
-						title: 'Отмена',
-						autoclose: true,
-						mode: "cancel"
-						//TODO Обработать отмену, сбросить hash
-					},
-					{
-						title: 'Добавить',
-						autoclose: true,
-						action: async () => {
-							await doApiFetch({
-								method: 'GET'
-							})
-						}
-					}
-				]}
-				onClose={() => {
-					dispatch({type: SET_POPOUT, payload: {popout: null}})
-				}}
-			>
-				<h2>Обнаружена ссылка на список покупок</h2>
-				<p>Добавить к Вашему списку покупок?</p>
-			</Alert>
+	
+	const banner = (
+		<Banner
+			size={'m'}
+			header={'Обнаружена ссылка на список покупок'}
+			subheader={'Добавить к Вашему списку покупок?'}
+			asideMode={'dismiss'}
+			onDismiss={() => {
+				setShopListId(hash);
+				setHash('');
+			}}
+			actions={
+				<Button
+					mode={'primary'}
+					onClick={async () => {
+						await doApiFetch({
+							method: 'GET',
+							params: {
+								id: hash
+							}
+						})
+						setShopListId(hash);
+						setHash('');
+					}}
+				>
+					Добавить
+				</Button>
+			}
+		/>
 		)
-	}, [dispatch, doApiFetch]);
-
+	
 	const toggleContext = () => {
 		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});
 	}
 	
 	useEffect(() => {
-		if (!hash) return;
-		dispatch({type: SET_POPOUT, payload: {popout: alert, alert: true}});
-	}, [hash, alert, dispatch]);
-	
-	useEffect(() => {
 		if (!response) return;
 		if (response.id) {
-			//TODO Вызываем алерт чтобы поделиться. bridge метод
+			bridge.send("VKWebAppShare", {link: `https://vk.com/zlabz_balance#${response.id}`});
 		}
 		if (response.list) {
 			response.list.forEach(item => {
 				item.done = false;
 				dispatchList({type: 'SET_ITEM_TO_LIST', payload: {item}})
-			})
+			});
+			setPath('/shoplist/add');
 		}
 	},[response, dispatchList]);
 
@@ -217,16 +225,16 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 	useEffect(() => {
 		dispatchList({type: 'INITIAL_LIST', payload: {list: shopListFromServer}});
 	}, [shopListFromServer]);
-
-	useEffect(() => {
-		if (state.list.length === 0) return;
-		setShopList(state.list);
-	}, [state.list, setShopList]);
-
+	
 	useEffect(() => {
 		if (!success) return;
 		dispatchList({type: 'SET_DONE', payload: {id: state.id}});
 	}, [success, state.id]);
+
+	useEffect(() => {
+		if (state.list.length === 0) return;
+		setShopList(state.list);
+	}, [state.list, setShopList, shopList]);
 
 	return (
 		<Panel id={id}>
@@ -273,10 +281,9 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 							</Cell>
 					}
 					<Cell
-						before={<Icon28DeleteOutline />}
+						before={<Icon28ShareExternalOutline />}
 						onClick={() => {
 							toggleContext();
-							//TODO Убираем hash
 							doApiFetch({
 								method: 'POST',
 								list: state.list
@@ -287,6 +294,7 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 					</Cell>
 				</List>
 			</PanelHeaderContext>
+			{hash && banner}
 			<FormLayout
 				onSubmit={(e) => {
 					e.preventDefault();

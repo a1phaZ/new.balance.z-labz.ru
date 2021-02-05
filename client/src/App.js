@@ -61,6 +61,7 @@ const App = () => {
 	const [bannerData, setBannerData] = useState(null);
 	const [shopListItemTitle, setShopListItemTitle] = useState('');
 	const [shopList, setShopList] = useLocalStorage('shopList', []);
+	const [shopListId, setShopListId] = useLocalStorage('shop-list-id');
 	const [addToHomeScreenSupported, setAddToHomeScreenSupported] = useState(false);
 	const [addedToHomeScreen, setAddedToHomeScreen] = useState(false);
 	const [selectedTagTitle, setSelectedTagTitle] = useState('');
@@ -298,7 +299,7 @@ const App = () => {
 			      tabbar={state.activeView !== 'init' && state.activePanel !== 'init' && tabBar}>
 				<View id={'init'} activePanel={state.activePanel}>
 					<InitialScreen id={'init'} dispatch={dispatch} loading={state.popout} bannerData={bannerData}
-					               setBannerData={setBannerData}/>
+					               setBannerData={setBannerData} shopListId={shopListId}/>
 				</View>
 				<View id={'home'} activePanel={state.activePanel} popout={state.popout} modal={modal}>
 					<Home id='home' accounts={state.accounts} budgets={state.budgets} dispatch={dispatch}
@@ -333,7 +334,7 @@ const App = () => {
 					<ShopListPanel id={'shop-list'} dispatch={dispatch} shopListFromServer={shopList}
 					               setShopListItemTitle={setShopListItemTitle}
 					               setShopList={setShopList} context={state.contextHistory}
-					               success={state.successMessage} error={state.error}/>
+					               success={state.successMessage} error={state.error} shopListId={shopListId} setShopListId={setShopListId}/>
 					<AppStats id={'stats'}/>
 				</View>
 			</Epic>

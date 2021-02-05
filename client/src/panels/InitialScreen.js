@@ -3,7 +3,7 @@ import {Button, FixedLayout, Panel, Placeholder, PromoBanner, Spinner} from "@vk
 import {SET_ACTIVE_VIEW} from "../state/actions";
 import Icon36Done from '@vkontakte/icons/dist/36/done';
 
-export default ({id, dispatch, loading, bannerData, setBannerData}) => {
+export default ({id, dispatch, loading, bannerData, setBannerData, shopListId}) => {
 	return (
 		<Panel id={id}>
 			<Placeholder
@@ -11,7 +11,11 @@ export default ({id, dispatch, loading, bannerData, setBannerData}) => {
 				action={
 					!loading && <Button
 						onClick={() => {
-							dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
+							if (!window.location.hash || window.location.hash.slice(1) === shopListId) {
+								dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'home', panel: 'home'}});
+							} else {
+								dispatch({type: SET_ACTIVE_VIEW, payload: {view: 'more', panel: 'shop-list'}});
+							}
 						}}
 						id={'initial-button'}
 					>
