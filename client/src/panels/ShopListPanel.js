@@ -142,19 +142,19 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 			state.list.map((item, index) => {
 				return (
 					<Cell
-						key={item.id || item._id || 1000+index}
+						key={item.id || 1000+index}
 						selectable={!deleteMode}
 						removable={deleteMode}
 						checked={item.done}
 						disabled={deleteMode ? false : item.done}
 						onChange={() => {
-							setShopListItemTitle(shopListFromServer[shopListFromServer.findIndex(i => i.id === item?.id || i._id === item?._id)].title);
-							dispatchList({type: 'SET_ID', payload: {id: item?.id || item?._id}});
+							setShopListItemTitle(shopListFromServer[shopListFromServer.findIndex(i => i.id === item?.id)].title);
+							dispatchList({type: 'SET_ID', payload: {id: item?.id}});
 							dispatch({type: SET_SUCCESS_MESSAGE, payload: {message: null}});
 							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
 						}}
 						onRemove={() => {
-							dispatchList({type: 'DELETE_ITEM', payload: {id: item?.id || item?._id}});
+							dispatchList({type: 'DELETE_ITEM', payload: {id: item?.id}});
 							setShopList(state.list);
 						}}
 					>
