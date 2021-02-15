@@ -4,12 +4,12 @@ import {
 	Alert,
 	Cell,
 	Div,
-	Footer, Gallery,
+	Footer,
+	Gallery,
 	Header,
 	List,
 	Panel,
 	PanelHeader,
-	PanelHeaderBack,
 	PanelHeaderButton,
 	PanelHeaderContent,
 	PanelHeaderContext,
@@ -37,6 +37,7 @@ import MonthSwitch from "../components/MonthSwitch";
 import SearchForm from "../components/SearchForm";
 import Icon28MoneyTransfer from "@vkontakte/icons/dist/28/money_transfer";
 import {ArrayToObjectWithDate, ObjectToArrayWithDate} from "../handlers/formatingArrayWithDate";
+import BackButton from "../components/BackButton";
 
 export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 	const [isOpened, setIsOpened] = useState(() => context);
@@ -48,13 +49,13 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 	});
 	const [searchStr, setSearchStr] = useState('');
 	const [filteredItems, setFilteredItems] = useState(() => items || []);
-
+	
 	const indexAr = ArrayToObjectWithDate(filteredItems);
-
+	
 	const accountItemsListArray = ObjectToArrayWithDate(indexAr);
-
+	
 	const accountItemsList = accountItemsListArray.sort(sort).map(mapRichCell({dispatch}));
-
+	
 	const toggleContext = () => {
 		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});
 	}
@@ -91,7 +92,7 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 				бюджетов могут отображаться некорректно.</p>
 		</Alert>
 	)
-
+	
 	const accountContextView = (
 		<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
 			<List>
@@ -141,15 +142,15 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 			</List>
 		</PanelHeaderContext>
 	)
-
+	
 	const contextView = accountContext ? accountContextView : itemContextView;
-
+	
 	useEffect(() => {
 		if (!account) return;
 		setItems(account?.operations);
 		setFilteredItems(account?.operations);
 	}, [account]);
-
+	
 	useEffect(() => {
 		if (!response) return;
 		dispatch({type: SET_POPOUT, payload: {popout: null}});
@@ -158,11 +159,11 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 		dispatch({type: SET_BUDGETS, payload: {budgets: response?.budgets ? response?.budgets : []}});
 		dispatch({type: SET_HISTORY_BACK});
 	}, [dispatch, response]);
-
+	
 	useEffect(() => {
 		setIsOpened(context);
 	}, [context]);
-
+	
 	useEffect(() => {
 		if (searchStr === '') {
 			setFilteredItems(items);
@@ -170,22 +171,19 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 			setFilteredItems(account?.operations.filter(({title}) => title.toLowerCase().indexOf(searchStr.toLowerCase()) > -1));
 		}
 	}, [searchStr, account, items]);
-
+	
 	const onSearch = (str) => {
 		setSearchStr(str);
 	}
-
+	
 	const incomeSum = account?.operations?.filter(item => !!item.income).reduce((acc, cur) => acc + cur.sum, 0);
 	const outcomeSum = account?.operations?.filter(item => !item.income).reduce((acc, cur) => acc + cur.sum, 0);
-
+	
 	return (
 		<Panel id={id}>
 			<PanelHeader left={
 				<>
-					<PanelHeaderBack onClick={() => {
-						dispatch({type: SET_HISTORY_BACK})
-						dispatch({type: SET_EDITED_ITEM, payload: {item: null}});
-					}}/>
+					<BackButton dispatch={dispatch}/>
 					<PanelHeaderButton
 						onClick={() => {
 							setAccountContext(false);
@@ -213,9 +211,9 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 				<>
 					{contextView}
 					<MonthSwitch onRefresh={onRefresh}/>
-
+					
 					<SearchForm onSearch={onSearch}/>
-
+					
 					<Group
 						header={<Header mode="secondary">Информация по счету</Header>}
 						separator="show"
@@ -228,16 +226,18 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 							<Div>
 								<Title level={'3'} weight={'semibold'}>Остаток по счету</Title>
 								<Title level="1" weight="bold" style={{marginBottom: 16}}>{currency(account?.sum)}</Title>
-
+							
 							</Div>
 							<Div>
 								<Title level="3" weight="semibold" style={{marginBottom: 16}}>Доход: {currency(incomeSum || 0)}</Title>
-								<Title level="3" weight="semibold" style={{marginBottom: 16}}>Расход: {currency(-1*outcomeSum || 0)}</Title>
-								<Title level="3" weight="semibold" style={{marginBottom: 16}}>Баланс: {currency(incomeSum - outcomeSum)}</Title>
+								<Title level="3" weight="semibold"
+											 style={{marginBottom: 16}}>Расход: {currency(-1 * outcomeSum || 0)}</Title>
+								<Title level="3" weight="semibold"
+											 style={{marginBottom: 16}}>Баланс: {currency(incomeSum - outcomeSum)}</Title>
 							</Div>
 						</Gallery>
-
-
+						
+						
 						{account?.operations.length === 0 && <Footer>Операций по счету еще не было</Footer>}
 						<Div>
 							{accountItemsList}
@@ -247,7 +247,7 @@ export default ({id, account, dispatch, onRefresh, context, date, scheme}) => {
 					<InfoSnackbar/>
 				</>
 			}
-
+		
 		</Panel>
 	)
 }

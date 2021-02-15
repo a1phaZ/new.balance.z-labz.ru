@@ -9,13 +9,13 @@ import {
 	MiniInfoCell,
 	Panel,
 	PanelHeader,
-	PanelHeaderBack,
 	PanelHeaderButton,
 	PanelHeaderContent,
 	PanelHeaderContext
 } from "@vkontakte/vkui";
 import {
-	SET_ACCOUNTS, SET_BUDGETS,
+	SET_ACCOUNTS,
+	SET_BUDGETS,
 	SET_EDITED_ITEM,
 	SET_HISTORY_BACK,
 	SET_MODAL,
@@ -37,6 +37,7 @@ import reduce from "../handlers/reduce";
 import currency from "../handlers/currency";
 import SearchForm from "../components/SearchForm";
 import {differenceInMonths} from 'date-fns';
+import BackButton from "../components/BackButton";
 
 export default ({id, budget, dispatch, context, date}) => {
 	const [isOpened, setIsOpened] = useState(() => context);
@@ -120,9 +121,7 @@ export default ({id, budget, dispatch, context, date}) => {
 		<Panel id={id}>
 			<PanelHeader left={
 				<>
-					<PanelHeaderBack onClick={() => {
-						dispatch({type: SET_HISTORY_BACK});
-					}}/>
+					<BackButton dispatch={dispatch}/>
 					{differenceInMonths(new Date(), new Date(date)) === 0 &&
 						<PanelHeaderButton
 							onClick={() => {
