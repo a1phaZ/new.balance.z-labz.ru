@@ -10,11 +10,10 @@ import {
 	List,
 	Panel,
 	PanelHeader,
-	PanelHeaderBack,
 	PanelHeaderContent,
 	PanelHeaderContext
 } from "@vkontakte/vkui";
-import {SET_HISTORY_BACK, SET_MODAL, SET_SUCCESS_MESSAGE, SET_TOGGLE_CONTEXT} from "../state/actions";
+import {SET_TOGGLE_CONTEXT} from "../state/actions";
 import InfoSnackbar from "../components/InfoSnackbar";
 import regexp from "../handlers/regexp";
 import validate from "../handlers/validate";
@@ -23,6 +22,8 @@ import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
 import Icon28DoneOutline from '@vkontakte/icons/dist/28/done_outline';
 import Icon28ShareExternalOutline from '@vkontakte/icons/dist/28/share_external_outline';
 import useApi from "../handlers/useApi";
+import ShopList from "../components/ShopList";
+import BackButton from "../components/BackButton";
 
 const initialState = {
 	list: [],
@@ -139,29 +140,15 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 	const shopList =
 		shopListFromServer.length
 			?
-			state.list.map((item, index) => {
-				return (
-					<Cell
-						key={item.id || 1000+index}
-						selectable={!deleteMode}
-						removable={deleteMode}
-						checked={item.done}
-						disabled={deleteMode ? false : item.done}
-						onChange={() => {
-							setShopListItemTitle(shopListFromServer[shopListFromServer.findIndex(i => i.id === item?.id)].title);
-							dispatchList({type: 'SET_ID', payload: {id: item?.id}});
-							dispatch({type: SET_SUCCESS_MESSAGE, payload: {message: null}});
-							dispatch({type: SET_MODAL, payload: {modal: 'add-money'}});
-						}}
-						onRemove={() => {
-							dispatchList({type: 'DELETE_ITEM', payload: {id: item?.id}});
-							setShopList(state.list);
-						}}
-					>
-						{item.title}
-					</Cell>
-				)
-			})
+			<ShopList
+				list={state.list}
+				dispatch={dispatch}
+				deleteMode={deleteMode}
+				setShopListItemTitle={setShopListItemTitle}
+				dispatchList={dispatchList}
+				shopListFromServer={shopListFromServer}
+				setShopList={setShopList}
+			/>
 			:
 			<Footer>Список покупок пуст</Footer>
 	;
@@ -236,9 +223,7 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 		<Panel id={id}>
 			<PanelHeader
 				left={
-					<PanelHeaderBack onClick={() => {
-						dispatch({type: SET_HISTORY_BACK});
-					}}/>
+					<BackButton dispatch={dispatch}/>
 				}
 			>
 				<PanelHeaderContent
