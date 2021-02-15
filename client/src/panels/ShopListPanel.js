@@ -3,7 +3,7 @@ import bridge from "@vkontakte/vk-bridge";
 import {
 	Banner,
 	Button,
-	Cell,
+	FixedLayout,
 	Footer,
 	FormLayout,
 	Input,
@@ -18,12 +18,11 @@ import InfoSnackbar from "../components/InfoSnackbar";
 import regexp from "../handlers/regexp";
 import validate from "../handlers/validate";
 import Icon16Dropdown from "@vkontakte/icons/dist/16/dropdown";
-import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
-import Icon28DoneOutline from '@vkontakte/icons/dist/28/done_outline';
-import Icon28ShareExternalOutline from '@vkontakte/icons/dist/28/share_external_outline';
 import useApi from "../handlers/useApi";
 import ShopList from "../components/ShopList";
 import BackButton from "../components/BackButton";
+import ShareButton from "../components/ShareButton";
+import ShopListDeleteOptionsList from "../components/ShopListDeleteOptionsList";
 
 const initialState = {
 	list: [],
@@ -41,10 +40,16 @@ const initialState = {
 const reducer = (state, action) => {
 	switch (action.type) {
 		case 'INITIAL_LIST': {
-			const index = action.payload.list[action.payload.list.length - 1] ? action.payload.list[action.payload.list.length - 1].id : 1;
+			const {list} = action.payload;
+			list.sort((x, y) => {
+				if (x.id>y.id) return 1;
+				if (x.id<y.id) return -1;
+				return 0;
+			});
+			const index = list[list.length - 1] ? list[list.length - 1].id : 1;
 			return {
 				...state,
-				list: action.payload.list,
+				list: list,
 				item: {
 					id: index + 1,
 					title: '',
@@ -79,8 +84,14 @@ const reducer = (state, action) => {
 					...state
 				}
 			}
-			const newIndex = state.list[state.list.length - 1] ? state.list[state.list.length - 1].id : 1
-			item.id = item.id || newIndex+1;
+			const {list} = state;
+			list.sort((x, y) => {
+				if (x.id>y.id) return 1;
+				if (x.id<y.id) return -1;
+				return 0;
+			});
+			const newIndex = list[list.length - 1] ? list[list.length - 1].id : 1
+			item.id = item.id || newIndex + 1;
 			const newList = [...state.list, {id: item.id, title: item.title, done: item.done}];
 			const index = newList[newList.length - 1] ? newList[newList.length - 1].id : 1;
 			return {
@@ -115,6 +126,18 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				list
+			}
+		}
+		case 'DELETE_ALL': {
+			return {
+				...state,
+				list: []
+			}
+		}
+		case 'DELETE_DONE': {
+			return {
+				...state,
+				list: state.list.filter(({done}) => !done)
 			}
 		}
 		default:
@@ -181,7 +204,7 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 				</Button>
 			}
 		/>
-		)
+	)
 	
 	const toggleContext = () => {
 		dispatch({type: SET_TOGGLE_CONTEXT, payload: {context: !isOpened}});
@@ -199,12 +222,12 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 			});
 			setPath('/shoplist/add');
 		}
-	},[response, dispatchList]);
-
+	}, [response, dispatchList]);
+	
 	useEffect(() => {
 		setIsOpened(context);
 	}, [context]);
-
+	
 	useEffect(() => {
 		dispatchList({type: 'INITIAL_LIST', payload: {list: shopListFromServer}});
 	}, [shopListFromServer]);
@@ -213,66 +236,68 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 		if (!success) return;
 		dispatchList({type: 'SET_DONE', payload: {id: state.id}});
 	}, [success, state.id]);
-
+	
 	useEffect(() => {
 		if (state.list.length === 0) return;
 		setShopList(state.list);
 	}, [state.list, setShopList, shopList]);
-
+	
+	useEffect(() => {
+		if (!deleteMode) return;
+		if (state.list.length === 0) {
+			setDeleteMode(false);
+		}
+	}, [deleteMode, state.list.length])
+	
 	return (
 		<Panel id={id}>
 			<PanelHeader
 				left={
-					<BackButton dispatch={dispatch}/>
+					<>
+						<BackButton dispatch={dispatch}/>
+						<ShareButton
+							shareClick={
+								() => {
+									doApiFetch({
+										method: 'POST',
+										list: state.list
+									})
+								}
+							}
+						/>
+					</>
 				}
 			>
 				<PanelHeaderContent
-					aside={<Icon16Dropdown style={{transform: `rotate(${isOpened ? '180deg' : '0'})`}}/>}
-					onClick={toggleContext}
+					aside={state.list.length !== 0 ? <Icon16Dropdown style={{transform: `rotate(${isOpened ? '180deg' : '0'})`}}/> : null}
+					onClick={state.list.length !== 0 ? toggleContext : null}
 				>
 					Список покупок
 				</PanelHeaderContent>
 			</PanelHeader>
 			<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
 				<List>
-					{
-						!deleteMode
-						&&
-						<Cell
-							before={<Icon28DeleteOutline />}
-							onClick={() => {
-								toggleContext();
-								setDeleteMode(true);
-							}}
-						>
-							Режим удаления
-						</Cell>
-					}
-					{
-						deleteMode
-						&&
-							<Cell
-								before={<Icon28DoneOutline />}
-								onClick={() => {
-									toggleContext();
-									setDeleteMode(false);
-								}}
-							>
-								Режим выполнения
-							</Cell>
-					}
-					<Cell
-						before={<Icon28ShareExternalOutline />}
-						onClick={() => {
+					<ShopListDeleteOptionsList
+						deleteOne={() => {
 							toggleContext();
-							doApiFetch({
-								method: 'POST',
-								list: state.list
-							})
+							setDeleteMode(true);
 						}}
-					>
-						Поделиться списком
-					</Cell>
+						deleteDone={() => {
+							toggleContext();
+							if (state.list.filter(({done}) => !done).length === 0) {
+								dispatchList({type: 'DELETE_ALL'});
+								setShopList([]);
+							} else {
+								dispatchList({type: 'DELETE_DONE'});
+							}
+							
+						}}
+						deleteAll={() => {
+							toggleContext();
+							dispatchList({type: 'DELETE_ALL'});
+							setShopList([]);
+						}}
+					/>
 				</List>
 			</PanelHeaderContext>
 			{hash && banner}
@@ -301,9 +326,22 @@ export default ({id, dispatch, shopListFromServer, setShopListItemTitle, setShop
 								 })
 							 }}/>
 			</FormLayout>
-			<List>
+			<List style={{paddingBottom: deleteMode ? 60 : 0}}>
 				{shopList}
 			</List>
+			{
+				deleteMode &&
+				<FixedLayout filled={true} vertical={'bottom'}>
+					<FormLayout>
+						<Button type={'button'} size={'xl'} onClick={() => {
+							toggleContext();
+							setDeleteMode(false);
+						}}>
+							Завершить удаление
+						</Button>
+					</FormLayout>
+				</FixedLayout>
+			}
 			<InfoSnackbar/>
 		</Panel>
 	)
