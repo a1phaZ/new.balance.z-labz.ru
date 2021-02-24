@@ -1,6 +1,6 @@
 const Account = require('../../../models/moneybox');
 const Item = require('../../../models/item');
-const {isValidObjectId} = require("../../../handlers/checkInputData");
+const {isValidObjectId, isExist} = require("../../../handlers/checkInputData");
 const {createError} = require('../../../handlers/error');
 
 const deleteAccount = async (req, res, next) => {
@@ -9,9 +9,8 @@ const deleteAccount = async (req, res, next) => {
 		params: {id}
 	} = req;
 	
-	if (!isValidObjectId(id)) {
-		return next(createError(400,  'Ошибка идентификатора объекта'));
-	}
+	if (!isExist(vk_user_id)) return next(createError(400, 'Отсутствует идентификатор пользователя'));
+	if (!isValidObjectId(id)) return next(createError(400,  'Ошибка идентификатора объекта'));
 	const filter = {userId: vk_user_id, _id: id};
 	await Account.findOne(filter)
 		.then(account => {
