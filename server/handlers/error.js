@@ -25,8 +25,6 @@ const handleError = (err, res) => {
 	const { statusCode, message } = err;
 	res.status(statusCode || 500);
 	res.send({
-		success: false,
-		data: null,
 		error: {
 			statusCode,
 			message
