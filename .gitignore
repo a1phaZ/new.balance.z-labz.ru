@@ -8,3 +8,4 @@
 /yarn.lock
 /client/package.json.back
 /client/bundle.zip
+/.nyc_output/
