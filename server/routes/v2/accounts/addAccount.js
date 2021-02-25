@@ -12,6 +12,7 @@ const addAccount = async (req, res, next) => {
 
 	if (!isExist(title)) return next(createError(400, 'Название не должно быть пустым'));
 	if (!isExist(sum)) return next(createError(400, 'Сумма не должна быть пустой'));
+	if (!isExist(vk_user_id)) return next(createError(400, 'Отсутствует идентификатор пользователя'));
 	if (!isValidFloat(sum)) return next(createError(400, 'Ошибка преобразования суммы'));
 	if (!isPositive(sum)) return next(createError(400, 'Сумма не должна быть меньше 0'));
 	if (!isValidLength(title)) return next(createError(400, 'Превышена допустимая длина названия'));
