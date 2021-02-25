@@ -9,6 +9,7 @@ const updateAccount = async (req, res, next) => {
 		body: {title}
 	} = req;
 	
+	if (!isExist(vk_user_id)) return next(createError(400, 'Отсутствует идентификатор пользователя'));
 	if (!isExist(title)) return next(createError(400, 'Название не должно быть пустым'));
 	if (!isValidLength(title)) return next(createError(400, 'Превышена допустимая длина названия'));
 	if (!isValidObjectId(id)) return next(createError(400,  'Ошибка идентификатора объекта'));
@@ -16,7 +17,6 @@ const updateAccount = async (req, res, next) => {
 	
 	const currentMonth = new Date(date).getMonth();
 	const currentYear = new Date(date).getFullYear();
-	console.log(currentMonth, currentYear);
 	await Account.findOneAndUpdate({userId: vk_user_id, _id: id}, {$set: {title: title}}, {new: true})
 		.select('-__v')
 		.populate({
