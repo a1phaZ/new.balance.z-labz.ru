@@ -1,5 +1,5 @@
 const Budget = require('../../../models/budget');
-const {isValidFloat, isExist, isPositive} = require('../../../handlers/checkInputData');
+const {isValidFloat, isExist, isPositive, isValidLength} = require('../../../handlers/checkInputData');
 const {setErrorStatusCodeAndMessage, getMongooseError, createError} = require("../../../handlers/error");
 
 const addBudget = async (req, res, next) => {
@@ -12,6 +12,7 @@ const addBudget = async (req, res, next) => {
 	const month = date.getMonth();
 	if (!isExist(title)) return next(createError(400, 'Название не должно быть пустым'));
 	if (!isExist(vk_user_id)) return next(createError(400, 'Отсутствует идентификатор пользователя'));
+	if (!isValidLength(title)) return next(createError(400, 'Превышена допустимая длина названия'));
 	if (!isExist(sum)) return next(createError(400, 'Сумма не должна быть пустой'));
 	if (!isValidFloat(sum)) return next(createError(400, 'Ошибка преобразования суммы'));
 	if (!isPositive(sum)) return next(createError(400, 'Сумма должна быть больше 0'));
