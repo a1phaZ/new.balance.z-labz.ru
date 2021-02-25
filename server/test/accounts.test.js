@@ -51,6 +51,11 @@ describe('api/v2/accounts', () => {
 			expect(res.status).to.equal(400);
 			expect(res.body).to.have.property('error');
 		})
+		it('should return 404 when account not found', async () => {
+			const res = await request(app).get(`${apiStr}/600e40f7d81d152a0c68835c?vk_user_id=1`)
+			expect(res.status).to.equal(404);
+			expect(res.body).to.have.property('error');
+		})
 		it('should return 400 when date doesnt valid', async () => {
 			const account = new Account({
 				userId: 1, title: 'test 1', sum: 10, income: true
@@ -178,6 +183,19 @@ describe('api/v2/accounts', () => {
 				.patch(`${apiStr}/${account._id}?vk_user_id=1`)
 				.send({});
 			expect(res.status).to.equal(400);
+			expect(res.body).to.have.property('error');
+		});
+		it('should return 404 when account not found', async () => {
+			const account = new Account({
+				userId: 1, title: 'test 1', sum: 10, income: true
+			})
+			await account.save();
+			const res = await request(app)
+				.patch(`${apiStr}/600e60fbd81d152a0c6886b9?vk_user_id=1`)
+				.send({
+					title: 'update'
+				});
+			expect(res.status).to.equal(404);
 			expect(res.body).to.have.property('error');
 		});
 		it('should return 400 when title length > 20', async () => {

@@ -27,7 +27,10 @@ const getAccount = async (req, res, next) => {
 			match: {year: {$eq: currentYear}, month: {$eq: currentMonth}},
 			select: '-__v',
 		})
-		.then(account => res.status(200).json({account: account}))
+		.then(account => {
+			if (!account) return next(createError(404, 'Счет не найден'));
+			return res.status(200).json({account: account})
+		})
 		.catch(() => next(createError(400,  'Ошибка чтения из БД')));
 }
 

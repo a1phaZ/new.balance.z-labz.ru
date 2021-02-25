@@ -17,7 +17,12 @@ const updateAccount = async (req, res, next) => {
 	
 	const currentMonth = new Date(date).getMonth();
 	const currentYear = new Date(date).getFullYear();
-	await Account.findOneAndUpdate({userId: vk_user_id, _id: id}, {$set: {title: title}}, {new: true})
+	const filter = {userId: vk_user_id, _id: id};
+	await Account.findOne(filter)
+		.then(account => {
+			if (!account) return next(createError(404, 'Счет не найден'));
+		});
+	await Account.findOneAndUpdate(filter, {$set: {title: title}}, {new: true})
 		.select('-__v')
 		.populate({
 			path: 'operations',
@@ -25,7 +30,6 @@ const updateAccount = async (req, res, next) => {
 			select: '-__v',
 		})
 		.then(account => {
-			if (!account) return Promise.reject(createError(404, 'Счет не найден'));
 			res.status(200).json({account: account})
 		})
 		.catch(err => {
