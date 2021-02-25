@@ -6,7 +6,9 @@ dotenv.config({path: './.env'});
 
 mongoose.Promise = global.Promise;
 
-const dbPath = process.env.MONGODB_URI || `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PWD}@${process.env.MONGO_PATH}:${process.env.MONGO_PORT}/${process.env.MONGO_BASE}?authSourse=${process.env.MONGO_BASE}`;
+const testUri = process.env.NODE_ENV === 'test' ? process.env.MONGODB_URI_TEST : null;
+
+const dbPath = testUri ? testUri : process.env.MONGODB_URI || `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PWD}@${process.env.MONGO_PATH}:${process.env.MONGO_PORT}/${process.env.MONGO_BASE}?authSourse=${process.env.MONGO_BASE}`;
 
 mongoose.connect(dbPath, {
 	useNewUrlParser: true,
@@ -14,9 +16,7 @@ mongoose.connect(dbPath, {
 	useUnifiedTopology: true,
 	useFindAndModify: false,
 });
-mongoose.connection.on('connected', () =>
-	logger.debug(`MongoDB connection established successfully`),
-);
+mongoose.connection.on('connected', () => logger.debug(`MongoDB connection established successfully | DB name: ${mongoose.connection.name}`));
 mongoose.connection.on('disconnected', () =>
 	logger.debug(`MongoDB connection close`),
 );
