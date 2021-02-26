@@ -79,6 +79,20 @@ describe(`${apiStr}`, () => {
 			expect(res.status).to.equal(400);
 			expect(res.body).to.have.property('error');
 		});
+		it('should return 404 when not found budget', async () => {
+			const budget = new Budget({
+				userId: 1,
+				title: 'test budget 1',
+				month: 1,
+				year: 2021,
+				sum: 100,
+			});
+			await budget.save();
+			
+			const res = await request(app).get(`${apiStr}/5fb7a17719d1b15ab01aecd8?vk_user_id=1`);
+			expect(res.status).to.equal(404);
+			expect(res.body).to.have.property('error');
+		});
 	})
 	describe('POST /', () => {
 		it('should add budget', async () => {
