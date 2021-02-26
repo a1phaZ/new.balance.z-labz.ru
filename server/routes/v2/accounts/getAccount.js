@@ -1,6 +1,7 @@
 const Account = require('../../../models/moneybox');
-const {isExist, isValidObjectId, isValidDate} = require("../../../handlers/checkInputData");
-const {createError} = require('../../../handlers/error');
+const {INVALID_DATE, NOT_FOUND} = require("../../../const/errors");
+const {isValidDate, checkIds} = require("../../../handlers/checkInputData");
+const {createError, catchError} = require('../../../handlers/error');
 
 const getAccount = async (req, res, next) => {
 	const {
@@ -13,9 +14,8 @@ const getAccount = async (req, res, next) => {
 		}
 	}	= req;
 	
-	if (!isExist(vk_user_id)) return next(createError(400,  'Отсутствует идентификатор пользователя'));
-	if (!isValidObjectId(id)) return next(createError(400,  'Ошибка идентификатора объекта'));
-	if (!isValidDate(date)) return next(createError(400,  'Ошибка даты'));
+	await checkIds(id, vk_user_id, next);
+	if (!isValidDate(date)) return next(createError(400,  INVALID_DATE));
 	
 	const filter = {userId: vk_user_id, _id: id};
 	const currentMonth = new Date(date).getMonth();
@@ -28,10 +28,10 @@ const getAccount = async (req, res, next) => {
 			select: '-__v',
 		})
 		.then(account => {
-			if (!account) return next(createError(404, 'Счет не найден'));
+			if (!account) return next(createError(404, NOT_FOUND));
 			return res.status(200).json({account: account})
 		})
-		.catch(() => next(createError(400,  'Ошибка чтения из БД')));
+		.catch((err) => catchError(err, next));
 }
 
 module.exports = getAccount;

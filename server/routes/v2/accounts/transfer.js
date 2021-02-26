@@ -1,6 +1,8 @@
 const {itemSaveAndUpdateAccount} = require("../../../handlers/itemSaveAndUpdateAccount");
 const Item = require('../../../models/item');
-const {isExist, isValidFloat, isPositive, isFutureDate, isValidDate, isValidObjectId} = require('../../../handlers/checkInputData');
+const {checkItemData} = require("../../../handlers/checkInputData");
+const {NOT_EXIST} = require("../../../const/errors");
+const {isExist} = require('../../../handlers/checkInputData');
 const {format} = require('date-fns');
 
 const transfer = async (req, res, next) => {
@@ -21,14 +23,10 @@ const transfer = async (req, res, next) => {
 	const d = new Date(date);
 	d.setTime( d.getTime() + tzOffset*60*1000 );
 	
-	if (!isExist(title)) return next(createError(400, 'Название не должно быть пустым'));
-	if (!isValidFloat(price)) return next(createError(400, 'Ошибка преобразования цены'));
-	if (!isPositive(price)) return next(createError(400, 'Сумма не должна быть меньше 0'))
-	if (isFutureDate(d)) return next(createError(400,  'Дата в будущем'));
-	if (!isValidDate(new Date(date))) return next(createError(400,  'Дата невалидна'));
-	if (!isExist(from) || !isExist(to)) return next(createError(400, 'Отсутствует идентификатор счета'));
-	if (!isValidObjectId(to) || !isValidObjectId(from)) return next(createError(400,  'Ошибка идентификатора счета'));
+	if (!isExist(from) || !isExist(to)) return next(createError(400, NOT_EXIST));
 	
+	checkItemData({...req.body, vk_user_id, itemFrom: to, quantity: 1});
+
 	const itemTo = new Item({
 		date: format(date ? new Date(date) : new Date(), 'yyyy-MM-dd'),
 		userId: vk_user_id,

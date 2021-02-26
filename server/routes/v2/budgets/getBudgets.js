@@ -1,4 +1,5 @@
 const Budget = require('../../../models/budget');
+const {NOT_EXIST, INVALID_DATE} = require("../../../const/errors");
 const {isExist, isValidDate, } = require("../../../handlers/checkInputData");
 const {createError} = require('../../../handlers/error');
 
@@ -10,8 +11,8 @@ const getBudgets = async (req, res, next) => {
 		}
 	}	= req;
 	
-	if (!isExist(vk_user_id)) return next(createError(400, 'Отсутствует идентификатор пользователя'));
-	if (!isValidDate(date)) return next(createError(400, 'Ошибка даты'));
+	if (!isExist(vk_user_id)) return next(createError(400, NOT_EXIST));
+	if (!isValidDate(date)) return next(createError(400, INVALID_DATE));
 	
 	const currentMonth = new Date(date).getMonth();
 	const currentYear = new Date(date).getFullYear();

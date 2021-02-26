@@ -1,6 +1,6 @@
 const Account = require('../../../models/moneybox');
 const {isExist} = require("../../../handlers/checkInputData");
-const {createError} = require('../../../handlers/error');
+const {createError, catchError} = require('../../../handlers/error');
 
 const getAccounts = async (req, res, next) => {
 	const {
@@ -15,7 +15,7 @@ const getAccounts = async (req, res, next) => {
 	await Account.find(filter)
 		.select('-__v -operations')
 		.then(accounts => res.status(200).json({accounts: accounts}))
-		.catch(() => next(createError(400,  'Ошибка чтения из БД')));
+		.catch((err) => catchError(err, next));
 }
 
 module.exports = getAccounts;

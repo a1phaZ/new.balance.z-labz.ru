@@ -1,5 +1,6 @@
 const Budget = require('../../../models/budget');
-const {isValidObjectId, isExist} = require("../../../handlers/checkInputData");
+const {NOT_FOUND} = require("../../../const/errors");
+const {checkIds} = require("../../../handlers/checkInputData");
 const {createError} = require('../../../handlers/error');
 
 const deleteBudget = async (req, res, next) => {
@@ -8,11 +9,11 @@ const deleteBudget = async (req, res, next) => {
 		params: {id}
 	} = req;
 	
-	if (!isExist(vk_user_id)) return next(createError(400, 'Отсутствует идентификатор пользователя'));
-	if (!isValidObjectId(id)) return next(createError(400,  'Ошибка идентификатора объекта'));
+	await checkIds(id, vk_user_id, next);
+	
 	const filter = {userId: vk_user_id, _id: id};
 	const budget = await Budget.findOne(filter);
-	if (!budget) return next(createError(404, 'Бюджет не найден'));
+	if (!budget) return next(createError(404, NOT_FOUND));
 	Budget.deleteOne(filter)
 		.then(() => res.status(200).json({budget: null, message: 'Бюджет удалён'}))
 		.catch(err => next(createError(err.statusCode, err.message)));
