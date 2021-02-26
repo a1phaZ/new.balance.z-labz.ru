@@ -46,9 +46,21 @@ const getMongooseError = (err) => {
 		.join(' | ');
 }
 
+const catchError = (err, next) => {
+	if (err.errors) {
+		return next(createError(400, getMongooseError(err)))
+	}
+	if (err.reason) {
+		const e = setErrorStatusCodeAndMessage(err);
+		next(createError(e.statusCode, e.message));
+	}
+	return next(createError(err.statusCode, err.message))
+}
+
 module.exports = {
 	createError,
 	handleError,
 	getMongooseError,
-	setErrorStatusCodeAndMessage
+	setErrorStatusCodeAndMessage,
+	catchError
 }
