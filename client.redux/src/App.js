@@ -3,19 +3,20 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import {goBack, closeModal, setStory} from "./js/store/router/actions";
 import {getActivePanel} from "./js/services/_functions";
+import {getData} from "./js/store/api/actions";
+
 import * as VK from './js/services/VK';
 
 import {Epic, View, Root, Tabbar, ModalRoot, TabbarItem, ConfigProvider} from "@vkontakte/vkui";
-
 import Icon28Newsfeed from '@vkontakte/icons/dist/28/newsfeed';
+
 import Icon28More from '@vkontakte/icons/dist/28/more';
-
 import HomePanelBase from './js/panels/home/base';
+
 import HomePanelGroups from './js/panels/home/groups';
-
 import MorePanelBase from './js/panels/more/base';
-import MorePanelExample from './js/panels/more/example';
 
+import MorePanelExample from './js/panels/more/example';
 import HomeBotsListModal from './js/components/modals/HomeBotsListModal';
 import HomeBotInfoModal from './js/components/modals/HomeBotInfoModal';
 
@@ -24,6 +25,7 @@ class App extends React.Component {
         super(props);
 
         this.lastAndroidBackAction = 0;
+        this.callApi = this.callApi.bind(this);
     }
 
     componentDidMount() {
@@ -42,6 +44,15 @@ class App extends React.Component {
                 window.history.pushState(null, null);
             }
         };
+        
+        //TODO
+        this.callApi('/accounts/6037c151b5a5c21448f891c2');
+        this.callApi('/budgets');
+    }
+    
+    //TODO
+    callApi = (url) => {
+        this.props.getData(url);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -139,7 +150,12 @@ const mapStateToProps = (state) => {
         popouts: state.router.popouts,
         scrollPosition: state.router.scrollPosition,
 
-        colorScheme: state.vkui.colorScheme
+        colorScheme: state.vkui.colorScheme,
+        
+        accounts: state.api.accounts,
+        account: state.api.account,
+        budgets: state.api.budgets,
+        error: state.api.error
     };
 };
 
@@ -147,7 +163,7 @@ const mapStateToProps = (state) => {
 function mapDispatchToProps(dispatch) {
     return {
         dispatch,
-        ...bindActionCreators({setStory, goBack, closeModal}, dispatch)
+        ...bindActionCreators({setStory, goBack, closeModal, getData}, dispatch)
     }
 }
 

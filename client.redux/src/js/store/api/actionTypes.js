@@ -1,0 +1,1 @@
+export const SET_STATE_FROM_API = 'SET_STATE_FROM_API';
