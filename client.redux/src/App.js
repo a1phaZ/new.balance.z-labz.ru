@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import {goBack, closeModal, setStory} from "./js/store/router/actions";
 import {getActivePanel} from "./js/services/_functions";
-import {getData} from "./js/store/api/actions";
 
 import * as VK from './js/services/VK';
 
@@ -19,13 +18,13 @@ import MorePanelBase from './js/panels/more/base';
 import MorePanelExample from './js/panels/more/example';
 import HomeBotsListModal from './js/components/modals/HomeBotsListModal';
 import HomeBotInfoModal from './js/components/modals/HomeBotInfoModal';
+import HomePanelIndex from "./js/panels/home";
 
 class App extends React.Component {
     constructor(props) {
         super(props);
 
         this.lastAndroidBackAction = 0;
-        this.callApi = this.callApi.bind(this);
     }
 
     componentDidMount() {
@@ -45,14 +44,6 @@ class App extends React.Component {
             }
         };
         
-        //TODO
-        this.callApi('/accounts/6037c151b5a5c21448f891c2');
-        this.callApi('/budgets');
-    }
-    
-    //TODO
-    callApi = (url) => {
-        this.props.getData(url);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -111,6 +102,7 @@ class App extends React.Component {
                             history={history}
                             onSwipeBack={() => goBack()}
                         >
+                            <HomePanelIndex id={'index'} />
                             <HomePanelBase id="base" withoutEpic={false}/>
                             <HomePanelGroups id="groups"/>
                         </View>
@@ -151,11 +143,6 @@ const mapStateToProps = (state) => {
         scrollPosition: state.router.scrollPosition,
 
         colorScheme: state.vkui.colorScheme,
-        
-        accounts: state.api.accounts,
-        account: state.api.account,
-        budgets: state.api.budgets,
-        error: state.api.error
     };
 };
 
@@ -163,7 +150,7 @@ const mapStateToProps = (state) => {
 function mapDispatchToProps(dispatch) {
     return {
         dispatch,
-        ...bindActionCreators({setStory, goBack, closeModal, getData}, dispatch)
+        ...bindActionCreators({setStory, goBack, closeModal}, dispatch)
     }
 }
 
