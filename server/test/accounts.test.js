@@ -76,12 +76,7 @@ describe('api/v2/accounts', () => {
 					sum: 10
 				});
 			expect(res.status).to.equal(200);
-			expect(res.body).to.have.property('account');
-			expect(res.body.account).to.have.property('_id');
-			expect(res.body.account).to.have.property('title', 'test 1');
-			expect(res.body.account).to.have.property('sum', 10);
-			expect(res.body.account).to.have.property('operations');
-			expect(res.body.account.operations.length).to.equal(1);
+			expect(res.body).to.have.property('accounts');
 		});
 		it('should return 400 when vk_user_id doesnt exist', async () => {
 			const res = await request(app)
