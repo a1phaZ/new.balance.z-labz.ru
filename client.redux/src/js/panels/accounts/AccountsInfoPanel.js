@@ -2,10 +2,11 @@ import React, {Component} from 'react';
 import {bindActionCreators} from "redux";
 import {getData, postData} from "../../store/api/actions";
 import {connect} from "react-redux";
-import {goBack, setStory} from "../../store/router/actions";
-import {Div, Panel, PanelHeader, PanelHeaderBack, PanelSpinner} from "@vkontakte/vkui";
+import {goBack, openModal, setStory} from "../../store/router/actions";
+import {Div, Panel, PanelHeader, PanelHeaderBack, PanelHeaderButton, PanelSpinner} from "@vkontakte/vkui";
 import accountRichCell from "../../components/Accounts/accountRichCell";
 import {ArrayToObjectWithDate, ObjectToArrayWithDate} from "../../services/formatingArrayWithDate";
+import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 
 class AccountsInfoPanel extends Component {
 	constructor(props) {
@@ -42,15 +43,26 @@ class AccountsInfoPanel extends Component {
 		return (
 			<Panel id={id}>
 				<PanelHeader
-					left={<PanelHeaderBack onClick={() => this.props.goBack()}/>}
+					left={
+						<>
+							<PanelHeaderBack onClick={() => this.props.goBack()}/>
+							<PanelHeaderButton
+								onClick={() => {
+									this.props.openModal("MODAL_ADD_ITEM")
+								}}
+							>
+								<Icon28MarketAddBadgeOutline/>
+							</PanelHeaderButton>
+						</>
+					}
 				>
 					{this.getTitle()}
 				</PanelHeader>
 				{isLoading && <PanelSpinner/>}
 				{!isLoading && account &&
-					<Div>
-						{this.prepareData().map(accountRichCell({}))}
-					</Div>
+				<Div>
+					{this.prepareData().map(accountRichCell({}))}
+				</Div>
 				}
 			</Panel>
 		)
@@ -69,7 +81,7 @@ const mapStateToProps = (state) => {
 function mapDispatchToProps(dispatch) {
 	return {
 		dispatch,
-		...bindActionCreators({getData, postData, setStory, goBack}, dispatch)
+		...bindActionCreators({getData, postData, setStory, goBack, openModal}, dispatch)
 	}
 }
 

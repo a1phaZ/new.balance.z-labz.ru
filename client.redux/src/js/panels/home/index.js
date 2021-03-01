@@ -25,7 +25,7 @@ class HomePanelIndex extends Component {
 							</PanelHeaderButton>
 							<PanelHeaderButton
 								onClick={() => {
-									console.log('Вызываем modal для добавления элемента')
+									this.props.openModal("MODAL_ADD_ITEM")
 								}}
 							>
 								<Icon28MarketAddBadgeOutline/>
