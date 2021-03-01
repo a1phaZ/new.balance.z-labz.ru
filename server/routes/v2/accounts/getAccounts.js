@@ -1,6 +1,7 @@
 const Account = require('../../../models/moneybox');
 const {isExist} = require("../../../handlers/checkInputData");
 const {createError, catchError} = require('../../../handlers/error');
+const sortByDate = require('../../../handlers/sortByDate');
 
 const getAccounts = async (req, res, next) => {
 	const {
@@ -14,7 +15,7 @@ const getAccounts = async (req, res, next) => {
 	const filter = {userId: vk_user_id}
 	await Account.find(filter)
 		.select('-__v -operations')
-		.then(accounts => res.status(200).json({accounts: accounts}))
+		.then(accounts => res.status(200).json({accounts: accounts.sort(sortByDate)}))
 		.catch((err) => catchError(err, next));
 }
 

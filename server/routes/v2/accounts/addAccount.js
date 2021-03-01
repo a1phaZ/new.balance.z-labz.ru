@@ -1,18 +1,18 @@
 const Account = require('../../../models/moneybox');
 const Item = require('../../../models/item');
-const {NOT_FOUND} = require("../../../const/errors");
 const {checkAccountData} = require('../../../handlers/checkInputData');
 const {format} = require('date-fns');
-const {createError, getMongooseError} = require('../../../handlers/error');
+const {catchError} = require('../../../handlers/error');
+const sortByDate = require('../../../handlers/sortByDate');
 
 const addAccount = async (req, res, next) => {
 	const {
 		body: {title, sum, income = true},
 		query: {vk_user_id}
 	} = req;
-
+	
 	await checkAccountData({title, sum, vk_user_id}, {sumCheck: true, dateCheck: false}, next);
-
+	
 	const item = new Item({
 		date: format(new Date(), 'yyyy-MM-dd'),
 		userId: vk_user_id,
@@ -22,8 +22,8 @@ const addAccount = async (req, res, next) => {
 		sum: parseFloat(sum),
 		income,
 	})
-		await item.save();
-
+	await item.save();
+	
 	const account = new Account({
 		userId: vk_user_id,
 		title,
@@ -33,25 +33,13 @@ const addAccount = async (req, res, next) => {
 	
 	account.$sum = sum || 0;
 	account.$income = income;
-
-	await account.save()
-		.then(async response => await Account.findById({_id: response._id})
-			.select('-__v')
-			.populate({
-				path: 'operations',
-				select: '-__v',
-			})
-		)
-		.then(account => {
-			if (!account) return Promise.reject(createError(404, NOT_FOUND));
-			res.status(200).json({account: account});
-		})
-		.catch(err => {
-			if (err.errors) {
-				return next(createError(err.statusCode, getMongooseError(err)))
-			}
-			return next(createError(err.statusCode, err.message))
-		});
+	
+	await account.save();
+	const filter = {userId: vk_user_id}
+	await Account.find(filter)
+		.select('-__v -operations')
+		.then(accounts => res.status(200).json({accounts: accounts.sort(sortByDate)}))
+		.catch((err) => catchError(err, next));
 }
 
 module.exports = addAccount;
