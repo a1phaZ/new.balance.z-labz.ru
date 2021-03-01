@@ -1,30 +1,16 @@
 import React, {Component} from 'react';
-import {Panel, PanelHeader, PanelHeaderButton} from "@vkontakte/vkui";
-import {bindActionCreators} from "redux";
-import {setStory} from "../../store/router/actions";
-import {connect} from "react-redux";
-import {getData} from "../../store/api/actions";
-import ItemsList from "../../components/ItemsList";
+import {List, Panel, PanelHeader, PanelHeaderButton} from "@vkontakte/vkui";
 import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
+import Accounts from "../../components/Accounts/Accounts";
+import Budgets from "../../components/Budgets/Budgets";
+import {closePopout, goBack, openModal, openPopout, setPage} from "../../store/router/actions";
+import {connect} from "react-redux";
 
 class HomePanelIndex extends Component {
-	constructor(props) {
-		super(props);
-		
-		this.callApi = this.callApi.bind(this);
-	}
-	
-	componentDidMount() {
-		this.callApi('/accounts');
-	}
-	
-	callApi = (url) => {
-		this.props.getData(url);
-	}
 	
 	render() {
-		const {id, accounts} = this.props;
+		const {id} = this.props;
 		return (
 			<Panel id={id}>
 				<PanelHeader
@@ -32,7 +18,7 @@ class HomePanelIndex extends Component {
 						<>
 							<PanelHeaderButton
 								onClick={() => {
-									console.log('Вызываем modal для добавления счета');
+									this.props.openModal("MODAL_ADD_ACCOUNT")
 								}}
 							>
 								<Icon28ListAddOutline/>
@@ -49,24 +35,22 @@ class HomePanelIndex extends Component {
 				>
 					Баланс
 				</PanelHeader>
-				<ItemsList data={accounts} />
+				{/*<MonthSwitch />*/}
+				<List>
+					<Accounts/>
+					<Budgets />
+				</List>
 			</Panel>
 		)
 	}
 }
 
-const mapStateToProps = (state) => {
-	return {
-		accounts: state.api.accounts,
-		error: state.api.error
-	}
-}
+const mapDispatchToProps = {
+	setPage,
+	goBack,
+	openPopout,
+	closePopout,
+	openModal
+};
 
-function mapDispatchToProps(dispatch) {
-	return {
-		dispatch,
-		...bindActionCreators({setStory, getData}, dispatch)
-	}
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(HomePanelIndex);
+export default connect(null, mapDispatchToProps)(HomePanelIndex);
