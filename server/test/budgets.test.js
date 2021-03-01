@@ -15,15 +15,15 @@ describe(`${apiStr}`, () => {
 				{
 					userId: 1,
 					title: 'budget test 1',
-					month: 1,
-					year: 2021,
+					month: new Date().getMonth(),
+					year: new Date().getFullYear(),
 					sum: 100,
 				},
 				{
 					userId: 1,
 					title: 'budget test 2',
-					month: 1,
-					year: 2021,
+					month: new Date().getMonth(),
+					year: new Date().getFullYear(),
 					sum: 200,
 				}
 			];
@@ -140,8 +140,8 @@ describe(`${apiStr}`, () => {
 			const budget = new Budget({
 				userId: 1,
 				title: 'test budget 1',
-				month: 1,
-				year: 2021,
+				month: new Date().getMonth(),
+				year: new Date().getFullYear(),
 				sum: 100,
 			});
 			await budget.save();
