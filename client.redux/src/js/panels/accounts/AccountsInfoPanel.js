@@ -48,7 +48,7 @@ class AccountsInfoPanel extends Component {
 							<PanelHeaderBack onClick={() => this.props.goBack()}/>
 							<PanelHeaderButton
 								onClick={() => {
-									this.props.openModal("MODAL_ADD_ITEM")
+									this.props.openModal("MODAL_ITEM")
 								}}
 							>
 								<Icon28MarketAddBadgeOutline/>

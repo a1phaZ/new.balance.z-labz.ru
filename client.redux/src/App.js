@@ -19,160 +19,167 @@ import MorePanelExample from './js/panels/more/example';
 import HomeBotsListModal from './js/components/modals/HomeBotsListModal';
 import HomeBotInfoModal from './js/components/modals/HomeBotInfoModal';
 import HomePanelIndex from "./js/panels/home";
-import AddAccountModal from "./js/components/modals/AddAccountModal";
+import AddAccountModal from "./js/components/modals/AccountModal";
 import AccountsInfoPanel from "./js/panels/accounts/AccountsInfoPanel";
+import AccountModal from "./js/components/modals/AccountModal";
+import ItemModal from "./js/components/modals/ItemModal";
 
 class App extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.lastAndroidBackAction = 0;
-    }
-
-    componentDidMount() {
-        const {goBack, dispatch} = this.props;
-
-        dispatch(VK.initApp());
-
-        window.onpopstate = () => {
-            let timeNow = +new Date();
-
-            if (timeNow - this.lastAndroidBackAction > 500) {
-                this.lastAndroidBackAction = timeNow;
-
-                goBack();
-            } else {
-                window.history.pushState(null, null);
-            }
-        };
-        
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        const {activeView, activeStory, activePanel, scrollPosition} = this.props;
-
-        if (
-            prevProps.activeView !== activeView ||
-            prevProps.activePanel !== activePanel ||
-            prevProps.activeStory !== activeStory
-        ) {
-            let pageScrollPosition = scrollPosition[activeStory + "_" + activeView + "_" + activePanel] || 0;
-
-            window.scroll(0, pageScrollPosition);
-        }
-    }
-
-    render() {
-        const {goBack, setStory, closeModal, popouts, activeView, activeStory, activeModals, panelsHistory, colorScheme} = this.props;
-
-        let history = (panelsHistory[activeView] === undefined) ? [activeView] : panelsHistory[activeView];
-        let popout = (popouts[activeView] === undefined) ? null : popouts[activeView];
-        let activeModal = (activeModals[activeView] === undefined) ? null : activeModals[activeView];
-
-        const homeModals = (
-            <ModalRoot activeModal={activeModal}>
-                <HomeBotsListModal
-                    id="MODAL_PAGE_BOTS_LIST"
-                    onClose={() => closeModal()}
-                />
-                <HomeBotInfoModal
-                    id="MODAL_PAGE_BOT_INFO"
-                    onClose={() => closeModal()}
-                />
-            </ModalRoot>
-        );
-        
-        const addModals = (
-          <ModalRoot activeModal={activeModal}>
-              <AddAccountModal
-                  id={'MODAL_ADD_ACCOUNT'}
-                  onClose={() => closeModal()}
-              />
-          </ModalRoot>
-        )
-
-        return (
-            <ConfigProvider isWebView={true} scheme={colorScheme}>
-                <Epic activeStory={activeStory} tabbar={
-                    <Tabbar>
-                        <TabbarItem
-                            onClick={() => setStory('home', 'base')}
-                            selected={activeStory === 'home'}
-                        ><Icon28Newsfeed/></TabbarItem>
-                        <TabbarItem
-                            onClick={() => setStory('more', 'callmodal')}
-                            selected={activeStory === 'more'}
-                        ><Icon28More/></TabbarItem>
-                    </Tabbar>
-                }>
-                    <Root id="home" activeView={activeView} popout={popout}>
-                        <View
-                            id="home"
-                            modal={addModals}
-                            activePanel={getActivePanel("home")}
-                            history={history}
-                            onSwipeBack={() => goBack()}
-                        >
-                            <HomePanelIndex id={'index'} />
-                            <HomePanelBase id="base" withoutEpic={false}/>
-                            <HomePanelGroups id="groups"/>
-                        </View>
-                    </Root>
-                    <Root id={'accounts'} activeView={activeView} popout={popout}>
-                        <View
-                          id={'accounts'}
-                          activePanel={getActivePanel('accounts')}
-                          history={history}
-                          onSwipeBack={() => goBack()}
-                        >
-                            <AccountsInfoPanel id={'info'} />
-                        </View>
-                    </Root>
-                    <Root id="more" activeView={activeView} popout={popout}>
-                        <View
-                            id="more"
-                            modal={homeModals}
-                            activePanel={getActivePanel("more")}
-                            history={history}
-                            onSwipeBack={() => goBack()}
-                        >
-                            <MorePanelBase id="callmodal"/>
-                        </View>
-                        <View
-                            id="modal"
-                            modal={homeModals}
-                            activePanel={getActivePanel("modal")}
-                            history={history}
-                            onSwipeBack={() => goBack()}
-                        >
-                            <MorePanelExample id="filters"/>
-                        </View>
-                    </Root>
-                </Epic>
-            </ConfigProvider>
-        );
-    }
+	constructor(props) {
+		super(props);
+		
+		this.lastAndroidBackAction = 0;
+	}
+	
+	componentDidMount() {
+		const {goBack, dispatch} = this.props;
+		
+		dispatch(VK.initApp());
+		
+		window.onpopstate = () => {
+			let timeNow = +new Date();
+			
+			if (timeNow - this.lastAndroidBackAction > 500) {
+				this.lastAndroidBackAction = timeNow;
+				
+				goBack();
+			} else {
+				window.history.pushState(null, null);
+			}
+		};
+		
+	}
+	
+	componentDidUpdate(prevProps, prevState, snapshot) {
+		const {activeView, activeStory, activePanel, scrollPosition} = this.props;
+		
+		if (
+			prevProps.activeView !== activeView ||
+			prevProps.activePanel !== activePanel ||
+			prevProps.activeStory !== activeStory
+		) {
+			let pageScrollPosition = scrollPosition[activeStory + "_" + activeView + "_" + activePanel] || 0;
+			
+			window.scroll(0, pageScrollPosition);
+		}
+	}
+	
+	render() {
+		const {goBack, setStory, closeModal, popouts, activeView, activeStory, activeModals, panelsHistory, colorScheme} = this.props;
+		
+		let history = (panelsHistory[activeView] === undefined) ? [activeView] : panelsHistory[activeView];
+		let popout = (popouts[activeView] === undefined) ? null : popouts[activeView];
+		let activeModal = (activeModals[activeView] === undefined) ? null : activeModals[activeView];
+		
+		const homeModals = (
+			<ModalRoot activeModal={activeModal}>
+				<HomeBotsListModal
+					id="MODAL_PAGE_BOTS_LIST"
+					onClose={() => closeModal()}
+				/>
+				<HomeBotInfoModal
+					id="MODAL_PAGE_BOT_INFO"
+					onClose={() => closeModal()}
+				/>
+			</ModalRoot>
+		);
+		
+		const balanceModals = (
+			<ModalRoot activeModal={activeModal}>
+				<AccountModal
+					id={'MODAL_ACCOUNT'}
+					onClose={() => closeModal()}
+				/>
+				<ItemModal
+					id={'MODAL_ITEM'}
+					onClose={() => closeModal()}
+				/>
+			</ModalRoot>
+		)
+		
+		return (
+			<ConfigProvider isWebView={true} scheme={colorScheme}>
+				<Epic activeStory={activeStory} tabbar={
+					<Tabbar>
+						<TabbarItem
+							onClick={() => setStory('home', 'base')}
+							selected={activeStory === 'home'}
+						><Icon28Newsfeed/></TabbarItem>
+						<TabbarItem
+							onClick={() => setStory('more', 'callmodal')}
+							selected={activeStory === 'more'}
+						><Icon28More/></TabbarItem>
+					</Tabbar>
+				}>
+					<Root id="home" activeView={activeView} popout={popout}>
+						<View
+							id="home"
+							modal={balanceModals}
+							activePanel={getActivePanel("home")}
+							history={history}
+							onSwipeBack={() => goBack()}
+						>
+							<HomePanelIndex id={'index'}/>
+							<HomePanelBase id="base" withoutEpic={false}/>
+							<HomePanelGroups id="groups"/>
+						</View>
+					</Root>
+					<Root id={'accounts'} activeView={activeView} popout={popout}>
+						<View
+							id={'accounts'}
+							modal={balanceModals}
+							activePanel={getActivePanel('accounts')}
+							history={history}
+							onSwipeBack={() => goBack()}
+						>
+							<AccountsInfoPanel id={'info'}/>
+						</View>
+					</Root>
+					<Root id="more" activeView={activeView} popout={popout}>
+						<View
+							id="more"
+							modal={homeModals}
+							activePanel={getActivePanel("more")}
+							history={history}
+							onSwipeBack={() => goBack()}
+						>
+							<MorePanelBase id="callmodal"/>
+						</View>
+						<View
+							id="modal"
+							modal={homeModals}
+							activePanel={getActivePanel("modal")}
+							history={history}
+							onSwipeBack={() => goBack()}
+						>
+							<MorePanelExample id="filters"/>
+						</View>
+					</Root>
+				</Epic>
+			</ConfigProvider>
+		);
+	}
 }
 
 const mapStateToProps = (state) => {
-    return {
-        activeView: state.router.activeView,
-        activeStory: state.router.activeStory,
-        panelsHistory: state.router.panelsHistory,
-        activeModals: state.router.activeModals,
-        popouts: state.router.popouts,
-        scrollPosition: state.router.scrollPosition,
-
-        colorScheme: state.vkui.colorScheme,
-    };
+	return {
+		activeView: state.router.activeView,
+		activeStory: state.router.activeStory,
+		panelsHistory: state.router.panelsHistory,
+		activeModals: state.router.activeModals,
+		popouts: state.router.popouts,
+		scrollPosition: state.router.scrollPosition,
+		
+		colorScheme: state.vkui.colorScheme,
+	};
 };
 
 
 function mapDispatchToProps(dispatch) {
-    return {
-        dispatch,
-        ...bindActionCreators({setStory, goBack, closeModal}, dispatch)
-    }
+	return {
+		dispatch,
+		...bindActionCreators({setStory, goBack, closeModal}, dispatch)
+	}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

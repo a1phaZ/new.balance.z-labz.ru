@@ -21,7 +21,7 @@ import {postData} from "../../store/api/actions";
 import {bindActionCreators} from "redux";
 import {closeModal} from "../../store/router/actions";
 
-class AddAccountModal extends Component {
+class AccountModal extends Component {
 	constructor(props) {
 		super(props);
 		
@@ -41,7 +41,7 @@ class AddAccountModal extends Component {
 		};
 		
 		this.state = {
-			inputData: props.inputData['add_account_form'] || defaultInputData
+			inputData: props.inputData['account_form'] || defaultInputData
 		};
 		
 		this.handleInput = (e) => {
@@ -105,7 +105,7 @@ class AddAccountModal extends Component {
 						<PanelHeaderButton onClick={onClose}><Icon24Dismiss/></PanelHeaderButton> :
 						<PanelHeaderButton onClick={this.clearForm}><Icon28ClearDataOutline/></PanelHeaderButton>}
 					>
-						Информация о боте
+						Добавить счет
 					</ModalPageHeader>
 				}
 				onClose={onClose}
@@ -157,4 +157,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 
-export default withPlatform(connect(mapStateToProps, mapDispatchToProps)(AddAccountModal));
+export default withPlatform(connect(mapStateToProps, mapDispatchToProps)(AccountModal));

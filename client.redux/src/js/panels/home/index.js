@@ -18,14 +18,14 @@ class HomePanelIndex extends Component {
 						<>
 							<PanelHeaderButton
 								onClick={() => {
-									this.props.openModal("MODAL_ADD_ACCOUNT")
+									this.props.openModal("MODAL_ACCOUNT")
 								}}
 							>
 								<Icon28ListAddOutline/>
 							</PanelHeaderButton>
 							<PanelHeaderButton
 								onClick={() => {
-									this.props.openModal("MODAL_ADD_ITEM")
+									this.props.openModal("MODAL_ITEM")
 								}}
 							>
 								<Icon28MarketAddBadgeOutline/>
