@@ -19,6 +19,8 @@ import MorePanelExample from './js/panels/more/example';
 import HomeBotsListModal from './js/components/modals/HomeBotsListModal';
 import HomeBotInfoModal from './js/components/modals/HomeBotInfoModal';
 import HomePanelIndex from "./js/panels/home";
+import AddAccountModal from "./js/components/modals/AddAccountModal";
+import AccountsInfoPanel from "./js/panels/accounts/AccountsInfoPanel";
 
 class App extends React.Component {
     constructor(props) {
@@ -79,6 +81,15 @@ class App extends React.Component {
                 />
             </ModalRoot>
         );
+        
+        const addModals = (
+          <ModalRoot activeModal={activeModal}>
+              <AddAccountModal
+                  id={'MODAL_ADD_ACCOUNT'}
+                  onClose={() => closeModal()}
+              />
+          </ModalRoot>
+        )
 
         return (
             <ConfigProvider isWebView={true} scheme={colorScheme}>
@@ -97,7 +108,7 @@ class App extends React.Component {
                     <Root id="home" activeView={activeView} popout={popout}>
                         <View
                             id="home"
-                            modal={homeModals}
+                            modal={addModals}
                             activePanel={getActivePanel("home")}
                             history={history}
                             onSwipeBack={() => goBack()}
@@ -105,6 +116,16 @@ class App extends React.Component {
                             <HomePanelIndex id={'index'} />
                             <HomePanelBase id="base" withoutEpic={false}/>
                             <HomePanelGroups id="groups"/>
+                        </View>
+                    </Root>
+                    <Root id={'accounts'} activeView={activeView} popout={popout}>
+                        <View
+                          id={'accounts'}
+                          activePanel={getActivePanel('accounts')}
+                          history={history}
+                          onSwipeBack={() => goBack()}
+                        >
+                            <AccountsInfoPanel id={'info'} />
                         </View>
                     </Root>
                     <Root id="more" activeView={activeView} popout={popout}>
