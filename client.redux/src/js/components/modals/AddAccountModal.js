@@ -12,6 +12,7 @@ import {
 import {connect} from "react-redux";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
 import Icon24Dismiss from "@vkontakte/icons/dist/24/dismiss";
+import { Icon28ClearDataOutline } from '@vkontakte/icons';
 import {setFormData} from "../../store/formData/actions";
 import regexp from "../../services/regexp";
 import validate from "../../services/validate";
@@ -99,10 +100,10 @@ class AddAccountModal extends Component {
 					<ModalPageHeader
 						left={platform !== IOS ?
 						<PanelHeaderButton onClick={onClose}><Icon24Cancel/></PanelHeaderButton> :
-						<PanelHeaderButton onClick={this.clearForm}><Icon24Cancel/></PanelHeaderButton>}
+						<PanelHeaderButton onClick={this.clearForm}><Icon28ClearDataOutline/></PanelHeaderButton>}
 						right={platform === IOS ?
 						<PanelHeaderButton onClick={onClose}><Icon24Dismiss/></PanelHeaderButton> :
-						<PanelHeaderButton onClick={this.clearForm}><Icon24Dismiss/></PanelHeaderButton>}
+						<PanelHeaderButton onClick={this.clearForm}><Icon28ClearDataOutline/></PanelHeaderButton>}
 					>
 						Информация о боте
 					</ModalPageHeader>
@@ -119,7 +120,9 @@ class AddAccountModal extends Component {
 								 maxLength={'20'}
 								 status={this.state.inputData.validate.title.status}
 								 bottom={this.state.inputData.validate.title.message ? this.state.inputData.validate.title.message : `${this.state.inputData.title.length} из 20`}
-								 onChange={this.handleInput}/>
+								 onChange={this.handleInput}
+					       autoComplete={'off'}
+					/>
 					<Input type={'number'} placeholder={currency(0)} top={'Баланс счета'} value={this.state.inputData.sum}
 								 pattern={'[0-9]+([,\\.][0-9]+)?'}
 								 required={true}
@@ -130,7 +133,9 @@ class AddAccountModal extends Component {
 								 min={0}
 								 step={0.01}
 								 bottom={this.state.inputData.validate.sum.message ? this.state.inputData.validate.sum.message : 'Денежные средства, находящиеся на счете в данный момент'}
-								 onChange={this.handleInput}/>
+								 onChange={this.handleInput}
+								 autoComplete={'off'}
+					/>
 					<Button size={'xl'}>Сохранить</Button>
 				</FormLayout>
 			</ModalPage>
