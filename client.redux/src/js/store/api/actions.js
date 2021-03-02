@@ -52,7 +52,6 @@ export const getData = (url, payload) => {
 }
 
 export const setId = payload => {
-	console.log(payload);
 	return dispatch => {
 		dispatch({type: SET_ID, payload});
 	}

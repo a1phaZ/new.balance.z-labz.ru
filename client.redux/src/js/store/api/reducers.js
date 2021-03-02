@@ -23,7 +23,6 @@ export const apiReducer = (state = initialState, action) => {
 				isLoading: {...state.isLoading, ...action.payload}
 			}
 		case SET_ID:
-			console.log(action.payload);
 			return {
 				...state,
 				id: {...state.id, ...action.payload}
