@@ -87,7 +87,7 @@ class AccountModal extends Component {
 	}
 	
 	componentWillUnmount() {
-		this.props.setFormData('add_account_form', this.state.inputData);
+		this.props.setFormData('account_form', this.state.inputData);
 	}
 	
 	render() {
