@@ -5,7 +5,7 @@ import ruLocale from "date-fns/locale/ru";
 import currency from "../../services/currency";
 import Color from "../Color";
 
-export default function accountRichCell({tagsShow = true}) {
+export default function accountRichCell({setId = () => {}, tagsShow = true}) {
 	return (item, index) => {
 		if (item.caption) {
 			return (
@@ -53,7 +53,7 @@ export default function accountRichCell({tagsShow = true}) {
 				after={after}
 				data-id={item._id}
 				onClick={() => {
-					console.log('Вызываем модалку для редактирования')
+					setId({type: 'item', id: item._id})
 				}}
 			>
 				{item.title}

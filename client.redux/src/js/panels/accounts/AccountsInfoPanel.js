@@ -7,6 +7,7 @@ import {Div, Panel, PanelHeader, PanelHeaderBack, PanelHeaderButton, PanelSpinne
 import accountRichCell from "../../components/Accounts/accountRichCell";
 import {ArrayToObjectWithDate, ObjectToArrayWithDate} from "../../services/formatingArrayWithDate";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
+import {setId} from "../../store/background/actions";
 
 class AccountsInfoPanel extends Component {
 	constructor(props) {
@@ -27,6 +28,13 @@ class AccountsInfoPanel extends Component {
 			
 			return ObjectToArrayWithDate(indexAr);
 		}
+		
+		this.setItem = this.setItem.bind(this);
+	}
+	
+	setItem = ({type, id}) => {
+		this.props.setId({[type]: id});
+		this.props.openModal("MODAL_ITEM");
 	}
 	
 	componentDidMount() {
@@ -61,7 +69,7 @@ class AccountsInfoPanel extends Component {
 				{isLoading && <PanelSpinner/>}
 				{!isLoading && account &&
 				<Div>
-					{this.prepareData().map(accountRichCell({}))}
+					{this.prepareData().map(accountRichCell({setId: this.setItem}))}
 				</Div>
 				}
 			</Panel>
@@ -74,14 +82,15 @@ const mapStateToProps = (state) => {
 		account: state.api.account,
 		error: state.api.error,
 		isLoading: state.api.isLoading.accounts,
-		accountId: state.api.id.account
+		accountId: state.background.id.account,
+		itemId: state.background.id.item
 	}
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
 		dispatch,
-		...bindActionCreators({getData, postData, setStory, goBack, openModal}, dispatch)
+		...bindActionCreators({getData, postData, setStory, goBack, openModal, setId}, dispatch)
 	}
 }
 
