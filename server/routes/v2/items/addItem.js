@@ -46,7 +46,18 @@ const addItem = async (req, res, next) => {
 	account.operations = [...account.operations, item._id];
 	account.$sum = item.sum;
 	account.$income = item.income;
-	await account.save()
+	await account.save().catch(err => catchError(err, next));
+	
+	const currentMonth = new Date(date).getMonth();
+	const currentYear = new Date(date).getFullYear();
+	
+	await Account.findOne(filter)
+		.select('-__v')
+		.populate({
+			path: 'operations',
+			match: {year: {$eq: currentYear}, month: {$eq: currentMonth}},
+			select: '-__v',
+		})
 		.then(account => res.status(200).json({account: account}))
 		.catch(err => catchError(err, next));
 }
