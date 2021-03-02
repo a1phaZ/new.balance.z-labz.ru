@@ -19,7 +19,6 @@ import MorePanelExample from './js/panels/more/example';
 import HomeBotsListModal from './js/components/modals/HomeBotsListModal';
 import HomeBotInfoModal from './js/components/modals/HomeBotInfoModal';
 import HomePanelIndex from "./js/panels/home";
-import AddAccountModal from "./js/components/modals/AccountModal";
 import AccountsInfoPanel from "./js/panels/accounts/AccountsInfoPanel";
 import AccountModal from "./js/components/modals/AccountModal";
 import ItemModal from "./js/components/modals/ItemModal";
