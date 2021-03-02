@@ -52,7 +52,7 @@ class ItemModal extends Component {
 		}
 		
 		this.state = {
-			inputData: props.inputData['item_form'] || defaultInputData,
+			inputData: this.getItemByIdFromState({itemId: this.props.itemId, operations: this.props.account.operations}) || props.inputData['item_form'] || defaultInputData,
 			descriptionShow: false
 		};
 		
@@ -97,6 +97,22 @@ class ItemModal extends Component {
 		this.renderedTags = this.renderedTags.bind(this);
 		this.tagsToArray = this.tagsToArray.bind(this);
 		this.dataToServer = this.dataToServer.bind(this);
+		this.getItemByIdFromState = this.getItemByIdFromState.bind(this);
+	}
+	
+	getItemByIdFromState = ({itemId, operations}) => {
+		let item = operations.filter(item => itemId === item._id)[0];
+		let {tags, itemFrom} = item;
+		const validate = {
+			account: {},
+			date: {},
+			title: {},
+			description: {},
+			price: {},
+			quantity: {},
+			tags: {},
+		}
+		return {...item, tags: tags.join(' '), account: itemFrom, validate}
 	}
 	
 	handleSubmit = (e) => {
@@ -148,7 +164,7 @@ class ItemModal extends Component {
 	}
 	
 	componentWillUnmount() {
-		this.props.setId({account: null});
+		this.props.setId({item: null});
 		this.props.setFormData('item_form', this.state.inputData);
 	}
 	
@@ -328,8 +344,12 @@ class ItemModal extends Component {
 const mapStateToProps = (state) => {
 	return {
 		inputData: state.formData.forms,
+		
 		accounts: state.api.accounts,
+		account: state.api.account,
+		
 		accountId: state.background.id.account,
+		itemId: state.background.id.item
 	};
 };
 
