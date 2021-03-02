@@ -1,4 +1,4 @@
-import {SET_ID, SET_IS_LOADING, SET_STATE_FROM_API} from './actionTypes';
+import {SET_IS_LOADING, SET_STATE_FROM_API} from './actionTypes';
 export const initialState = {
 	accounts: [],
 	budgets: [],
@@ -21,11 +21,6 @@ export const apiReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isLoading: {...state.isLoading, ...action.payload}
-			}
-		case SET_ID:
-			return {
-				...state,
-				id: {...state.id, ...action.payload}
 			}
 		default:
 			return state;

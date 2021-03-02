@@ -19,11 +19,12 @@ import regexp from "../../services/regexp";
 import validate from "../../services/validate";
 import AccountsOptionsList from "../../components/Accounts/AccountsOptionsList";
 import {bindActionCreators} from "redux";
-import {postData, setId} from "../../store/api/actions";
+import {postData} from "../../store/api/actions";
 import {setFormData} from "../../store/formData/actions";
 import {closeModal} from "../../store/router/actions";
 import {connect} from "react-redux";
 import Icon24AddSquareOutline from "@vkontakte/icons/dist/24/add_square_outline";
+import {setId} from "../../store/background/actions";
 
 class ItemModal extends Component {
 	constructor(props) {
@@ -328,7 +329,7 @@ const mapStateToProps = (state) => {
 	return {
 		inputData: state.formData.forms,
 		accounts: state.api.accounts,
-		accountId: state.api.id.account,
+		accountId: state.background.id.account,
 	};
 };
 

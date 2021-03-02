@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from "redux";
-import {getData, setId} from "../../store/api/actions";
+import {getData} from "../../store/api/actions";
 import {connect} from "react-redux";
 import ItemsList from "../ItemsList";
 import {Div, Group, Header, PanelSpinner, Title} from "@vkontakte/vkui";
 import currency from "../../services/currency";
 import {setStory} from "../../store/router/actions";
+import {setId} from "../../store/background/actions";
 
 class Accounts extends Component {
 	constructor(props) {

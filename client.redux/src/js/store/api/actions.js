@@ -1,6 +1,6 @@
 import axios from 'axios';
 import queryString from 'query-string';
-import {SET_ID, SET_IS_LOADING, SET_STATE_FROM_API} from "./actionTypes";
+import {SET_IS_LOADING, SET_STATE_FROM_API} from "./actionTypes";
 
 const apiBase = process.env.REACT_APP_PROXY;
 
@@ -48,11 +48,5 @@ export const getData = (url, payload) => {
 		const urlText = getUrlText(url);
 		dispatch({type: SET_IS_LOADING, payload: {[urlText]: true}});
 		return await apiFetch(axiosOptions, dispatch);
-	}
-}
-
-export const setId = payload => {
-	return dispatch => {
-		dispatch({type: SET_ID, payload});
 	}
 }
