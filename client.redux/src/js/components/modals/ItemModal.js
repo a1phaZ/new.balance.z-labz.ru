@@ -1,13 +1,19 @@
 import React, {Component} from 'react';
 import {
-	Button, Checkbox, Counter, Div,
-	FormLayout, FormLayoutGroup,
+	Button,
+	Checkbox,
+	Counter,
+	Div,
+	FormLayout,
+	FormLayoutGroup,
 	Input,
 	IOS,
 	ModalPage,
 	ModalPageHeader,
-	PanelHeaderButton, Radio,
-	Select, Textarea,
+	PanelHeaderButton,
+	Radio,
+	Select,
+	Textarea,
 	withPlatform
 } from "@vkontakte/vkui";
 import Icon24Cancel from "@vkontakte/icons/dist/24/cancel";
@@ -19,7 +25,7 @@ import regexp from "../../services/regexp";
 import validate from "../../services/validate";
 import AccountsOptionsList from "../../components/Accounts/AccountsOptionsList";
 import {bindActionCreators} from "redux";
-import {postData} from "../../store/api/actions";
+import {postData, updateData} from "../../store/api/actions";
 import {setFormData} from "../../store/formData/actions";
 import {closeModal} from "../../store/router/actions";
 import {connect} from "react-redux";
@@ -52,7 +58,10 @@ class ItemModal extends Component {
 		}
 		
 		this.state = {
-			inputData: this.getItemByIdFromState({itemId: this.props.itemId, operations: this.props.account.operations}) || props.inputData['item_form'] || defaultInputData,
+			inputData:
+				this.getItemByIdFromState({itemId: this.props.itemId, account: this.props.account}) ||
+				props.inputData[this.props.itemId ? `item_${this.props.itemId}` : 'item_form'] ||
+				defaultInputData,
 			descriptionShow: false
 		};
 		
@@ -100,8 +109,14 @@ class ItemModal extends Component {
 		this.getItemByIdFromState = this.getItemByIdFromState.bind(this);
 	}
 	
-	getItemByIdFromState = ({itemId, operations}) => {
-		let item = operations.filter(item => itemId === item._id)[0];
+	getItemByIdFromState = ({itemId, account}) => {
+		if (!itemId) {
+			return null;
+		}
+		if (!account) {
+			return null;
+		}
+		let item = account.operations.filter(item => itemId === item._id)[0];
 		let {tags, itemFrom} = item;
 		const validate = {
 			account: {},
@@ -117,21 +132,25 @@ class ItemModal extends Component {
 	
 	handleSubmit = (e) => {
 		e.preventDefault();
-		this.props.postData('/items', this.dataToServer({state: this.state.inputData, accountId: this.props.accountId}));
+		if (!this.props.itemId) {
+			this.props.postData('/items', this.dataToServer({state: this.state.inputData}));
+		} else {
+			this.props.updateData(`/items/${this.props.itemId}`, this.dataToServer({state: this.state.inputData}));
+		}
 		this.props.closeModal();
 		this.clearForm();
 	}
 	
-	dataToServer = ({state, accountId}) => {
+	dataToServer = ({state}) => {
 		return {
 			date: state.date,
 			title: state.title,
 			description: state.income ? '' : state.description,
-			price: state.boxPrice ? (state.price / state.quantity).toFixed(4) : Number(state.price).toFixed(2),
+			price: state.boxPrice ? (state.price / state.quantity).toFixed(2) : Number(state.price).toFixed(2),
 			quantity: state.quantity,
 			income: state.income,
 			tags: this.tagsToArray(state.tags).filter(tag => !!tag.length),
-			itemFrom: accountId || this.state.inputData.account,
+			itemFrom: state.account,
 			boxPrice: state.boxPrice,
 			params: {
 				//TODO set app date
@@ -164,8 +183,8 @@ class ItemModal extends Component {
 	}
 	
 	componentWillUnmount() {
+		this.props.setFormData(this.props.itemId ? `item_${this.props.itemId}` : 'item_form', this.state.inputData);
 		this.props.setId({item: null});
-		this.props.setFormData('item_form', this.state.inputData);
 	}
 	
 	render() {
@@ -196,13 +215,12 @@ class ItemModal extends Component {
 									name={'account'}
 									placeholder={'Выберите счет'}
 									onChange={this.handleInput}
-									// defaultValue={accountId || this.state.inputData.account}
 									required={true}
-									value={accountId || this.state.inputData.account}
+									value={this.state.inputData.account || accountId}
 									status={this.state.inputData.validate.account.status}
 									bottom={this.state.inputData.validate.account.message}
 					>
-						<AccountsOptionsList accounts={accounts} />
+						<AccountsOptionsList accounts={accounts}/>
 					</Select>
 					<Input type={'date'}
 								 top={'Дата'}
@@ -238,8 +256,8 @@ class ItemModal extends Component {
 								 value={true}
 								 defaultChecked={this.state.inputData.income ? true : null}
 								 onClick={this.handleInput}
-								 //TODO disable when edit
-								 // disabled={!!shopListItemTitle}
+						//TODO disable when shoplist add
+						// disabled={!!shopListItemTitle}
 					>
 						Доход
 					</Radio>
@@ -348,15 +366,15 @@ const mapStateToProps = (state) => {
 		accounts: state.api.accounts,
 		account: state.api.account,
 		
-		accountId: state.background.id.account,
-		itemId: state.background.id.item
+		itemId: state.background.id.item,
+		accountId: state.background.id.account
 	};
 };
 
 function mapDispatchToProps(dispatch) {
 	return {
 		dispatch,
-		...bindActionCreators({postData, setFormData, closeModal, setId}, dispatch)
+		...bindActionCreators({postData, setFormData, closeModal, setId, updateData}, dispatch)
 	}
 }
 
