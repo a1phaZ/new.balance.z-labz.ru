@@ -42,7 +42,9 @@ const checkItemData = (data, next) => {
 		quantity,
 		itemFrom,
 		vk_user_id,
-		tzOffset
+		params: {
+			tzOffset
+		}
 	} = data;
 	
 	const d = new Date(date);
