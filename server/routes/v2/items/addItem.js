@@ -19,10 +19,10 @@ const addItem = async (req, res, next) => {
 			itemFrom,
 			boxPrice = false
 		},
-		query: {vk_user_id, tzOffset = 0}
+		query: {vk_user_id}
 	} = req;
 	
-	const dataToCheck = {...req.body, vk_user_id, tzOffset};
+	const dataToCheck = {...req.body, vk_user_id};
 	await checkItemData(dataToCheck, next);
 	
 	const item = new Item({
