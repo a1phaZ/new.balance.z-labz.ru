@@ -37,6 +37,33 @@ export const postData = (url, payload) => {
 	}
 }
 
+export const updateData = (url, payload) => {
+	return async dispatch => {
+		const axiosOptions = {
+			...options,
+			method: 'PATCH',
+			url,
+			data: payload
+		}
+		const urlText = getUrlText(url);
+		dispatch({type: SET_IS_LOADING, payload: {[urlText]: true}});
+		return await apiFetch(axiosOptions, dispatch);
+	}
+}
+
+export const deleteData = (url) => {
+	return async dispatch => {
+		const axiosOptions = {
+			...options,
+			method: 'DELETE',
+			url,
+		}
+		const urlText = getUrlText(url);
+		dispatch({type: SET_IS_LOADING, payload: {[urlText]: true}});
+		return await apiFetch(axiosOptions, dispatch);
+	}
+}
+
 export const getData = (url, payload) => {
 	return async dispatch => {
 		const axiosOptions = {
