@@ -19,9 +19,11 @@ const deleteAccount = async (req, res, next) => {
 			return account;
 		})
 		.then(account => account.operations)
-		.then(operations => Item.deleteMany({_id: {$in: operations}}))
-		.then(() => Account.deleteOne({_id: id}))
-		.then(() => res.status(200).json({account: null, message: 'Счет удалён'}))
+		.then(async operations => await Item.deleteMany({_id: {$in: operations}}))
+		.then(async () => await Account.deleteOne({_id: id}))
+		.catch(err => next(createError(err.statusCode, err.message)));
+	await Account.find({userId: vk_user_id})
+		.then((accounts) => res.status(200).json({account: null, accounts: accounts, message: 'Счет удалён'}))
 		.catch(err => next(createError(err.statusCode, err.message)));
 }
 
