@@ -3,15 +3,32 @@ import {bindActionCreators} from "redux";
 import {getData, postData} from "../../store/api/actions";
 import {connect} from "react-redux";
 import {goBack, openModal, setStory} from "../../store/router/actions";
-import {Div, Panel, PanelHeader, PanelHeaderBack, PanelHeaderButton, PanelSpinner} from "@vkontakte/vkui";
+import {
+	Cell,
+	Div, List,
+	Panel,
+	PanelHeader,
+	PanelHeaderBack,
+	PanelHeaderButton,
+	PanelHeaderContent, PanelHeaderContext,
+	PanelSpinner
+} from "@vkontakte/vkui";
 import accountRichCell from "../../components/Accounts/accountRichCell";
 import {ArrayToObjectWithDate, ObjectToArrayWithDate} from "../../services/formatingArrayWithDate";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import {setId} from "../../store/background/actions";
+import {Icon16Dropdown, Icon28DeleteOutline, Icon28EditOutline} from "@vkontakte/icons";
+import {MODAL_ACCOUNT, MODAL_ITEM} from "../../const";
 
 class AccountsInfoPanel extends Component {
 	constructor(props) {
 		super(props);
+		
+		this.state = {
+			context: {
+				isOpened: false
+			}
+		}
 		
 		this.callApi = (url) => {
 			this.props.getData(url);
@@ -30,11 +47,57 @@ class AccountsInfoPanel extends Component {
 		}
 		
 		this.setItem = this.setItem.bind(this);
+		this.getHeaderContent = this.getHeaderContent.bind(this);
+		this.toggleContext = this.toggleContext.bind(this);
+		this.getHeaderContext = this.getHeaderContext.bind(this);
+	}
+	
+	toggleContext = () => {
+		this.setState({context: {isOpened: !this.state.context.isOpened}});
 	}
 	
 	setItem = ({type, id}) => {
 		this.props.setId({[type]: id});
-		this.props.openModal("MODAL_ITEM");
+		this.props.openModal(MODAL_ITEM);
+	}
+	
+	getHeaderContent = ({accountId = null, toggleContext = () => {}, isOpened = false}) => {
+		return (
+			<PanelHeaderContent
+				aside={accountId && <Icon16Dropdown style={{transform: `rotate(${isOpened ? '180deg' : '0'})`}}/>}
+				onClick={toggleContext}
+			>
+				{this.getTitle()}
+			</PanelHeaderContent>
+		)
+	}
+	getHeaderContext = ({isOpened = false, toggleContext = () => {}, account = null, openModal = () => {}}) => {
+		const title = account ? account.title : '';
+		return (
+			<PanelHeaderContext opened={isOpened} onClose={toggleContext}>
+				<List>
+					<Cell
+						before={<Icon28EditOutline/>}
+						onClick={() => {
+							openModal(MODAL_ACCOUNT)
+							toggleContext();
+						}}
+					>
+						Редактировать счет
+					</Cell>
+					<Cell
+						before={<Icon28DeleteOutline/>}
+						onClick={() => {
+							//TODO Alert
+							console.log('alert');
+							toggleContext();
+						}}
+					>
+						Удалить счет {title}
+					</Cell>
+				</List>
+			</PanelHeaderContext>
+		)
 	}
 	
 	componentDidMount() {
@@ -56,7 +119,7 @@ class AccountsInfoPanel extends Component {
 							<PanelHeaderBack onClick={() => this.props.goBack()}/>
 							<PanelHeaderButton
 								onClick={() => {
-									this.props.openModal("MODAL_ITEM")
+									this.props.openModal(MODAL_ITEM)
 								}}
 							>
 								<Icon28MarketAddBadgeOutline/>
@@ -64,8 +127,14 @@ class AccountsInfoPanel extends Component {
 						</>
 					}
 				>
-					{this.getTitle()}
+					{this.getHeaderContent({accountId: this.props.accountId, toggleContext: this.toggleContext, isOpened: this.state.context.isOpened})}
 				</PanelHeader>
+				{this.getHeaderContext({
+					toggleContext: this.toggleContext,
+					isOpened: this.state.context.isOpened,
+					account: account || null,
+					openModal: this.props.openModal
+				})}
 				{isLoading && <PanelSpinner/>}
 				{!isLoading && account &&
 				<Div>

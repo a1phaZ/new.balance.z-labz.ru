@@ -17,9 +17,10 @@ import {setFormData} from "../../store/formData/actions";
 import regexp from "../../services/regexp";
 import validate from "../../services/validate";
 import currency from "../../services/currency";
-import {postData} from "../../store/api/actions";
+import {postData, updateData} from "../../store/api/actions";
 import {bindActionCreators} from "redux";
 import {closeModal} from "../../store/router/actions";
+import {setId} from "../../store/background/actions";
 
 class AccountModal extends Component {
 	constructor(props) {
@@ -41,7 +42,10 @@ class AccountModal extends Component {
 		};
 		
 		this.state = {
-			inputData: props.inputData['account_form'] || defaultInputData
+			inputData:
+				this.getAccountByIdFromState({accountId: this.props.accountId, account: this.props.account}) ||
+				props.inputData[this.props.accountId ? `account_${this.props.accountId}` : 'account_form'] ||
+				defaultInputData
 		};
 		
 		this.handleInput = (e) => {
@@ -71,23 +75,48 @@ class AccountModal extends Component {
 			})
 		};
 		
-		this.handleSubmit = this.handleSubmit.bind(this);
 		this.clearForm = () => {
 			this.setState({
 				inputData: defaultInputData
 			});
 		};
+		
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.getAccountByIdFromState = this.getAccountByIdFromState.bind(this);
 	}
 	
 	handleSubmit = (e) => {
 		e.preventDefault();
-		this.props.postData('/accounts', {title: this.state.inputData.title, sum: this.state.inputData.sum});
+		if (!this.props.accountId) {
+			this.props.postData('/accounts', {title: this.state.inputData.title, sum: this.state.inputData.sum});
+		} else {
+			this.props.updateData(`/accounts/${this.props.accountId}`, {title: this.state.inputData.title, sum: this.state.inputData.sum});
+		}
 		this.props.closeModal();
 		this.clearForm();
 	}
 	
+	getAccountByIdFromState = ({accountId, account}) => {
+		if (!account || !accountId) {
+			return null;
+		}
+		
+		const validate = {
+			title: {
+				status: '',
+				message: ''
+			},
+			sum: {
+				status: '',
+				message: ''
+			}
+		}
+		return {...account, validate}
+	}
+	
 	componentWillUnmount() {
-		this.props.setFormData('account_form', this.state.inputData);
+		this.props.setFormData(this.props.accountId ? `account_${this.props.accountId}` : 'account_form', this.state.inputData);
+		this.props.setId({account: null});
 	}
 	
 	render() {
@@ -135,6 +164,7 @@ class AccountModal extends Component {
 								 bottom={this.state.inputData.validate.sum.message ? this.state.inputData.validate.sum.message : 'Денежные средства, находящиеся на счете в данный момент'}
 								 onChange={this.handleInput}
 								 autoComplete={'off'}
+								 disabled={!!this.props.accountId}
 					/>
 					<Button size={'xl'}>Сохранить</Button>
 				</FormLayout>
@@ -145,14 +175,16 @@ class AccountModal extends Component {
 
 const mapStateToProps = (state) => {
 	return {
-		inputData: state.formData.forms
+		inputData: state.formData.forms,
+		accountId: state.background.id.account,
+		account: state.api.account
 	};
 };
 
 function mapDispatchToProps(dispatch) {
 	return {
 		dispatch,
-		...bindActionCreators({postData, setFormData, closeModal}, dispatch)
+		...bindActionCreators({postData, setFormData, closeModal, updateData, setId}, dispatch)
 	}
 }
 
