@@ -1,12 +1,13 @@
 import React from 'react';
 import {Cell} from "@vkontakte/vkui";
+import currency from "../services/currency";
 
 export default ({data, setAccount}) => {
 	return data.map(account => {
 		return (
 			<Cell
 				key={account._id}
-				indicator={account.sum}
+				indicator={currency(account.sum)}
 				expandable
 				data-id={account._id}
 				onClick={(e) => {
