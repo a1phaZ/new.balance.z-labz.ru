@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from "redux";
-import {getData, postData} from "../../store/api/actions";
+import {deleteData, getData, postData} from "../../store/api/actions";
 import {connect} from "react-redux";
-import {goBack, openModal, setStory} from "../../store/router/actions";
+import {closePopout, goBack, openModal, openPopout, setStory} from "../../store/router/actions";
 import {
+	Alert,
 	Cell,
 	Div, List,
 	Panel,
@@ -50,6 +51,7 @@ class AccountsInfoPanel extends Component {
 		this.getHeaderContent = this.getHeaderContent.bind(this);
 		this.toggleContext = this.toggleContext.bind(this);
 		this.getHeaderContext = this.getHeaderContext.bind(this);
+		this.deleteAccount = this.deleteAccount.bind(this);
 	}
 	
 	toggleContext = () => {
@@ -59,6 +61,42 @@ class AccountsInfoPanel extends Component {
 	setItem = ({type, id}) => {
 		this.props.setId({[type]: id});
 		this.props.openModal(MODAL_ITEM);
+	}
+	
+	deleteAccount = ({accountId = null}) => {
+		if (!accountId) return;
+		const url = `/accounts/${accountId}`;
+		this.props.deleteData(url);
+	}
+	
+	openPopout() {
+		this.props.openPopout(
+			<Alert
+				actions={[
+					{
+						title: 'Отмена',
+						autoclose: true,
+						mode: "cancel"
+					},
+					{
+						title: 'Удалить',
+						mode: 'destructive',
+						autoclose: true,
+						action: async () => {
+							this.deleteAccount({accountId: this.props.accountId});
+							this.props.goBack();
+						}
+					}
+				]}
+				onClose={() => {
+					this.props.closePopout();
+				}}
+			>
+				<h2>Удалить счет?</h2>
+				<p>Удаление счета приведет к удалению всех данных по доходам и расходам, привязанным к данному счету. Суммы
+					бюджетов могут отображаться некорректно.</p>
+			</Alert>
+		)
 	}
 	
 	getHeaderContent = ({accountId = null, toggleContext = () => {}, isOpened = false}) => {
@@ -88,8 +126,7 @@ class AccountsInfoPanel extends Component {
 					<Cell
 						before={<Icon28DeleteOutline/>}
 						onClick={() => {
-							//TODO Alert
-							console.log('alert');
+							this.openPopout();
 							toggleContext();
 						}}
 					>
@@ -159,7 +196,7 @@ const mapStateToProps = (state) => {
 function mapDispatchToProps(dispatch) {
 	return {
 		dispatch,
-		...bindActionCreators({getData, postData, setStory, goBack, openModal, setId}, dispatch)
+		...bindActionCreators({getData, postData, deleteData, setStory, goBack, openModal, setId, openPopout, closePopout}, dispatch)
 	}
 }
 
