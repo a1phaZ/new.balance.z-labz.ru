@@ -6,12 +6,14 @@ import {closePopout, goBack, openModal, openPopout, setStory} from "../../store/
 import {
 	Alert,
 	Cell,
-	Div, List,
+	Div,
+	List,
 	Panel,
 	PanelHeader,
 	PanelHeaderBack,
 	PanelHeaderButton,
-	PanelHeaderContent, PanelHeaderContext,
+	PanelHeaderContent,
+	PanelHeaderContext,
 	PanelSpinner
 } from "@vkontakte/vkui";
 import accountRichCell from "../../components/Accounts/accountRichCell";
@@ -20,6 +22,7 @@ import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_bad
 import {setId} from "../../store/background/actions";
 import {Icon16Dropdown, Icon28DeleteOutline, Icon28EditOutline} from "@vkontakte/icons";
 import {MODAL_ACCOUNT, MODAL_ITEM} from "../../const";
+import AccountSummary from "../../components/Accounts/AccountSummary";
 
 class AccountsInfoPanel extends Component {
 	constructor(props) {
@@ -168,7 +171,11 @@ class AccountsInfoPanel extends Component {
 						</>
 					}
 				>
-					{this.getHeaderContent({accountId: this.props.accountId, toggleContext: this.toggleContext, isOpened: this.state.context.isOpened})}
+					{this.getHeaderContent({
+						accountId: this.props.accountId,
+						toggleContext: this.toggleContext,
+						isOpened: this.state.context.isOpened
+					})}
 				</PanelHeader>
 				{this.getHeaderContext({
 					toggleContext: this.toggleContext,
@@ -178,9 +185,12 @@ class AccountsInfoPanel extends Component {
 				})}
 				{isLoading && <PanelSpinner/>}
 				{!isLoading && account &&
-				<Div>
-					{this.prepareData().map(accountRichCell({setId: this.setItem}))}
-				</Div>
+				<>
+					<AccountSummary account={account}/>
+					<Div>
+						{this.prepareData().map(accountRichCell({setId: this.setItem}))}
+					</Div>
+				</>
 				}
 			</Panel>
 		)
@@ -200,7 +210,17 @@ const mapStateToProps = (state) => {
 function mapDispatchToProps(dispatch) {
 	return {
 		dispatch,
-		...bindActionCreators({getData, postData, deleteData, setStory, goBack, openModal, setId, openPopout, closePopout}, dispatch)
+		...bindActionCreators({
+			getData,
+			postData,
+			deleteData,
+			setStory,
+			goBack,
+			openModal,
+			setId,
+			openPopout,
+			closePopout
+		}, dispatch)
 	}
 }
 
