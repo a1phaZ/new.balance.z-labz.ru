@@ -150,7 +150,7 @@ class ItemModal extends Component {
 			quantity: state.quantity,
 			income: state.income,
 			tags: this.tagsToArray(state.tags).filter(tag => !!tag.length),
-			itemFrom: state.account,
+			itemFrom: state.account || this.props.accountId,
 			boxPrice: state.boxPrice,
 			params: {
 				//TODO set app date
