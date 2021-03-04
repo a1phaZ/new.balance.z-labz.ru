@@ -32,8 +32,8 @@ const addItemsToAccount = async (userId, item) => {
 				return Promise.reject(createError(404, 'Счет не найден'));
 			}
 			account.operations = [...account.operations, item._id];
-			account.$sum = account.sum;
-			account.$income = account.income;
+			account.$sum = item.sum;
+			account.$income = item.income;
 			return await account.save();
 		})
 }
@@ -81,14 +81,10 @@ const updateItem = async (req, res, next) => {
 		}, {new: true})
 			.catch(err => catchError(err, next));
 		
-		console.log(notEqualProperty, notEqualProperty.includes('itemFrom'));
+		await removeItemsFromAccount(vk_user_id, oldItem).catch(err => catchError(err, next));
+		await addItemsToAccount(vk_user_id, newItem).catch(err => catchError(err, next));
 		
-		if (notEqualProperty.includes('itemFrom')) {
-			await removeItemsFromAccount(vk_user_id, oldItem).catch(err => catchError(err, next));
-			await addItemsToAccount(vk_user_id, newItem).catch(err => catchError(err, next));
-		}
-		
-		const filter = {userId: vk_user_id, _id: oldItem.itemFrom};
+		const filter = {userId: vk_user_id, _id: oldItem.itemFrom || newItem.itemFrom};
 		
 		const currentMonth = new Date(date).getMonth();
 		const currentYear = new Date(date).getFullYear();
