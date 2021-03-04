@@ -1,6 +1,6 @@
 export const ArrayToObjectWithDate = (items) => {
 	return items.reduce((prev, curr) => {
-		const index = +new Date(curr.date);
+		const index = curr.date;
 		if (prev[index]) {
 			prev[index] = [...prev[index], curr];
 		} else {
