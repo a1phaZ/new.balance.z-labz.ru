@@ -6,6 +6,7 @@ import Accounts from "../../components/Accounts/Accounts";
 import Budgets from "../../components/Budgets/Budgets";
 import {closePopout, goBack, openModal, openPopout, setPage} from "../../store/router/actions";
 import {connect} from "react-redux";
+import {MODAL_ACCOUNT, MODAL_ITEM} from "../../const";
 
 class HomePanelIndex extends Component {
 	
@@ -18,14 +19,14 @@ class HomePanelIndex extends Component {
 						<>
 							<PanelHeaderButton
 								onClick={() => {
-									this.props.openModal("MODAL_ACCOUNT")
+									this.props.openModal(MODAL_ACCOUNT)
 								}}
 							>
 								<Icon28ListAddOutline/>
 							</PanelHeaderButton>
 							<PanelHeaderButton
 								onClick={() => {
-									this.props.openModal("MODAL_ITEM")
+									this.props.openModal(MODAL_ITEM)
 								}}
 							>
 								<Icon28MarketAddBadgeOutline/>
