@@ -247,6 +247,7 @@ describe('api/v2/accounts', () => {
 				.delete(`${apiStr}/${account._id}?vk_user_id=1`)
 			
 			expect(res.status).to.equal(200);
+			expect(res.body).to.have.property('accounts');
 			expect(res.body).to.have.property('account', null);
 			expect(res.body).to.have.property('message', 'Счет удалён');
 		});
