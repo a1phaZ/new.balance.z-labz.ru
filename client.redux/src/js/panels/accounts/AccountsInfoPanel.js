@@ -146,6 +146,10 @@ class AccountsInfoPanel extends Component {
 		}
 	}
 	
+	componentWillUnmount() {
+		this.props.setId({account: null});
+	}
+	
 	render() {
 		const {id, isLoading, account} = this.props;
 		return (
