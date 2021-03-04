@@ -22,6 +22,7 @@ import HomePanelIndex from "./js/panels/home";
 import AccountsInfoPanel from "./js/panels/accounts/AccountsInfoPanel";
 import AccountModal from "./js/components/modals/AccountModal";
 import ItemModal from "./js/components/modals/ItemModal";
+import {MODAL_ACCOUNT, MODAL_ITEM} from "./js/const";
 
 class App extends React.Component {
 	constructor(props) {
@@ -86,11 +87,11 @@ class App extends React.Component {
 		const balanceModals = (
 			<ModalRoot activeModal={activeModal}>
 				<AccountModal
-					id={'MODAL_ACCOUNT'}
+					id={MODAL_ACCOUNT}
 					onClose={() => closeModal()}
 				/>
 				<ItemModal
-					id={'MODAL_ITEM'}
+					id={MODAL_ITEM}
 					onClose={() => closeModal()}
 				/>
 			</ModalRoot>
