@@ -1,6 +1,7 @@
-import {SET_ID} from "./actionTypes";
+import {ONSEARCH, SET_ID} from "./actionTypes";
 export const initialState = {
-	id: {}
+	id: {},
+	search: {}
 }
 
 export const backgroundReducer = (state = initialState, action) => {
@@ -10,6 +11,12 @@ export const backgroundReducer = (state = initialState, action) => {
 				...state,
 				id: {...state.id, ...action.payload}
 			}
+		case ONSEARCH: {
+			return {
+				...state,
+				search: {...state.search, ...action.payload}
+			}
+		}
 		default:
 			return state;
 	}
