@@ -19,10 +19,11 @@ import {
 import accountRichCell from "../../components/Accounts/accountRichCell";
 import {ArrayToObjectWithDate, ObjectToArrayWithDate} from "../../services/formatingArrayWithDate";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
-import {setId} from "../../store/background/actions";
+import {onSearch, setId} from "../../store/background/actions";
 import {Icon16Dropdown, Icon28DeleteOutline, Icon28EditOutline} from "@vkontakte/icons";
 import {MODAL_ACCOUNT, MODAL_ITEM} from "../../const";
 import AccountSummary from "../../components/Accounts/AccountSummary";
+import SearchForm from "../../components/SearchForm";
 
 class AccountsInfoPanel extends Component {
 	constructor(props) {
@@ -31,7 +32,8 @@ class AccountsInfoPanel extends Component {
 		this.state = {
 			context: {
 				isOpened: false
-			}
+			},
+			operations: []
 		}
 		
 		this.callApi = (url) => {
@@ -44,8 +46,13 @@ class AccountsInfoPanel extends Component {
 			}
 			return account.title
 		}
+		this.getOperationBySearch = ({str, operations}) => {
+			const filteredOperations = operations.filter(({title}) => title.toLowerCase().indexOf(str.toLowerCase()) > -1)
+			this.setState({operations: filteredOperations});
+		}
+		
 		this.prepareData = () => {
-			const indexAr = ArrayToObjectWithDate(this.props.account.operations);
+			const indexAr = ArrayToObjectWithDate(this.state.operations);
 			
 			return ObjectToArrayWithDate(indexAr);
 		}
@@ -55,6 +62,7 @@ class AccountsInfoPanel extends Component {
 		this.toggleContext = this.toggleContext.bind(this);
 		this.getHeaderContext = this.getHeaderContext.bind(this);
 		this.deleteAccount = this.deleteAccount.bind(this);
+		this.onSearch = this.onSearch.bind(this);
 	}
 	
 	toggleContext = () => {
@@ -147,6 +155,17 @@ class AccountsInfoPanel extends Component {
 			//TODO 404 page
 			this.props.setStory('main', 'index');
 		}
+		
+	}
+	//
+	// componentDidUpdate(prevProps, prevState, snapshot) {
+	// 	const str = this.props.search[this.props.accountId];
+	// 	this.getOperationBySearch({str, operations: this.props.account.operations});
+	// }
+	
+	onSearch = (str) => {
+		this.props.onSearch({[this.props.accountId]: str});
+		this.getOperationBySearch({str, operations: this.props.account.operations});
 	}
 	
 	componentWillUnmount() {
@@ -186,6 +205,7 @@ class AccountsInfoPanel extends Component {
 				{isLoading && <PanelSpinner/>}
 				{!isLoading && account &&
 				<>
+					<SearchForm onSearch={this.onSearch} initialString={this.props.search[this.props.accountId]}/>
 					<AccountSummary account={account}/>
 					<Div>
 						{this.prepareData().map(accountRichCell({setId: this.setItem}))}
@@ -203,7 +223,8 @@ const mapStateToProps = (state) => {
 		error: state.api.error,
 		isLoading: state.api.isLoading.accounts,
 		accountId: state.background.id.account,
-		itemId: state.background.id.item
+		itemId: state.background.id.item,
+		search: state.background.search
 	}
 }
 
@@ -219,7 +240,8 @@ function mapDispatchToProps(dispatch) {
 			openModal,
 			setId,
 			openPopout,
-			closePopout
+			closePopout,
+			onSearch
 		}, dispatch)
 	}
 }
