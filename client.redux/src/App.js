@@ -7,7 +7,6 @@ import {getActivePanel} from "./js/services/_functions";
 import * as VK from './js/services/VK';
 
 import {Epic, View, Root, Tabbar, ModalRoot, TabbarItem, ConfigProvider} from "@vkontakte/vkui";
-import Icon28Newsfeed from '@vkontakte/icons/dist/28/newsfeed';
 
 import Icon28More from '@vkontakte/icons/dist/28/more';
 import HomePanelBase from './js/panels/home/base';
@@ -23,6 +22,7 @@ import AccountsInfoPanel from "./js/panels/accounts/AccountsInfoPanel";
 import AccountModal from "./js/components/modals/AccountModal";
 import ItemModal from "./js/components/modals/ItemModal";
 import {MODAL_ACCOUNT, MODAL_ITEM} from "./js/const";
+import {Icon28CoinsOutline, Icon28HomeOutline, Icon28StatisticsOutline} from "@vkontakte/icons";
 
 class App extends React.Component {
 	constructor(props) {
@@ -100,15 +100,35 @@ class App extends React.Component {
 		return (
 			<ConfigProvider isWebView={true} scheme={colorScheme}>
 				<Epic activeStory={activeStory} tabbar={
-					<Tabbar>
+					<Tabbar itemsLayout={'horizontal'}>
 						<TabbarItem
 							onClick={() => setStory('home', 'base')}
 							selected={activeStory === 'home'}
-						><Icon28Newsfeed/></TabbarItem>
+							text={'Баланс'}
+						>
+							<Icon28HomeOutline/>
+						</TabbarItem>
 						<TabbarItem
-							onClick={() => setStory('more', 'callmodal')}
+							onClick={() => setStory('home', 'base')}
+							selected={activeStory === 'budgets'}
+							text={'Бюджеты'}
+						>
+							<Icon28CoinsOutline/>
+						</TabbarItem>
+						<TabbarItem
+							onClick={() => setStory('home', 'base')}
+							selected={activeStory === 'stats'}
+							text={'Сводка'}
+						>
+							<Icon28StatisticsOutline/>
+						</TabbarItem>
+						<TabbarItem
+							onClick={() => setStory('home', 'base')}
 							selected={activeStory === 'more'}
-						><Icon28More/></TabbarItem>
+							text={'Ещё'}
+						>
+							<Icon28More/>
+						</TabbarItem>
 					</Tabbar>
 				}>
 					<Root id="home" activeView={activeView} popout={popout}>
