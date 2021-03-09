@@ -5,7 +5,7 @@ import {connect} from "react-redux";
 import ItemsList from "../ItemsList";
 import {Div, Group, Header, PanelSpinner} from "@vkontakte/vkui";
 
-class Budgets extends Component {
+class BudgetsSummary extends Component {
 	constructor(props) {
 		super(props);
 		
@@ -56,4 +56,4 @@ function mapDispatchToProps(dispatch) {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Budgets);
+export default connect(mapStateToProps, mapDispatchToProps)(BudgetsSummary);

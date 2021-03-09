@@ -23,6 +23,7 @@ import AccountModal from "./js/components/modals/AccountModal";
 import ItemModal from "./js/components/modals/ItemModal";
 import {MODAL_ACCOUNT, MODAL_ITEM} from "./js/const";
 import {Icon28CoinsOutline, Icon28HomeOutline, Icon28StatisticsOutline} from "@vkontakte/icons";
+import BudgetsPanel from "./js/panels/budgets/BudgetsPanel";
 
 class App extends React.Component {
 	constructor(props) {
@@ -109,7 +110,7 @@ class App extends React.Component {
 							<Icon28HomeOutline/>
 						</TabbarItem>
 						<TabbarItem
-							onClick={() => setStory('home', 'base')}
+							onClick={() => setStory('budgets', 'list')}
 							selected={activeStory === 'budgets'}
 							text={'Бюджеты'}
 						>
@@ -153,6 +154,17 @@ class App extends React.Component {
 							onSwipeBack={() => goBack()}
 						>
 							<AccountsInfoPanel id={'info'}/>
+						</View>
+					</Root>
+					<Root activeView={activeView} id={'budgets'} popout={popout}>
+						<View
+							id={'budgets'}
+							modal={balanceModals}
+							activePanel={getActivePanel('budgets')}
+							history={history}
+							onSwipeBack={() => goBack()}
+						>
+							<BudgetsPanel id={'list'} />
 						</View>
 					</Root>
 					<Root id="more" activeView={activeView} popout={popout}>
