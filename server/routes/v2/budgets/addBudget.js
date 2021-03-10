@@ -17,14 +17,7 @@ const addBudget = async (req, res, next) => {
 	
 	const filter = {userId: vk_user_id, title: title, month: month, year: year};
 	
-	console.log(filter);
-	
-	const oldBudget = await Budget.findOne(filter)
-		// .then((budget) => {
-		// 	if (budget) {
-		// 		return next(createError(400, `${title} ${SAME_VALUE}`));
-		// 	}
-		// });
+	const oldBudget = await Budget.findOne(filter);
 	
 	if (oldBudget) return next(createError(400, `${title} ${SAME_VALUE}`));
 	
