@@ -7,6 +7,7 @@ import Budgets from "../../components/Budgets/BudgetsSummary";
 import {closePopout, goBack, openModal, openPopout, setPage} from "../../store/router/actions";
 import {connect} from "react-redux";
 import {MODAL_ACCOUNT, MODAL_ITEM} from "../../const";
+import InfoSnackbar from "../../components/InfoSnackbar";
 
 class HomePanelIndex extends Component {
 	
@@ -41,6 +42,7 @@ class HomePanelIndex extends Component {
 					<Accounts/>
 					<Budgets />
 				</List>
+				<InfoSnackbar />
 			</Panel>
 		)
 	}

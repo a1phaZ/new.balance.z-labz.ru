@@ -1,6 +1,6 @@
 import axios from 'axios';
 import queryString from 'query-string';
-import {SET_IS_LOADING, SET_STATE_FROM_API} from "./actionTypes";
+import {SET_IS_LOADING, SET_STATE_FROM_API, UNSET_MESSAGE} from "./actionTypes";
 
 const apiBase = process.env.REACT_APP_PROXY;
 
@@ -20,7 +20,10 @@ const apiFetch = (opt, dispatch) => {
 	const urlText = getUrlText(opt.url);
 	return axios(opt)
 		.then(res => dispatch({type: SET_STATE_FROM_API, payload: {data: res.data, urlText: urlText}}))
-		.catch(err => dispatch({type: SET_STATE_FROM_API, payload: {error: err.response.data, urlText: urlText}}));
+		.catch(err => {
+			const error = err.response ? err.response.data : {error: {message: 'Ошибка подключения к серверу'}};
+			return dispatch({type: SET_STATE_FROM_API, payload: {data: error, urlText: urlText}})
+		});
 }
 
 export const postData = (url, payload) => {
@@ -76,4 +79,10 @@ export const getData = (url, payload) => {
 		dispatch({type: SET_IS_LOADING, payload: {[urlText]: true}});
 		return await apiFetch(axiosOptions, dispatch);
 	}
+}
+
+export const unsetMessage = () => {
+	return dispatch => {
+		return dispatch({type: UNSET_MESSAGE});
+	};
 }

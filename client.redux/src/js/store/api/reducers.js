@@ -1,9 +1,10 @@
-import {SET_IS_LOADING, SET_STATE_FROM_API} from './actionTypes';
+import {SET_IS_LOADING, SET_STATE_FROM_API, UNSET_MESSAGE} from './actionTypes';
 export const initialState = {
 	accounts: [],
 	budgets: [],
 	isLoading: {},
-	id: {}
+	id: {},
+	error: null
 }
 
 export const apiReducer = (state = initialState, action) => {
@@ -21,6 +22,11 @@ export const apiReducer = (state = initialState, action) => {
 			return {
 				...state,
 				isLoading: {...state.isLoading, ...action.payload}
+			}
+		case UNSET_MESSAGE:
+			return {
+				...state,
+				error: null
 			}
 		default:
 			return state;
