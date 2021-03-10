@@ -25,6 +25,7 @@ const getAccount = async (req, res, next) => {
 		.populate({
 			path: 'operations',
 			match: {year: {$eq: currentYear}, month: {$eq: currentMonth}},
+			options: { sort: { 'date': 1 } },
 			select: '-__v',
 		})
 		.then(account => {
