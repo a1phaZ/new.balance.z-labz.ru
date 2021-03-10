@@ -1,6 +1,9 @@
 import {SET_IS_LOADING, SET_STATE_FROM_API, UNSET_MESSAGE} from './actionTypes';
 export const initialState = {
 	accounts: [],
+	account: {
+		operations: [],
+	},
 	budgets: [],
 	isLoading: {},
 	id: {},

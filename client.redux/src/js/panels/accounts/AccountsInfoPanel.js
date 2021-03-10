@@ -36,7 +36,7 @@ class AccountsInfoPanel extends Component {
 			operations: []
 		}
 		
-		this.callApi = (url) => {
+		this.callApi = async (url) => {
 			this.props.getData(url);
 		}
 		this.getTitle = () => {
@@ -168,9 +168,16 @@ class AccountsInfoPanel extends Component {
 		this.getOperationBySearch({str, operations: this.props.account.operations});
 	}
 	
-	componentWillUnmount() {
-		this.props.setId({account: null});
+	componentDidUpdate(prevProps, prevState, snapshot) {
+		const {account} = this.props;
+		if (account && account !== prevProps.account) {
+			this.setState({operations: account.operations});
+		}
 	}
+	
+	// componentWillUnmount() {
+	// 	this.props.setId({account: null});
+	// }
 	
 	render() {
 		const {id, isLoading, account} = this.props;
