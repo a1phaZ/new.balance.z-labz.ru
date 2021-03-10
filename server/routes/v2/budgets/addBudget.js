@@ -17,12 +17,16 @@ const addBudget = async (req, res, next) => {
 	
 	const filter = {userId: vk_user_id, title: title, month: month, year: year};
 	
-	await Budget.findOne(filter)
-		.then((budget) => {
-			if (budget) {
-				return next(createError(400, `${title} ${SAME_VALUE}`));
-			}
-		});
+	console.log(filter);
+	
+	const oldBudget = await Budget.findOne(filter)
+		// .then((budget) => {
+		// 	if (budget) {
+		// 		return next(createError(400, `${title} ${SAME_VALUE}`));
+		// 	}
+		// });
+	
+	if (oldBudget) return next(createError(400, `${title} ${SAME_VALUE}`));
 	
 	const newBudget = new Budget({
 		userId: vk_user_id,
@@ -33,9 +37,9 @@ const addBudget = async (req, res, next) => {
 	})
 	await newBudget.save();
 	
-	await Budget.findOne(filter)
+	await Budget.find({userId: vk_user_id, month: month, year: year})
 		.select('-__v')
-		.then((budget) => res.status(200).json({budget: budget}))
+		.then((budgets) => res.status(200).json({budgets: budgets}))
 		.catch(err => catchError(err, next));
 }
 
