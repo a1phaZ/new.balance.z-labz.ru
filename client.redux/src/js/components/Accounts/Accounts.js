@@ -46,7 +46,7 @@ class Accounts extends Component {
 					{!isLoading &&
 						<>
 							<Title level="1" weight="semibold" style={{marginBottom: 16}}>{currency(this.sumOfAll(accounts))}</Title>
-							<ItemsList data={accounts} setAccount={this.setAccount}/>
+							<ItemsList data={accounts} setId={this.setAccount} type={'account'}/>
 						</>
 					}
 				</Div>

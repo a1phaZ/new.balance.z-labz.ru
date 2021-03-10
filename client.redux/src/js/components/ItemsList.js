@@ -2,19 +2,19 @@ import React from 'react';
 import {Cell} from "@vkontakte/vkui";
 import currency from "../services/currency";
 
-export default ({data, setAccount}) => {
-	return data.map(account => {
+export default ({data, setId, type}) => {
+	return data.map(item => {
 		return (
 			<Cell
-				key={account._id}
-				indicator={currency(account.sum)}
+				key={item._id}
+				indicator={currency(item.sum)}
 				expandable
-				data-id={account._id}
+				data-id={item._id}
 				onClick={(e) => {
-					setAccount({type: 'account', id: e.currentTarget.dataset.id});
+					setId({type: type, id: e.currentTarget.dataset.id});
 				}}
 			>
-				{account.title}
+				{item.title}
 			</Cell>
 		)
 	})
