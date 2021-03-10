@@ -2,14 +2,21 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {Panel, PanelHeader, PanelHeaderBack, PanelHeaderButton} from "@vkontakte/vkui";
 import {bindActionCreators} from "redux";
-import {goBack, openModal} from "../../store/router/actions";
-import {MODAL_ITEM} from "../../const";
+import {goBack, openModal, setStory} from "../../store/router/actions";
+import {MODAL_BUDGET} from "../../const";
 import Icon28MarketAddBadgeOutline from "@vkontakte/icons/dist/28/market_add_badge_outline";
 import ItemsList from "../../components/ItemsList";
+import {setId} from "../../store/background/actions";
 
 class BudgetsPanel extends Component{
 	constructor(props) {
 		super(props);
+		this.setBudget = this.setBudget.bind(this);
+	}
+	
+	setBudget = ({type, id}) => {
+		this.props.setId({[type]: id});
+		this.props.setStory('budgets', 'info');
 	}
 	
 	render() {
@@ -22,7 +29,7 @@ class BudgetsPanel extends Component{
 							<PanelHeaderBack onClick={() => this.props.goBack()}/>
 							<PanelHeaderButton
 								onClick={() => {
-									this.props.openModal(MODAL_ITEM)
+									this.props.openModal(MODAL_BUDGET);
 								}}
 							>
 								<Icon28MarketAddBadgeOutline/>
@@ -32,7 +39,7 @@ class BudgetsPanel extends Component{
 				>
 					Бюджеты
 				</PanelHeader>
-				<ItemsList data={budgets}/>
+				<ItemsList data={budgets} type={'budget'} setId={this.setBudget}/>
 			</Panel>
 		)
 	}
@@ -49,7 +56,9 @@ function mapDispatchToProps(dispatch) {
 		dispatch,
 		...bindActionCreators({
 				goBack,
-				openModal
+				openModal,
+				setId,
+				setStory
 			},
 			dispatch
 		)

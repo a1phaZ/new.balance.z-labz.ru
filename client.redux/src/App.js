@@ -21,9 +21,10 @@ import HomePanelIndex from "./js/panels/home";
 import AccountsInfoPanel from "./js/panels/accounts/AccountsInfoPanel";
 import AccountModal from "./js/components/modals/AccountModal";
 import ItemModal from "./js/components/modals/ItemModal";
-import {MODAL_ACCOUNT, MODAL_ITEM} from "./js/const";
+import {MODAL_ACCOUNT, MODAL_BUDGET, MODAL_ITEM} from "./js/const";
 import {Icon28CoinsOutline, Icon28HomeOutline, Icon28StatisticsOutline} from "@vkontakte/icons";
 import BudgetsPanel from "./js/panels/budgets/BudgetsPanel";
+import BudgetModal from "./js/components/modals/BudgetModal";
 
 class App extends React.Component {
 	constructor(props) {
@@ -93,6 +94,10 @@ class App extends React.Component {
 				/>
 				<ItemModal
 					id={MODAL_ITEM}
+					onClose={() => closeModal()}
+				/>
+				<BudgetModal
+					id={MODAL_BUDGET}
 					onClose={() => closeModal()}
 				/>
 			</ModalRoot>
