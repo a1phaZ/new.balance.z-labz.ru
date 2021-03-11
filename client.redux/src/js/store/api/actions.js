@@ -33,6 +33,7 @@ export const postData = (url, payload) => {
 			method: 'POST',
 			url,
 			data: payload,
+			params: payload ? {...options.params, ...payload.params} : {...options.params},
 		}
 		const urlText = getUrlText(url);
 		dispatch({type: SET_IS_LOADING, payload: {[urlText]: true}});

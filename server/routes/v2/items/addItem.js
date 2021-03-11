@@ -19,7 +19,7 @@ const addItem = async (req, res, next) => {
 			itemFrom,
 			boxPrice = false
 		},
-		query: {vk_user_id}
+		query: {vk_user_id, appDate = new Date()}
 	} = req;
 	
 	const dataToCheck = {...req.body, vk_user_id};
@@ -48,8 +48,8 @@ const addItem = async (req, res, next) => {
 	account.$income = item.income;
 	await account.save().catch(err => catchError(err, next));
 	
-	const currentMonth = new Date(date).getMonth();
-	const currentYear = new Date(date).getFullYear();
+	const currentMonth = new Date(appDate).getMonth();
+	const currentYear = new Date(appDate).getFullYear();
 	
 	await Account.findOne(filter)
 		.select('-__v')

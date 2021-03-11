@@ -153,8 +153,7 @@ class ItemModal extends Component {
 			itemFrom: state.account || this.props.accountId,
 			boxPrice: state.boxPrice,
 			params: {
-				//TODO set app date
-				// date: new Date(date),
+				appDate: format(this.props.appDate, 'yyyy-MM-dd'),
 				tzOffset: new Date().getTimezoneOffset()
 			}
 		}
@@ -367,7 +366,8 @@ const mapStateToProps = (state) => {
 		account: state.api.account,
 		
 		itemId: state.background.id.item,
-		accountId: state.background.id.account
+		accountId: state.background.id.account,
+		appDate: state.background.date
 	};
 };
 
