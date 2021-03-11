@@ -21,10 +21,11 @@ import HomePanelIndex from "./js/panels/home";
 import AccountsInfoPanel from "./js/panels/accounts/AccountsInfoPanel";
 import AccountModal from "./js/components/modals/AccountModal";
 import ItemModal from "./js/components/modals/ItemModal";
-import {MODAL_ACCOUNT, MODAL_BUDGET, MODAL_ITEM} from "./js/const";
+import {MODAL_ACCOUNT, MODAL_BUDGET, MODAL_ITEM, MODAL_MONTH_PICKER} from "./js/const";
 import {Icon28CoinsOutline, Icon28HomeOutline, Icon28StatisticsOutline} from "@vkontakte/icons";
 import BudgetsPanel from "./js/panels/budgets/BudgetsPanel";
 import BudgetModal from "./js/components/modals/BudgetModal";
+import MonthPickerModal from "./js/components/modals/MonthPickerModal";
 
 class App extends React.Component {
 	constructor(props) {
@@ -98,6 +99,10 @@ class App extends React.Component {
 				/>
 				<BudgetModal
 					id={MODAL_BUDGET}
+					onClose={() => closeModal()}
+				/>
+				<MonthPickerModal
+					id={MODAL_MONTH_PICKER}
 					onClose={() => closeModal()}
 				/>
 			</ModalRoot>

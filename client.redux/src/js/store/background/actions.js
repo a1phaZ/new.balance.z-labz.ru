@@ -1,4 +1,4 @@
-import {ONSEARCH, SET_ID} from "./actionTypes";
+import {ONSEARCH, SET_DATE, SET_ID} from "./actionTypes";
 
 export const setId = payload => {
 	return dispatch => {
@@ -9,5 +9,11 @@ export const setId = payload => {
 export const onSearch = payload => {
 	return dispatch => {
 		dispatch({type: ONSEARCH, payload});
+	}
+}
+
+export const setDate = payload => {
+	return dispatch => {
+		dispatch({type: SET_DATE, payload});
 	}
 }
